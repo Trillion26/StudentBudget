@@ -1,0 +1,4 @@
+# Only used by the optional TestFlight workflow.
+source "https://rubygems.org"
+
+gem "fastlane"

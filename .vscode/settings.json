@@ -1,0 +1,11 @@
+{
+  "dart.lineLength": 120,
+  "editor.formatOnSave": true,
+  "[dart]": {
+    "editor.rulers": [120],
+    "editor.tabSize": 2
+  },
+  "files.exclude": {
+    "**/*.g.dart": false
+  }
+}

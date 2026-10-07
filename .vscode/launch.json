@@ -1,0 +1,45 @@
+{
+  // Press F5 to run. Pick a configuration from the Run and Debug panel.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Windows – iPhone 15 size (390×844)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "windows",
+      "env": { "STUDENT_BUDGET_WINDOW_SIZE": "390x844" }
+    },
+    {
+      "name": "Windows – iPhone SE size (375×667)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "windows",
+      "env": { "STUDENT_BUDGET_WINDOW_SIZE": "375x667" }
+    },
+    {
+      "name": "Windows – Pro Max size (430×932)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "windows",
+      "env": { "STUDENT_BUDGET_WINDOW_SIZE": "430x932" }
+    },
+    {
+      "name": "Chrome – phone-sized window",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "chrome",
+      "args": ["--web-browser-flag=--window-size=390,844"]
+    },
+    {
+      "name": "iPhone (only on a Mac with Xcode)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "deviceId": "ios"
+    }
+  ]
+}
