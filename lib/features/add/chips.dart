@@ -42,8 +42,10 @@ class EmojiChip extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              MediaQuery.withNoTextScaling(child: Text(item.emoji, style: const TextStyle(fontSize: 18))),
-              const SizedBox(width: 8),
+              if (item.emoji.isNotEmpty) ...[
+                MediaQuery.withNoTextScaling(child: Text(item.emoji, style: const TextStyle(fontSize: 18))),
+                const SizedBox(width: 8),
+              ],
               Flexible(
                 child: Text(
                   item.label,
