@@ -72,15 +72,20 @@ CupertinoThemeData buildCupertinoTheme(Brightness brightness) {
     primaryContrastingColor: c.onInk,
     scaffoldBackgroundColor: c.paper,
     barBackgroundColor: c.paper.withValues(alpha: 0.94),
+    // Cupertino animates between these styles (e.g. the large title and the
+    // back button), which only works when none of them inherit.
     textTheme: CupertinoTextThemeData(
       primaryColor: c.ink,
-      textStyle: AppText.body.copyWith(color: c.ink),
-      actionTextStyle: AppText.body.copyWith(color: c.ink),
-      navTitleTextStyle: AppText.body.copyWith(color: c.ink, fontWeight: FontWeight.w800),
-      navLargeTitleTextStyle: AppText.title.copyWith(color: c.ink, fontSize: 34),
-      tabLabelTextStyle: AppText.small.copyWith(fontSize: 11, color: c.inkSoft),
-      pickerTextStyle: AppText.body.copyWith(color: c.ink, fontSize: 21),
-      dateTimePickerTextStyle: AppText.body.copyWith(color: c.ink, fontSize: 21),
+      textStyle: _solid(AppText.body.copyWith(color: c.ink)),
+      actionTextStyle: _solid(AppText.body.copyWith(color: c.ink)),
+      navActionTextStyle: _solid(AppText.body.copyWith(color: c.ink)),
+      navTitleTextStyle: _solid(AppText.body.copyWith(color: c.ink, fontWeight: FontWeight.w800)),
+      navLargeTitleTextStyle: _solid(AppText.title.copyWith(color: c.ink, fontSize: 34)),
+      tabLabelTextStyle: _solid(AppText.small.copyWith(fontSize: 11, color: c.inkSoft)),
+      pickerTextStyle: _solid(AppText.body.copyWith(color: c.ink, fontSize: 21)),
+      dateTimePickerTextStyle: _solid(AppText.body.copyWith(color: c.ink, fontSize: 21)),
     ),
   );
 }
+
+TextStyle _solid(TextStyle style) => style.copyWith(inherit: false, decoration: TextDecoration.none, letterSpacing: 0);

@@ -128,16 +128,17 @@ class _EmojiPickerState extends State<EmojiPicker> {
                 excludeSemantics: true,
                 child: GestureDetector(
                   onTap: () => widget.onChanged(e),
-                  child: Container(
-                    width: 44,
-                    height: 44,
-                    alignment: Alignment.center,
+                  child: DecoratedBox(
                     decoration: BoxDecoration(
                       color: e == widget.value ? c.highlight : c.card,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: e == widget.value ? c.ink : c.line),
                     ),
-                    child: MediaQuery.withNoTextScaling(child: Text(e, style: const TextStyle(fontSize: 22))),
+                    child: SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: Center(child: MediaQuery.withNoTextScaling(child: Text(e, style: const TextStyle(fontSize: 22)))),
+                    ),
                   ),
                 ),
               ),

@@ -21,18 +21,21 @@ class EmojiTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return ExcludeSemantics(
-      child: Container(
-        width: size,
-        height: size,
-        alignment: Alignment.center,
+      child: DecoratedBox(
         decoration: BoxDecoration(
           color: background ?? c.card,
           borderRadius: BorderRadius.circular(size * 0.3),
           border: Border.all(color: c.line),
         ),
-        // Emoji keep a fixed size so the tile never overflows at large text.
-        child: MediaQuery.withNoTextScaling(
-          child: Text(emoji, style: TextStyle(fontSize: size * 0.5, height: 1.1)),
+        child: SizedBox(
+          width: size,
+          height: size,
+          child: Center(
+            // Emoji keep a fixed size so the tile never overflows at large text.
+            child: MediaQuery.withNoTextScaling(
+              child: Text(emoji, style: TextStyle(fontSize: size * 0.5, height: 1.1)),
+            ),
+          ),
         ),
       ),
     );

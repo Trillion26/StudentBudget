@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Dismissible, DismissDirection;
+import 'package:flutter/semantics.dart' show CustomSemanticsAction;
 
 import '../../app_scope.dart';
 import '../../data/app_data.dart';

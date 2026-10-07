@@ -118,7 +118,8 @@ class _AddSheetState extends State<AddSheet> {
 
   List<ChipItem> _categoryChips(AppData data, {required bool income}) {
     final active = income ? data.activeIncomeCategories : data.activeSpendingCategories;
-    final list = data.byUsage(active, (c) => c.id);
+    // Most used first; until there is history, the biggest budgets first.
+    final list = data.byUsage(active, (c) => c.id, thenBy: (c) => c.monthlyBudget);
     final selected = _categoryId == null ? null : data.categoryById[_categoryId];
     if (selected != null && !list.any((c) => c.id == selected.id)) list.insert(0, selected);
     return [for (final c in list) ChipItem(id: c.id, emoji: c.emoji, label: c.name)];

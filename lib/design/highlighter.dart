@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import 'app_colors.dart';
 
@@ -48,7 +48,10 @@ class _HighlighterState extends State<Highlighter> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.color ?? AppColors.of(context).highlight;
+    // In dark mode the digits are light, so the mark is toned down to keep
+    // them readable where they overlap it.
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final color = (widget.color ?? AppColors.of(context).highlight).withValues(alpha: dark ? 0.5 : 0.9);
     return AnimatedBuilder(
       animation: _sweep,
       builder: (context, child) => CustomPaint(
@@ -91,7 +94,7 @@ class _HighlighterPainter extends CustomPainter {
     canvas.translate(size.width / 2, (top + bottom) / 2);
     canvas.rotate(-1.5 * math.pi / 180);
     canvas.translate(-size.width / 2, -(top + bottom) / 2);
-    canvas.drawRRect(rrect, Paint()..color = color.withValues(alpha: 0.9));
+    canvas.drawRRect(rrect, Paint()..color = color);
     canvas.restore();
   }
 

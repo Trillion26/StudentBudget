@@ -95,9 +95,8 @@ class _GroupEditPageState extends State<GroupEditPage> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               buildDefaultDragHandles: false,
-              onReorder: (oldIndex, newIndex) {
+              onReorderItem: (oldIndex, newIndex) {
                 final ids = active.map((c) => c.id).toList();
-                if (newIndex > oldIndex) newIndex--;
                 ids.insert(newIndex, ids.removeAt(oldIndex));
                 store.reorderCategories(ids);
               },

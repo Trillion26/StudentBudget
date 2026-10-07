@@ -118,7 +118,18 @@ class _ToastView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 minimumSize: const Size(44, 44),
                 onPressed: onUndo,
-                child: Text('Undo', style: AppText.body.copyWith(color: c.highlight, fontWeight: FontWeight.w800)),
+                child: Text(
+                  'Undo',
+                  style: AppText.body.copyWith(
+                    // Yellow reads well on the dark toast (light mode); the
+                    // dark-mode toast is light, so Undo uses dark text there.
+                    color: c.onInk.computeLuminance() > 0.5 ? c.highlight : c.onInk,
+                    fontWeight: FontWeight.w800,
+                    decoration: TextDecoration.underline,
+                    decorationColor: c.highlight,
+                    decorationThickness: 2,
+                  ),
+                ),
               ),
           ],
         ),

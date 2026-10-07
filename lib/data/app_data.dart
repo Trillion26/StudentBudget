@@ -119,12 +119,18 @@ class AppData {
         currentMonth: currentMonth,
       );
 
-  /// Most-used first, then in budget order.
-  List<T> byUsage<T>(List<T> items, String Function(T) idOf) {
+  /// Most-used first. Ties are broken by [thenBy] (largest first), then by
+  /// the original order.
+  List<T> byUsage<T>(List<T> items, String Function(T) idOf, {int Function(T)? thenBy}) {
     final indexed = items.indexed.toList();
     indexed.sort((a, b) {
       final diff = (usage[idOf(b.$2)] ?? 0) - (usage[idOf(a.$2)] ?? 0);
-      return diff != 0 ? diff : a.$1 - b.$1;
+      if (diff != 0) return diff;
+      if (thenBy != null) {
+        final second = thenBy(b.$2) - thenBy(a.$2);
+        if (second != 0) return second;
+      }
+      return a.$1 - b.$1;
     });
     return [for (final e in indexed) e.$2];
   }

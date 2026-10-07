@@ -1,19 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-import 'design/theme.dart';
+import 'app.dart';
+import 'data/budget_store.dart';
+import 'data/database.dart';
 
-void main() => runApp(const _FoundationApp());
-
-class _FoundationApp extends StatelessWidget {
-  const _FoundationApp();
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Student Budget',
-      theme: buildTheme(Brightness.light),
-      darkTheme: buildTheme(Brightness.dark),
-      home: const Scaffold(body: Center(child: Text('Student Budget', style: AppText.title))),
-    );
-  }
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(StudentBudgetApp(store: BudgetStore(AppDatabase.open())));
 }

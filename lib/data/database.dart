@@ -1,8 +1,8 @@
 import 'package:drift/drift.dart';
-import 'package:drift_flutter/drift_flutter.dart';
 
 import '../logic/dates.dart';
 import '../logic/models.dart';
+import 'connection/connection.dart';
 import 'tables.dart';
 
 export 'tables.dart';
@@ -16,15 +16,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Opens (or creates) the database file in the app's documents folder.
   /// In Chrome it uses the browser's storage instead.
-  factory AppDatabase.open() => AppDatabase(
-        driftDatabase(
-          name: 'student_budget',
-          web: DriftWebOptions(
-            sqlite3Wasm: Uri.parse('sqlite3.wasm'),
-            driftWorker: Uri.parse('drift_worker.js'),
-          ),
-        ),
-      );
+  factory AppDatabase.open() => AppDatabase(openConnection());
 
   @override
   int get schemaVersion => 1;
