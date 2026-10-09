@@ -57,10 +57,11 @@ void main() {
     final store = await createTestStore();
     await addSampleYear(store);
     final bytes = store.exportExcel(2026);
-    if (outPath.isNotEmpty)
+    if (outPath.isNotEmpty) {
       File(outPath)
         ..createSync(recursive: true)
         ..writeAsBytesSync(bytes);
+    }
 
     final zip = ZipDecoder().decodeBytes(bytes);
     String part(String name) => utf8.decode(zip.findFile(name)!.content);
