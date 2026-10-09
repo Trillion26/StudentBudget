@@ -43,7 +43,7 @@ There are two free tools. Pick **one**:
 1. On your iPhone, open the link your friend sent in **Safari**. Tap **StudentBudget.ipa** and then **Download**. The file goes to **Files › Downloads**.
 2. Make sure LocalDevVPN is connected.
 3. Open **SideStore** › **My Apps** › the **+** button (top left). Pick **StudentBudget.ipa** from Downloads.
-4. Wait for it to finish. **Emily’s Budget** appears on your home screen.
+4. Wait for it to finish. **Em’s Budget** appears on your home screen.
 
 ### 4. Every week: refresh
 

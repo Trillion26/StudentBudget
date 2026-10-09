@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Student Budget (shown to users as **Emily’s Budget**: `appName` in `lib/app_info.dart`, `CFBundleDisplayName` in `ios/Runner/Info.plist`) is a Flutter app (iPhone first) for a South African student to plan and track a monthly budget in rand. It is offline only: no accounts, no network requests, no analytics. All data lives in a local SQLite file. The README is written for a beginner developer on Windows; `DECISIONS.md` records every rule where the original brief was ambiguous. Read `DECISIONS.md` before changing a budget rule, and add to it when you make a new choice.
+Student Budget (shown to users as **Emily’s Budget**, `appName` in `lib/app_info.dart`; the home screen shows **Em’s Budget**, `CFBundleDisplayName` in `ios/Runner/Info.plist`) is a Flutter app (iPhone first) for a South African student to plan and track a monthly budget in rand. It is offline only: no accounts, no network requests, no analytics. All data lives in a local SQLite file. The README is written for a beginner developer on Windows; `DECISIONS.md` records every rule where the original brief was ambiguous. Read `DECISIONS.md` before changing a budget rule, and add to it when you make a new choice.
 
 ## Commands
 

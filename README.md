@@ -1,6 +1,6 @@
 # Student Budget
 
-On the phone the app is called **Emily’s Budget** (`appName` in `lib/app_info.dart` and `CFBundleDisplayName` in `ios/Runner/Info.plist`). The code and repository keep the name Student Budget.
+On the phone the app is called **Emily’s Budget** (`appName` in `lib/app_info.dart`). The home screen shows the shorter **Em’s Budget** (`CFBundleDisplayName` in `ios/Runner/Info.plist`). The code and repository keep the name Student Budget.
 
 An iPhone app for a South African student to plan and track a monthly budget in rand. Everything stays on the phone. There are no accounts, no internet, no ads and no tracking.
 
