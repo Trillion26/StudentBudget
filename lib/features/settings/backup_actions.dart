@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../app_info.dart';
 import '../../app_scope.dart';
 import '../../data/backup.dart';
 import '../../design/toast.dart';
@@ -70,7 +71,7 @@ Future<void> exportCsv(BuildContext context, int year) async {
   final toast = ToastHost.of(context);
   try {
     final done = await exportTextFile(
-      fileName: 'student-budget-$year.csv',
+      fileName: 'emilys-budget-$year.csv',
       text: store.exportCsv(year),
       mimeType: 'text/csv',
     );
@@ -125,7 +126,7 @@ Future<void> restoreBackup(BuildContext context) async {
   List<PlatformFile> files;
   try {
     files = await FilePicker.pickFiles(
-      dialogTitle: 'Pick a Student Budget backup',
+      dialogTitle: 'Pick an $appName backup',
       type: kIsWeb || defaultTargetPlatform != TargetPlatform.iOS ? FileType.custom : FileType.any,
       allowedExtensions: kIsWeb || defaultTargetPlatform != TargetPlatform.iOS ? ['json'] : null,
     );
@@ -147,7 +148,7 @@ Future<void> restoreBackup(BuildContext context) async {
       await showMessage(
         context,
         title: "That backup can't be used",
-        message: "This file isn't a Student Budget backup. Nothing was changed.",
+        message: "This file isn't a backup from $appName. Nothing was changed.",
       );
     }
     return;

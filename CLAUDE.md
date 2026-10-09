@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Student Budget is a Flutter app (iPhone first) for a South African student to plan and track a monthly budget in rand. It is offline only: no accounts, no network requests, no analytics. All data lives in a local SQLite file. The README is written for a beginner developer on Windows; `DECISIONS.md` records every rule where the original brief was ambiguous. Read `DECISIONS.md` before changing a budget rule, and add to it when you make a new choice.
+Student Budget (shown to users as **Emily’s Budget**: `appName` in `lib/app_info.dart`, `CFBundleDisplayName` in `ios/Runner/Info.plist`) is a Flutter app (iPhone first) for a South African student to plan and track a monthly budget in rand. It is offline only: no accounts, no network requests, no analytics. All data lives in a local SQLite file. The README is written for a beginner developer on Windows; `DECISIONS.md` records every rule where the original brief was ambiguous. Read `DECISIONS.md` before changing a budget rule, and add to it when you make a new choice.
 
 ## Commands
 
@@ -66,6 +66,7 @@ Three layers, with imports only going down:
 
 ## Constraints
 
+- Keep the internal names `student_budget` (database, package, bundle ID) and the backup file name `student-budget-backup-*.json`, so existing installs and backups keep working.
 - Add no package that makes network requests or collects data. `ios/Runner/PrivacyInfo.xcprivacy` declares that nothing is collected.
 - Files leave the phone only through `exportFile` in `features/settings/backup_actions.dart`: the share sheet on iOS, a save dialog on Windows and in Chrome.
 - User-facing text is short, plain and second person ("Pick a date up to 31 Dec 2035"), with amounts in rand.

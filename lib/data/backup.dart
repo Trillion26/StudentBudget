@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../app_info.dart';
 import '../logic/dates.dart';
 import '../logic/models.dart';
 import '../logic/money.dart';
@@ -47,7 +48,7 @@ class BackupData {
   static String _count(int n, String word) => '$n $word${n == 1 ? '' : 's'}';
 }
 
-/// Thrown when a file is not a valid Student Budget backup. [message] is
+/// Thrown when a file is not a valid backup from this app. [message] is
 /// written for the student.
 class BackupFormatException implements Exception {
   const BackupFormatException(this.message);
@@ -154,17 +155,17 @@ BackupData decodeBackup(String text) {
   try {
     decoded = jsonDecode(text);
   } on FormatException {
-    throw const BackupFormatException("This file isn't a Student Budget backup. Pick a file named like student-budget-backup-2026-10-07.json.");
+    throw const BackupFormatException("This file isn't a backup from $appName. Pick a file named like student-budget-backup-2026-10-07.json.");
   }
   if (decoded is! Map<String, Object?> || !decoded.containsKey('schemaVersion')) {
-    throw const BackupFormatException("This file isn't a Student Budget backup. Pick a file named like student-budget-backup-2026-10-07.json.");
+    throw const BackupFormatException("This file isn't a backup from $appName. Pick a file named like student-budget-backup-2026-10-07.json.");
   }
   final version = decoded['schemaVersion'];
   if (version is! int) {
     throw const BackupFormatException("This backup is damaged: its version number is missing.");
   }
   if (version > backupSchemaVersion) {
-    throw const BackupFormatException('This backup was made by a newer version of Student Budget. Update the app, then try again.');
+    throw const BackupFormatException('This backup was made by a newer version of $appName. Update the app, then try again.');
   }
   if (version < 1) {
     throw const BackupFormatException("This backup's version isn't supported.");

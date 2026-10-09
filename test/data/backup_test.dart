@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:student_budget/app_info.dart';
 import 'package:student_budget/data/backup.dart';
 import 'package:student_budget/data/budget_store.dart';
 import 'package:student_budget/logic/dates.dart';
@@ -88,9 +89,9 @@ void main() {
       expect(after.categories, before.categories);
     }
 
-    test('not JSON', () => expectRejected('this is not json {', contains("isn't a Student Budget backup")));
-    test('JSON but not a backup', () => expectRejected('{"hello": 1}', contains("isn't a Student Budget backup")));
-    test('truncated file', () => expectRejected(good.substring(0, good.length ~/ 2), contains("isn't a Student Budget backup")));
+    test('not JSON', () => expectRejected('this is not json {', contains("isn't a backup from $appName")));
+    test('JSON but not a backup', () => expectRejected('{"hello": 1}', contains("isn't a backup from $appName")));
+    test('truncated file', () => expectRejected(good.substring(0, good.length ~/ 2), contains("isn't a backup from $appName")));
 
     test('newer version', () {
       final m = parse()..['schemaVersion'] = 2;

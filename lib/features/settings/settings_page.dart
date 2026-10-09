@@ -54,7 +54,7 @@ class SettingsPage extends StatelessWidget {
       await store.setAppLockEnabled(false);
       return;
     }
-    final result = await authenticate('Turn on app lock for Student Budget');
+    final result = await authenticate('Turn on app lock for $appName');
     if (result == null) {
       toast.show('This device can\'t lock apps. Set a passcode in your phone\'s settings first.');
     } else if (result) {
@@ -165,7 +165,7 @@ class SettingsPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('Student Budget, version $appVersion', style: AppText.body.copyWith(color: c.ink)),
+              Text('$appName, version $appVersion', style: AppText.body.copyWith(color: c.ink)),
               const SizedBox(height: 4),
               Text('Your data never leaves this phone unless you export it.', style: AppText.bodyRegular.copyWith(color: c.inkSoft)),
               const SizedBox(height: 4),

@@ -1,6 +1,6 @@
 {
-    "name": "student_budget",
-    "short_name": "student_budget",
+    "name": "Emily’s Budget",
+    "short_name": "Emily’s Budget",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0E4D6E",

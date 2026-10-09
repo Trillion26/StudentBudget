@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:student_budget/app_info.dart';
 import 'package:student_budget/data/budget_store.dart';
 import 'package:student_budget/logic/money.dart';
 
@@ -22,7 +23,7 @@ void main() {
 
   testWidgets('fresh install shows onboarding, then Overview with the starter budget', (tester) async {
     await pumpApp(tester, store);
-    expect(find.text('Student Budget'), findsOneWidget);
+    expect(find.text(appName), findsOneWidget);
     expect(find.text('Skip'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('onboardingNext')));

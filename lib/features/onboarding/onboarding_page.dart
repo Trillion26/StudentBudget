@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+import '../../app_info.dart';
 import '../../app_scope.dart';
 import '../../data/seed.dart';
 import '../../design/app_colors.dart';
@@ -99,7 +100,7 @@ class _Welcome extends StatelessWidget {
       children: [
         Align(
           alignment: Alignment.centerLeft,
-          child: Highlighter(child: Text('Student Budget', style: AppText.title.copyWith(color: c.ink, fontSize: 36))),
+          child: Highlighter(child: Text(appName, style: AppText.title.copyWith(color: c.ink, fontSize: 36))),
         ),
         const SizedBox(height: 20),
         Text(

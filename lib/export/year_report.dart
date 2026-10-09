@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'dart:typed_data';
 
+import '../app_info.dart';
 import '../data/app_data.dart';
 import '../data/database.dart';
 import '../logic/budget_calculator.dart';
@@ -10,8 +11,8 @@ import '../logic/models.dart';
 import '../logic/money.dart';
 import 'xlsx.dart';
 
-/// `student-budget-2026.xlsx`
-String yearReportFileName(int year) => 'student-budget-$year.xlsx';
+/// `emilys-budget-2026.xlsx`
+String yearReportFileName(int year) => 'emilys-budget-$year.xlsx';
 
 /// The year as an Excel workbook: a one-page dashboard like the Year view,
 /// then the months, every transaction, and goals and debts. All figures use
@@ -132,7 +133,7 @@ class _YearReport {
 
   String get planLabel => planMonths == 12 ? 'full year' : 'Jan–${shortMonthNames[planMonths - 1]}';
 
-  final workbook = Workbook()..creator = 'Student Budget';
+  final workbook = Workbook()..creator = appName;
 
   Uint8List build() {
     final monthsSheet = _months();
@@ -155,7 +156,7 @@ class _YearReport {
     s.columnWidth(13, 2);
 
     // Title bar.
-    s.merge(1, 1, 2, 8, 'STUDENT BUDGET DASHBOARD', _title);
+    s.merge(1, 1, 2, 8, '${appName.toUpperCase()} DASHBOARD', _title);
     s.merge(1, 9, 2, 10, 'YEAR ▸', _title.copyWith(size: 10, color: _highlight, align: HAlign.right));
     s.merge(1, 11, 2, 12, year, _title.copyWith(color: _ink, fill: _highlight, align: HAlign.center, indent: 0));
     s.rowHeight(1, 18);

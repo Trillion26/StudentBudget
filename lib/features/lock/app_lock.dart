@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:local_auth/local_auth.dart';
 
+import '../../app_info.dart';
 import '../../app_scope.dart';
 import '../../design/app_colors.dart';
 import '../../design/theme.dart';
@@ -101,7 +102,7 @@ class _AppLockState extends State<AppLock> with WidgetsBindingObserver {
   Future<void> _unlock() async {
     if (_authenticating || !mounted) return;
     setState(() => _authenticating = true);
-    final result = await authenticate('Unlock Student Budget');
+    final result = await authenticate('Unlock $appName');
     if (!mounted) return;
     setState(() {
       _authenticating = false;
@@ -145,7 +146,7 @@ class _LockCover extends StatelessWidget {
             children: [
               Icon(CupertinoIcons.lock_fill, size: 48, color: c.ink),
               const SizedBox(height: 16),
-              Text('Student Budget', textAlign: TextAlign.center, style: AppText.title.copyWith(color: c.ink)),
+              Text(appName, textAlign: TextAlign.center, style: AppText.title.copyWith(color: c.ink)),
               if (locked) ...[
                 const SizedBox(height: 8),
                 Text('Locked to keep your budget private.', textAlign: TextAlign.center, style: AppText.bodyRegular.copyWith(color: c.inkSoft)),

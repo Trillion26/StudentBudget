@@ -1,6 +1,6 @@
 // To look at the workbook, save it with:
 //
-//   flutter test test/export/year_report_test.dart --dart-define=OUT=build/student-budget-2026.xlsx
+//   flutter test test/export/year_report_test.dart --dart-define=OUT=build/emilys-budget-2026.xlsx
 import 'dart:convert';
 import 'dart:io';
 
@@ -81,7 +81,7 @@ void main() {
     expect(part('xl/charts/chart4.xml'), allOf(contains('<c:lineChart>'), contains("'Months'!\$A\$4:\$A\$15")));
 
     final strings = part('xl/sharedStrings.xml');
-    expect(strings, contains('STUDENT BUDGET DASHBOARD'));
+    expect(strings, contains('EMILY’S BUDGET DASHBOARD'));
     expect(strings, contains('Checkers &amp; &lt;Spar&gt;'));
     // 10 months × 6 entries + 2, and nothing from 2027.
     final transactions = part('xl/worksheets/sheet3.xml');
@@ -98,6 +98,6 @@ void main() {
   });
 
   test('file name', () {
-    expect(yearReportFileName(2026), 'student-budget-2026.xlsx');
+    expect(yearReportFileName(2026), 'emilys-budget-2026.xlsx');
   });
 }

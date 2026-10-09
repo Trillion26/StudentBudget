@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'app_info.dart';
 import 'app_scope.dart';
 import 'data/budget_store.dart';
 import 'design/app_colors.dart';
@@ -46,7 +47,7 @@ class _StudentBudgetAppState extends State<StudentBudgetApp> {
       child: SelectedMonthScope(
         selected: _selectedMonth,
         child: MaterialApp(
-          title: 'Student Budget',
+          title: appName,
           debugShowCheckedModeBanner: false,
           theme: buildTheme(Brightness.light),
           darkTheme: buildTheme(Brightness.dark),
