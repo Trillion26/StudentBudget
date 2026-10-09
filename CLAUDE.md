@@ -30,7 +30,7 @@ dart format -l 120 <paths>                        # line length is 120 (.vscode/
   rm -rf Payload && mkdir Payload && cp -R build/ios/iphoneos/Runner.app Payload/ && zip -qry StudentBudget.ipa Payload && rm -rf Payload
   ```
   Friends sign it themselves with SideStore or AltStore (`INSTALL-ON-IPHONE.md`). A version tag `v*` makes CI publish a GitHub Release with the `.ipa`.
-- **Releasing:** bump the version in both `pubspec.yaml` and `lib/app_info.dart` (`test/app_info_test.dart` checks they match).
+- **Releasing:** bump the version in both `pubspec.yaml` (raise the `+build` number too) and `lib/app_info.dart` (`test/app_info_test.dart` checks they match), add an entry to `CHANGELOG.md`, then tag the commit `vX.Y.Z`.
 
 ## Architecture
 
