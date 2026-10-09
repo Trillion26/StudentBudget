@@ -1,5 +1,6 @@
 import '../logic/budget_calculator.dart';
 import '../logic/budget_month.dart';
+import '../logic/debt_calculator.dart';
 import '../logic/models.dart';
 import 'database.dart';
 
@@ -117,6 +118,20 @@ class AppData {
         targetDate: goal.targetDate,
         txns: facts,
         currentMonth: currentMonth,
+      );
+
+  /// Balance, repayments and payoff month for [debt]. Repayments are
+  /// expenses in the debt's linked category.
+  DebtEstimate debtEstimate(Debt debt, DateTime today) => DebtCalculator.estimate(
+        balanceOnStartDate: debt.balanceOnStartDate,
+        startDate: debt.startDate,
+        annualInterestRatePercent: debt.annualInterestRatePercent,
+        repayments: debt.linkedCategoryId == null
+            ? const []
+            : facts.where((t) => t.kind == TxnKind.expense && t.categoryId == debt.linkedCategoryId),
+        today: today,
+        budgetMonthStartDay: startDay,
+        latestStatementBalance: debt.latestStatementBalance,
       );
 
   /// Most-used first. Ties are broken by [thenBy] (largest first), then by

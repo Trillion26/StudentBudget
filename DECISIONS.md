@@ -15,6 +15,8 @@ Where the brief was ambiguous, or something had to differ from it, this file rec
 
 ## Data
 
+- **The app covers 2026 to 2035.** Entries can be dated from 1 Jan 2026 to 31 Dec 2035, and Overview, History and the Year view browse that range. The limits are `Validation.firstYear` and `Validation.lastYear` in `lib/logic/validation.dart`. Debt start dates may still be earlier, because a loan can predate the app.
+
 - **Generated row classes are named `Txn` (transactions), `BudgetCategory` (categories) and `AppSettings` (settings).** drift and Flutter already use the names `Transaction` and `Category`. The database tables still match the brief.
 - **Goals have a `sortOrder` column, and settings have `lastBackupAt` and `backupReminderHiddenUntil`.** The backup reminder needs them.
 - **Transaction dates are stored as `YYYY-MM-DD` text.** This means a date can never shift with time zones.
@@ -49,4 +51,7 @@ Where the brief was ambiguous, or something had to differ from it, this file rec
 
 - **On iPhone, backups and CSV exports go through the share sheet. On Windows and in Chrome they use a save dialog.** Those platforms have no share sheet for files.
 - **The integration tests run the backup flow through the same store calls the Settings buttons use.** The iPhone share sheet and file picker are system screens that automated tests can't drive. Check them by hand on a real phone.
+- **The Excel export is written by the app itself (`lib/export/xlsx.dart`), using only the `archive` package to zip it.** It works offline on every platform. It holds values, not formulas, so it reads the same in viewers that don't recalculate.
+- **The Excel export follows the Year view: budget months labelled January to December.** Budgets count the months that have started, so for the current year a budget to date is compared with spending to date. A past or future year counts all 12 months.
+- **Gains and losses are coloured on the cell, not in the number format.** Quick Look on iPhone ignores colours in number formats. Quick Look on the Mac doesn't draw xlsx charts either, so open the file in Excel, Numbers or Google Sheets to see them.
 - **CSV files start with a byte-order mark.** Excel then shows emoji and dashes correctly. Text starting with `=`, `+`, `-` or `@` is prefixed with `'` so spreadsheets don't treat it as a formula.

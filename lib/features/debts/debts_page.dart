@@ -8,22 +8,8 @@ import '../../design/theme.dart';
 import '../../design/widgets.dart';
 import '../../logic/dates.dart';
 import '../../logic/debt_calculator.dart';
-import '../../logic/models.dart';
 import '../../logic/money.dart';
 import 'debt_edit_page.dart';
-
-/// Works out a debt's estimate from the app's data.
-DebtEstimate estimateDebt(Debt debt, AppData data, DateTime today) => DebtCalculator.estimate(
-      balanceOnStartDate: debt.balanceOnStartDate,
-      startDate: debt.startDate,
-      annualInterestRatePercent: debt.annualInterestRatePercent,
-      repayments: debt.linkedCategoryId == null
-          ? const []
-          : data.facts.where((t) => t.kind == TxnKind.expense && t.categoryId == debt.linkedCategoryId),
-      today: today,
-      budgetMonthStartDay: data.startDay,
-      latestStatementBalance: debt.latestStatementBalance,
-    );
 
 class DebtsPage extends StatelessWidget {
   const DebtsPage({super.key});
@@ -61,7 +47,7 @@ class DebtsPage extends StatelessWidget {
           separatorBuilder: (_, _) => const RowDivider(indent: 20),
           itemBuilder: (context, i) {
             final debt = data.debts[i];
-            return _DebtRow(debt: debt, estimate: estimateDebt(debt, data, today), data: data, onTap: () => open(DebtEditPage(debt: debt)));
+            return _DebtRow(debt: debt, estimate: data.debtEstimate(debt, today), data: data, onTap: () => open(DebtEditPage(debt: debt)));
           },
         ),
         SliverToBoxAdapter(

@@ -147,7 +147,7 @@ class _GoalEditPageState extends State<GoalEditPage> {
                           context,
                           initial: _targetDate ?? DateTime.utc(today.year, today.month + 6),
                           minimum: today,
-                          maximum: DateTime.utc(today.year + 30),
+                          maximum: Validation.latestDate,
                         );
                         if (picked != null) setState(() => _targetDate = picked);
                       },

@@ -10,6 +10,7 @@ import '../../design/widgets.dart';
 import '../../logic/budget_calculator.dart';
 import '../../logic/budget_month.dart';
 import '../../logic/money.dart';
+import '../../logic/validation.dart';
 import '../add/add_sheet.dart';
 import '../history/txn_row.dart';
 import '../home/home_tabs.dart';
@@ -43,8 +44,8 @@ class OverviewPage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
                 child: MonthSwitcher(
                   month: month,
-                  latest: current.next,
-                  earliest: BudgetMonth(2020, 1, data.startDay),
+                  latest: data.monthOf(Validation.latestDate),
+                  earliest: data.monthOf(Validation.earliestDate),
                   onChanged: (m) => selected.select(m, current),
                 ),
               ),

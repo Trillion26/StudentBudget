@@ -10,6 +10,8 @@ import '../../design/widgets.dart';
 import '../../logic/budget_calculator.dart';
 import '../../logic/dates.dart';
 import '../../logic/money.dart';
+import '../../logic/validation.dart';
+import '../settings/backup_actions.dart';
 
 /// Spending per month for a year, the groups × months table (like the
 /// spreadsheet's Annual Summary) and the savings rate.
@@ -38,7 +40,6 @@ class _YearPageState extends State<YearPage> {
       groupOfCategory: groupOfCategory,
       groupBudgets: {for (final g in data.spendingGroups) g.id: data.groupBudget(g.id)},
     );
-    final thisYear = store.today().year;
     final rate = summary.savingsRate;
 
     return PageScaffold(
@@ -50,11 +51,11 @@ class _YearPageState extends State<YearPage> {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: Row(
               children: [
-                _yearArrow(context, CupertinoIcons.chevron_left, 'Previous year', _year > 2020 ? () => setState(() => _year--) : null),
+                _yearArrow(context, CupertinoIcons.chevron_left, 'Previous year', _year > Validation.firstYear ? () => setState(() => _year--) : null),
                 Expanded(
                   child: Text('$_year', textAlign: TextAlign.center, style: AppText.body.copyWith(color: c.ink, fontWeight: FontWeight.w800)),
                 ),
-                _yearArrow(context, CupertinoIcons.chevron_right, 'Next year', _year < thisYear + 1 ? () => setState(() => _year++) : null),
+                _yearArrow(context, CupertinoIcons.chevron_right, 'Next year', _year < Validation.lastYear ? () => setState(() => _year++) : null),
               ],
             ),
           ),
@@ -86,6 +87,12 @@ class _YearPageState extends State<YearPage> {
         SliverToBoxAdapter(child: _SpendingChart(summary: summary)),
         const SliverToBoxAdapter(child: SectionTitle('By group')),
         SliverToBoxAdapter(child: _GroupTable(summary: summary)),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+            child: SecondaryButton(label: 'Export $_year to Excel', onPressed: () => exportExcel(context, _year)),
+          ),
+        ),
       ],
     );
   }

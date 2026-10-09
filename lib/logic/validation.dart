@@ -6,19 +6,24 @@ class Validation {
 
   static const int maxNoteLength = 60;
   static const int maxNameLength = 40;
-  static final DateTime earliestDate = DateTime.utc(2020, 1, 1);
+  /// The app covers the years [firstYear] to [lastYear], both included.
+  static const int firstYear = 2026;
+  static const int lastYear = 2035;
 
-  /// Latest allowed transaction date: one year after [today].
-  static DateTime latestDate(DateTime today) {
-    final t = dateOnly(today);
-    return DateTime.utc(t.year + 1, t.month, t.day);
-  }
+  /// Every year the app covers, oldest first.
+  static List<int> get years => [for (var y = firstYear; y <= lastYear; y++) y];
+
+  /// Earliest allowed transaction date: 1 January of [firstYear].
+  static final DateTime earliestDate = DateTime.utc(firstYear, 1, 1);
+
+  /// Latest allowed transaction date: 31 December of [lastYear].
+  static final DateTime latestDate = DateTime.utc(lastYear, 12, 31);
 
   /// Error message or null.
-  static String? date(DateTime value, DateTime today) {
+  static String? date(DateTime value) {
     final d = dateOnly(value);
-    if (d.isBefore(earliestDate)) return 'Pick a date from 1 Jan 2020 onwards';
-    if (d.isAfter(latestDate(today))) return 'Pick a date no more than a year ahead';
+    if (d.isBefore(earliestDate)) return 'Pick a date from 1 Jan $firstYear onwards';
+    if (d.isAfter(latestDate)) return 'Pick a date up to 31 Dec $lastYear';
     return null;
   }
 

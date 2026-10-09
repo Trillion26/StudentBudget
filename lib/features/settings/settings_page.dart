@@ -64,18 +64,13 @@ class SettingsPage extends StatelessWidget {
   }
 
   Future<void> _pickCsvYear(BuildContext context) async {
-    final store = StoreScope.read(context);
-    final years = {...store.data.transactions.map((t) => t.date.year), store.today().year}.toList()..sort((a, b) => b - a);
-    final year = await showCupertinoModalPopup<int>(
-      context: context,
-      builder: (context) => CupertinoActionSheet(
-        title: const Text('Which year?'),
-        message: const Text('Exports every transaction in that year as a CSV file for Excel or Google Sheets.'),
-        actions: [for (final y in years) CupertinoActionSheetAction(onPressed: () => Navigator.pop(context, y), child: Text('$y'))],
-        cancelButton: CupertinoActionSheetAction(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
-      ),
-    );
+    final year = await pickExportYear(context, message: 'Exports every transaction in that year as a CSV file for Excel or Google Sheets.');
     if (year != null && context.mounted) await exportCsv(context, year);
+  }
+
+  Future<void> _pickExcelYear(BuildContext context) async {
+    final year = await pickExportYear(context, message: 'Exports a dashboard with charts, every month, every transaction, and your goals and debts.');
+    if (year != null && context.mounted) await exportExcel(context, year);
   }
 
   Future<void> _reset(BuildContext context) async {
@@ -155,6 +150,8 @@ class SettingsPage extends StatelessWidget {
           ListRow(emoji: '💾', title: 'Save backup', subtitle: Text('To Files, iCloud Drive, Google Drive, WhatsApp or email', style: AppText.small.copyWith(color: c.inkSoft)), trailing: chevron, onTap: () => saveBackup(context)),
           const RowDivider(),
           ListRow(emoji: '📥', title: 'Restore backup', subtitle: Text('Replace everything with a backup file', style: AppText.small.copyWith(color: c.inkSoft)), trailing: chevron, onTap: () => restoreBackup(context)),
+          const RowDivider(),
+          ListRow(emoji: '📈', title: 'Export to Excel', subtitle: Text("A year's overview with charts, as an .xlsx file", style: AppText.small.copyWith(color: c.inkSoft)), trailing: chevron, onTap: () => _pickExcelYear(context)),
           const RowDivider(),
           ListRow(emoji: '📊', title: 'Export CSV', subtitle: Text("A year's transactions for Excel or Google Sheets", style: AppText.small.copyWith(color: c.inkSoft)), trailing: chevron, onTap: () => _pickCsvYear(context)),
           const SectionTitle('Start again'),

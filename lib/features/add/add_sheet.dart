@@ -135,6 +135,8 @@ class _AddSheetState extends State<AddSheet> {
   Future<void> _pickDate(BuildContext context, DateTime today) async {
     final c = AppColors.of(context);
     var picked = _date ?? today;
+    if (picked.isBefore(Validation.earliestDate)) picked = Validation.earliestDate;
+    if (picked.isAfter(Validation.latestDate)) picked = Validation.latestDate;
     await showCupertinoModalPopup<void>(
       context: context,
       builder: (context) => Container(
@@ -157,11 +159,8 @@ class _AddSheetState extends State<AddSheet> {
               child: CupertinoDatePicker(
                 mode: CupertinoDatePickerMode.date,
                 initialDateTime: DateTime(picked.year, picked.month, picked.day),
-                minimumDate: DateTime(2020, 1, 1),
-                maximumDate: () {
-                  final latest = Validation.latestDate(today);
-                  return DateTime(latest.year, latest.month, latest.day);
-                }(),
+                minimumDate: DateTime(Validation.firstYear, 1, 1),
+                maximumDate: DateTime(Validation.lastYear, 12, 31),
                 dateOrder: DatePickerDateOrder.dmy,
                 onDateTimeChanged: (value) => picked = dateOnly(value),
               ),
@@ -197,7 +196,7 @@ class _AddSheetState extends State<AddSheet> {
       categoryId: _kind == TxnKind.toSavings ? null : _categoryId,
       goalId: _needsGoal ? _goalId : null,
     );
-    final error = draft.validate(today);
+    final error = draft.validate();
     if (error != null) {
       setState(() => _saveError = error);
       return;

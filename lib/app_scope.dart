@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'data/budget_store.dart';
 import 'logic/budget_month.dart';
+import 'logic/validation.dart';
 
 /// Gives every screen access to the [BudgetStore] and rebuilds dependents
 /// when the data changes.
@@ -26,8 +27,9 @@ class SelectedMonth extends ValueNotifier<(int, int)?> {
     final v = value;
     if (v == null) return current;
     final m = BudgetMonth(v.$1, v.$2, current.startDay);
-    // Never more than one month ahead.
-    return m.isAfter(current.next) ? current.next : m;
+    // Never past the last month the app covers.
+    final latest = BudgetMonth.containing(Validation.latestDate, current.startDay);
+    return m.isAfter(latest) ? latest : m;
   }
 
   void select(BudgetMonth month, BudgetMonth current) =>

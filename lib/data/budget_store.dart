@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
+import '../export/year_report.dart';
 import '../logic/dates.dart';
 import '../logic/models.dart';
 import '../logic/validation.dart';
@@ -29,10 +30,10 @@ class TxnDraft {
   final String? goalId;
 
   /// Checks the rules for each kind; returns an error message or null.
-  String? validate(DateTime today) {
+  String? validate() {
     if (amount <= 0) return 'Enter an amount above R0';
     if (amount > 1000000000) return 'Enter an amount up to R10 000 000';
-    final dateError = Validation.date(date, today);
+    final dateError = Validation.date(date);
     if (dateError != null) return dateError;
     final noteError = Validation.note(note);
     if (noteError != null) return noteError;
@@ -95,7 +96,7 @@ class BudgetStore extends ChangeNotifier {
   // Transactions -----------------------------------------------------------
 
   Future<Txn> addTransaction(TxnDraft draft) async {
-    final error = draft.validate(today());
+    final error = draft.validate();
     if (error != null) throw ArgumentError(error);
     final row = Txn(
       id: _uuid.v4(),
@@ -113,7 +114,7 @@ class BudgetStore extends ChangeNotifier {
   }
 
   Future<Txn> updateTransaction(String id, TxnDraft draft) async {
-    final error = draft.validate(today());
+    final error = draft.validate();
     if (error != null) throw ArgumentError(error);
     final existing = data.transactions.firstWhere((t) => t.id == id);
     final row = existing.copyWith(
@@ -368,6 +369,9 @@ class BudgetStore extends ChangeNotifier {
   String exportBackupJson() => encodeBackup(snapshot(), exportedAt: now());
 
   String exportCsv(int year) => transactionsCsv(snapshot(), year);
+
+  /// The Excel overview for the budget months labelled January–December of [year].
+  Uint8List exportExcel(int year) => buildYearReport(data, year, today());
 
   /// Replaces everything with [backup] in one database transaction. If
   /// anything fails, the existing data is left as it was.

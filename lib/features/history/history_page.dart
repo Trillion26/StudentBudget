@@ -8,10 +8,10 @@ import '../../design/app_colors.dart';
 import '../../design/theme.dart';
 import '../../design/toast.dart';
 import '../../design/widgets.dart';
-import '../../logic/budget_month.dart';
 import '../../logic/dates.dart';
 import '../../logic/models.dart';
 import '../../logic/money.dart';
+import '../../logic/validation.dart';
 import '../add/add_sheet.dart';
 import '../add/chips.dart';
 import 'txn_row.dart';
@@ -118,8 +118,8 @@ class _HistoryPageState extends State<HistoryPage> {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: MonthSwitcher(
               month: month,
-              latest: current.next,
-              earliest: BudgetMonth(2020, 1, data.startDay),
+              latest: data.monthOf(Validation.latestDate),
+              earliest: data.monthOf(Validation.earliestDate),
               onChanged: (m) => selected.select(m, current),
             ),
           ),

@@ -129,6 +129,7 @@ lib/
                            BudgetMonth, rand formatting and parsing, validation
   data/                    drift database and tables, seed data, BudgetStore (all changes),
                            backup JSON encoder/decoder, CSV export
+  export/                  Excel (.xlsx) writer and the year overview workbook
   features/                one folder per screen: overview, add, history, budget, goals,
                            debts, year, settings, onboarding, lock, home (tab bar)
   design/                  colours (AppColors), Nunito text styles, highlighter, shared widgets
@@ -155,7 +156,7 @@ DECISIONS.md               choices made where the brief was ambiguous
 
 - The app makes no network requests and contains no analytics or ads. No package that does is included.
 - `ios/Runner/PrivacyInfo.xcprivacy` declares that no data is collected and nothing is tracked.
-- Data stays in an SQLite file on the phone, unless the student saves a backup or exports a CSV themselves.
+- Data stays in an SQLite file on the phone, unless the student saves a backup or exports a CSV or Excel file themselves.
 - App lock (optional) uses Face ID, Touch ID or the passcode through `local_auth`. It locks on launch and after 2 minutes in the background. While the app is in the app switcher, its screen is covered.
 
 ## 9. Optional: TestFlight (paid Apple Developer account)
