@@ -167,7 +167,7 @@ class _AddButton extends StatelessWidget {
             border: Border.all(color: c.paper, width: 3),
             boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 10, offset: Offset(0, 4))],
           ),
-          child: const Icon(CupertinoIcons.add, size: 32, color: Color(0xFF1B2766)),
+          child: Icon(CupertinoIcons.add, size: 32, color: AppColors.light.ink),
         ),
       ),
     );

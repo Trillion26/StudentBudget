@@ -19,28 +19,28 @@ String yearReportFileName(int year) => 'student-budget-$year.xlsx';
 Uint8List buildYearReport(AppData data, int year, DateTime today) => _YearReport(data, year, today).build();
 
 // The app's light colours (see AppColors.light).
-const _ink = '1B2766';
-const _inkSoft = '5A6290';
-const _line = 'DFE2EE';
-const _paper = 'F5F6FA';
+const _ink = '0E4D6E';
+const _inkSoft = '4A6F80';
+const _line = 'D3E5E6';
+const _paper = 'F1F7F6';
 const _white = 'FFFFFF';
-const _highlight = 'FFE14D';
-const _gold = 'E9C93A';
-const _overText = 'B3163E';
-const _overFill = 'FFE3E8';
-const _incomeText = '408155';
-const _okFill = 'E3F5EC';
-const _income = '5FCB9E';
-const _savings = '8FB4FF';
+const _highlight = 'F5C343';
+const _gold = 'E0A92A';
+const _overText = 'B3261E';
+const _overFill = 'FFE6E1';
+const _incomeText = '1E7A55';
+const _okFill = 'E1F4EA';
+const _income = '2FAE6B';
+const _savings = '4A90D9';
 
 /// Slice colours for the spending groups, in group order.
 const _groupColors = [
-  '1B2766',
-  '5FCB9E',
-  'E9C93A',
-  '8FB4FF',
-  'FF8FA3',
-  '5A6290',
+  '0E4D6E',
+  '2FAE6B',
+  'E0A92A',
+  '4A90D9',
+  'FF9C8A',
+  '4A6F80',
   'F4A261',
   'B39DDB',
   '7FD1D8',

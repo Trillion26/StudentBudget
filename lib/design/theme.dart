@@ -48,7 +48,7 @@ ThemeData buildTheme(Brightness brightness) {
       primary: c.ink,
       onPrimary: c.onInk,
       secondary: c.highlight,
-      onSecondary: const Color(0xFF1B2766),
+      onSecondary: AppColors.light.ink,
       error: c.overText,
       onError: c.card,
       surface: c.card,

@@ -57,8 +57,8 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   web:
     generate: true
-    background_color: "#1B2766"
-    theme_color: "#1B2766"
+    background_color: "#0E4D6E"
+    theme_color: "#0E4D6E"
   windows:
     generate: true
     icon_size: 256

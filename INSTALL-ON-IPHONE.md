@@ -80,7 +80,7 @@ Leave your PC on with **AltServer** running, and keep your phone on the **same W
 ## 5. First time in the app
 
 - Three short screens ask what money comes in each month and when your money month starts. You can skip them and change everything later.
-- Tap the yellow **+** to log what you spend or receive.
+- Tap the gold **+** to log what you spend or receive.
 - Your data never leaves your phone unless you save a backup or export it yourself.
 
 ## 6. Set a weekly reminder

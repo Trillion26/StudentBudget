@@ -15,7 +15,7 @@ class CellStyle {
     this.bold = false,
     this.italic = false,
     this.size = 10,
-    this.color = '1B2766',
+    this.color = '0E4D6E',
     this.fill,
     this.align,
     this.numFmt,
@@ -381,7 +381,7 @@ class _Strings {
 class _Styles {
   final Map<String, int> _numFmts = {};
   final List<String> _fonts = [
-    '<font><sz val="10"/><color rgb="FF1B2766"/><name val="Arial"/><family val="2"/></font>',
+    '<font><sz val="10"/><color rgb="FF0E4D6E"/><name val="Arial"/><family val="2"/></font>',
   ];
   final Map<String, int> _fontIds = {};
   final List<String> _fills = [
@@ -515,8 +515,8 @@ String _anchorXml(Chart chart, int relId, String name) =>
     '<a:graphic><a:graphicData uri="$_cNs"><c:chart xmlns:c="$_cNs" xmlns:r="$_relNs" r:id="rId$relId"/></a:graphicData></a:graphic>'
     '</xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor>';
 
-const _chartText = '5A6290';
-const _chartLine = 'DFE2EE';
+const _chartText = '4A6F80';
+const _chartLine = 'D3E5E6';
 
 String _fill(String color) => '<a:solidFill><a:srgbClr val="$color"/></a:solidFill>';
 

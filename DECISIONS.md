@@ -40,7 +40,9 @@ Where the brief was ambiguous, or something had to differ from it, this file rec
 
 ## Design and wording
 
-- **Income amounts in light mode use a darker green than #5FCB9E.** The brief's green is used for bars, but as text on white it is hard to read.
+- **The colours come from the app icon** (the piggy bank's deep teal #0E4D6E for text and buttons, the coin's gold #F5C343 for the highlighter and + button, green for income, blue for savings). They replaced the brief's navy and yellow in version 1.1.0. Every text colour has a contrast of at least 4.5:1 in light and dark mode.
+- **Income amounts in light mode use a darker green than the bar green.** As text on white the bar green is hard to read.
+- **`assets/icon/app_icon.png` is the icon artwork cropped to a full square.** iOS rounds the corners itself. The original artwork, with its transparent margin, is kept as `assets/icon/app_icon_artwork.png`.
 - **In dark mode the highlighter mark is drawn at half strength.** The light digits stay readable where they overlap it.
 - **Until there is history, the Add sheet shows the biggest-budget categories first.** It shows 12 chips with "All categories" for the rest. The brief's "most-used first" ordering has no data on day one.
 - **The amount field accepts spaces and an optional "R".** Values with both a comma and a point, such as "1.250,50", are rejected with a clear message rather than guessed.

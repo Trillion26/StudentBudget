@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// The notebook colour tokens from the brief, in light and dark variants.
+/// The app's colour tokens, in light and dark variants.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -50,32 +50,35 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Text on top of an [ink] filled button.
   final Color onInk;
 
+  /// Taken from the app icon: the piggy bank's deep teal for ink, the
+  /// coin's gold for the highlighter, and the background's green and blue
+  /// for income and savings.
   static const light = AppColors(
-    paper: Color(0xFFF5F6FA),
+    paper: Color(0xFFF1F7F6),
     card: Color(0xFFFFFFFF),
-    ink: Color(0xFF1B2766),
-    inkSoft: Color(0xFF5A6290),
-    line: Color(0xFFDFE2EE),
-    highlight: Color(0xFFFFE14D),
-    over: Color(0xFFFF8FA3),
-    overText: Color(0xFFB3163E),
-    income: Color(0xFF5FCB9E),
-    savings: Color(0xFF8FB4FF),
+    ink: Color(0xFF0E4D6E),
+    inkSoft: Color(0xFF4A6F80),
+    line: Color(0xFFD3E5E6),
+    highlight: Color(0xFFF5C343),
+    over: Color(0xFFFF9C8A),
+    overText: Color(0xFFB3261E),
+    income: Color(0xFF2FAE6B),
+    savings: Color(0xFF4A90D9),
     onInk: Color(0xFFFFFFFF),
   );
 
   static const dark = AppColors(
-    paper: Color(0xFF11152B),
-    card: Color(0xFF1A2040),
-    ink: Color(0xFFEEF0FA),
-    inkSoft: Color(0xFFA3A9CC),
-    line: Color(0xFF2C3360),
-    highlight: Color(0xFFE9C93A),
-    over: Color(0xFFE36A84),
-    overText: Color(0xFFFFD3DC),
-    income: Color(0xFF4FB98C),
-    savings: Color(0xFF6F95E8),
-    onInk: Color(0xFF11152B),
+    paper: Color(0xFF0A1E26),
+    card: Color(0xFF10303B),
+    ink: Color(0xFFE8F4F3),
+    inkSoft: Color(0xFF9CC0C4),
+    line: Color(0xFF1E4652),
+    highlight: Color(0xFFF0BE3A),
+    over: Color(0xFFE8786A),
+    overText: Color(0xFFFFD5CE),
+    income: Color(0xFF3FC07E),
+    savings: Color(0xFF5EA0E6),
+    onInk: Color(0xFF0A1E26),
   );
 
   /// Colours for the current theme.
