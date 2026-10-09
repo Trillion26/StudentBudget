@@ -2,11 +2,12 @@ import '../logic/budget_calculator.dart';
 import '../logic/budget_month.dart';
 import '../logic/debt_calculator.dart';
 import '../logic/models.dart';
+import '../logic/mortgage_calculator.dart';
 import 'database.dart';
 
 /// A read-only snapshot of everything in the database, with the lookups the
-/// screens need. Students have at most a few thousand transactions, so the
-/// whole set is kept in memory and recalculated after each change.
+/// screens need. A household has at most a few thousand transactions a
+/// year, so the whole set is kept in memory and recalculated after each change.
 class AppData {
   AppData({
     required this.settings,
@@ -15,7 +16,9 @@ class AppData {
     required List<Txn> transactions,
     required List<SavingsGoal> goals,
     required this.debts,
-  })  : groups = List.unmodifiable(groups..sort((a, b) => a.sortOrder.compareTo(b.sortOrder))),
+    List<Mortgage> mortgages = const [],
+  })  : mortgages = List.unmodifiable([...mortgages]..sort((a, b) => a.sortOrder.compareTo(b.sortOrder))),
+        groups = List.unmodifiable(groups..sort((a, b) => a.sortOrder.compareTo(b.sortOrder))),
         categories = List.unmodifiable(_sortCategories(categories, groups)),
         transactions = List.unmodifiable(transactions..sort(newestFirst)),
         goals = List.unmodifiable(goals..sort((a, b) => a.sortOrder != b.sortOrder ? a.sortOrder.compareTo(b.sortOrder) : a.id.compareTo(b.id))) {
@@ -62,6 +65,7 @@ class AppData {
   final List<Txn> transactions;
   final List<SavingsGoal> goals;
   final List<Debt> debts;
+  final List<Mortgage> mortgages;
 
   final Map<String, CategoryGroup> groupById = {};
   final Map<String, BudgetCategory> categoryById = {};
@@ -72,6 +76,13 @@ class AppData {
   late final List<TxnFacts> facts;
 
   int get startDay => settings.budgetMonthStartDay;
+
+  /// "Joint", or the partner's name.
+  String personName(Person person) => switch (person) {
+        Person.joint => 'Joint',
+        Person.partner1 => settings.partner1Name,
+        Person.partner2 => settings.partner2Name,
+      };
 
   BudgetMonth monthOf(DateTime date) => BudgetMonth.containing(date, startDay);
 
@@ -132,6 +143,17 @@ class AppData {
         today: today,
         budgetMonthStartDay: startDay,
         latestStatementBalance: debt.latestStatementBalance,
+      );
+
+  /// Balance now, this month's payment and the full schedule for one
+  /// mortgage part.
+  MortgageStatus mortgageStatus(Mortgage m, DateTime today) => MortgageCalculator.status(
+        balance: m.balance,
+        balanceDate: m.balanceDate,
+        endDate: m.endDate,
+        annualRatePercent: m.annualInterestRatePercent,
+        type: m.type,
+        today: today,
       );
 
   /// Most-used first. Ties are broken by [thenBy] (largest first), then by

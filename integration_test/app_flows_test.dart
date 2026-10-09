@@ -14,10 +14,13 @@ import 'package:student_budget/data/backup.dart';
 import 'package:student_budget/data/budget_store.dart';
 import 'package:student_budget/data/database.dart';
 
+import '../test/support/test_store.dart' show setExamplePlan;
+
 Future<BudgetStore> freshStore() async {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
   final store = BudgetStore(AppDatabase(NativeDatabase.memory()), clock: () => DateTime(2026, 10, 7, 10));
   await store.init();
+  await setExamplePlan(store);
   await store.completeOnboarding();
   return store;
 }
@@ -40,12 +43,12 @@ void main() {
     final store = await freshStore();
     await tester.pumpWidget(StudentBudgetApp(store: store));
     await tester.pumpAndSettle();
-    expect(find.text('R180'), findsOneWidget);
+    expect(find.text('€\u00A0180'), findsOneWidget);
 
     await addExpense(tester, '85,50', 'Groceries');
 
-    expect(find.text('Added R85,50 to Groceries'), findsOneWidget);
-    expect(find.text('R176'), findsOneWidget);
+    expect(find.text('Added €\u00A085,50 to Groceries'), findsOneWidget);
+    expect(find.text('€\u00A0176'), findsOneWidget);
     expect(store.data.transactions.single.amount, 8550);
     await tester.pump(const Duration(seconds: 5));
     await store.db.close();
@@ -57,7 +60,7 @@ void main() {
     await tester.pumpAndSettle();
     await addExpense(tester, '85,50', 'Groceries');
     await tester.pump(const Duration(seconds: 5));
-    await addExpense(tester, '400', 'Taxi fares');
+    await addExpense(tester, '400', 'Childcare (kinderopvang)');
     await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
 
@@ -75,8 +78,8 @@ void main() {
 
     expect(store.snapshot().transactions, before.transactions);
     expect(store.snapshot().categories, before.categories);
-    // Back on Overview with the restored spending: R4 014,50 ÷ 25 = R160.
-    expect(find.text('R160'), findsOneWidget);
+    // Back on Overview with the restored spending: € 4.014,50 ÷ 25 = € 160.
+    expect(find.text('€\u00A0160'), findsOneWidget);
     await store.db.close();
   });
 }

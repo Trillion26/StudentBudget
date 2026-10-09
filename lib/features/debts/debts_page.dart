@@ -23,7 +23,7 @@ class DebtsPage extends StatelessWidget {
     void open(Widget page) => Navigator.of(context).push(CupertinoPageRoute<void>(builder: (_) => page));
 
     return PageScaffold(
-      title: 'Debts',
+      title: 'Loans',
       showBack: true,
       slivers: [
         SliverToBoxAdapter(
@@ -31,7 +31,7 @@ class DebtsPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: NoteBox(
               color: c.highlight.withValues(alpha: 0.22),
-              child: Text('Store cards charge high interest – pay these off first.', style: AppText.body.copyWith(color: c.ink)),
+              child: Text('Credit cards and overdrafts charge high interest – pay these off first. The mortgage has its own screen.', style: AppText.body.copyWith(color: c.ink)),
             ),
           ),
         ),
@@ -39,7 +39,7 @@ class DebtsPage extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: Text('No debts. Nice.', style: AppText.bodyRegular.copyWith(color: c.inkSoft)),
+              child: Text('No loans. Nice.', style: AppText.bodyRegular.copyWith(color: c.inkSoft)),
             ),
           ),
         SliverList.separated(
@@ -53,7 +53,7 @@ class DebtsPage extends StatelessWidget {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-            child: SecondaryButton(label: 'Add a debt', onPressed: () => open(const DebtEditPage())),
+            child: SecondaryButton(label: 'Add a loan', onPressed: () => open(const DebtEditPage())),
           ),
         ),
       ],
@@ -76,9 +76,9 @@ class _DebtRow extends StatelessWidget {
     final category = debt.linkedCategoryId == null ? null : data.categoryById[debt.linkedCategoryId];
     final lines = <(String, String)>[];
     if (!noBalance) {
-      lines.add((estimate.isFromStatement ? 'Balance (from statement)' : 'Estimated balance now', formatRand(estimate.balance)));
-      lines.add(('Monthly repayment', estimate.monthlyRepayment == 0 ? 'None logged' : formatRand(estimate.monthlyRepayment)));
-      lines.add(('Repaid this year', formatRand(estimate.repaidThisYear)));
+      lines.add((estimate.isFromStatement ? 'Balance (from statement)' : 'Estimated balance now', formatEuro(estimate.balance)));
+      lines.add(('Monthly repayment', estimate.monthlyRepayment == 0 ? 'None logged' : formatEuro(estimate.monthlyRepayment)));
+      lines.add(('Repaid this year', formatEuro(estimate.repaidThisYear)));
       final payoff = estimate.isPaidOff
           ? 'Paid off'
           : estimate.payoffMonth == null

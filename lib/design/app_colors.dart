@@ -50,35 +50,35 @@ class AppColors extends ThemeExtension<AppColors> {
   /// Text on top of an [ink] filled button.
   final Color onInk;
 
-  /// Taken from the app icon: the piggy bank's deep teal for ink, the
-  /// coin's gold for the highlighter, and the background's green and blue
-  /// for income and savings.
+  /// Taken from the app icon: the forest-green lettering for ink, the cream
+  /// background for paper, the euro coin's gold for the highlighter, and the
+  /// piggy bank's green and peach spots for income and savings.
   static const light = AppColors(
-    paper: Color(0xFFF1F7F6),
-    card: Color(0xFFFFFFFF),
-    ink: Color(0xFF0E4D6E),
-    inkSoft: Color(0xFF4A6F80),
-    line: Color(0xFFD3E5E6),
-    highlight: Color(0xFFF5C343),
-    over: Color(0xFFFF9C8A),
-    overText: Color(0xFFB3261E),
-    income: Color(0xFF2FAE6B),
-    savings: Color(0xFF4A90D9),
+    paper: Color(0xFFF5F3EC),
+    card: Color(0xFFFFFDF8),
+    ink: Color(0xFF2F553B),
+    inkSoft: Color(0xFF626F5F),
+    line: Color(0xFFE6E0D2),
+    highlight: Color(0xFFF2C063),
+    over: Color(0xFFF08A7E),
+    overText: Color(0xFFB03A2E),
+    income: Color(0xFF4F9856),
+    savings: Color(0xFFF2A277),
     onInk: Color(0xFFFFFFFF),
   );
 
   static const dark = AppColors(
-    paper: Color(0xFF0A1E26),
-    card: Color(0xFF10303B),
-    ink: Color(0xFFE8F4F3),
-    inkSoft: Color(0xFF9CC0C4),
-    line: Color(0xFF1E4652),
-    highlight: Color(0xFFF0BE3A),
-    over: Color(0xFFE8786A),
-    overText: Color(0xFFFFD5CE),
-    income: Color(0xFF3FC07E),
-    savings: Color(0xFF5EA0E6),
-    onInk: Color(0xFF0A1E26),
+    paper: Color(0xFF1B201A),
+    card: Color(0xFF252C24),
+    ink: Color(0xFFF3EFE3),
+    inkSoft: Color(0xFFB4BCAA),
+    line: Color(0xFF3A4537),
+    highlight: Color(0xFFE8B44E),
+    over: Color(0xFFE0776B),
+    overText: Color(0xFFFFD3CC),
+    income: Color(0xFF7FC27F),
+    savings: Color(0xFFF0A070),
+    onInk: Color(0xFF1B201A),
   );
 
   /// Colours for the current theme.

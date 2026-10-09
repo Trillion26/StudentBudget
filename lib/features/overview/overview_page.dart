@@ -9,6 +9,7 @@ import '../../design/theme.dart';
 import '../../design/widgets.dart';
 import '../../logic/budget_calculator.dart';
 import '../../logic/budget_month.dart';
+import '../../logic/models.dart';
 import '../../logic/money.dart';
 import '../../logic/validation.dart';
 import '../add/add_sheet.dart';
@@ -58,6 +59,7 @@ class OverviewPage extends StatelessWidget {
             ),
             if (!noIncome) ...[
               SliverToBoxAdapter(child: _TotalsStrip(summary: summary)),
+              SliverToBoxAdapter(child: _WhoStrip(data: data, month: month)),
               SliverToBoxAdapter(child: _WhereMoneyGoes(data: data, month: month)),
               SliverToBoxAdapter(child: _Latest(data: data, month: month)),
               SliverToBoxAdapter(
@@ -105,37 +107,37 @@ class _Headline extends StatelessWidget {
 
     if (isFuture) {
       before = 'Planned income for ${month.label}';
-      number = formatRand(summary.plannedIncome);
-      after.add("You've planned ${formatRand(data.plannedSpending)} of spending.");
+      number = formatEuro(summary.plannedIncome);
+      after.add("You've planned ${formatEuro(data.plannedSpending)} of spending.");
       semantics = '$before: $number. ${after.first}';
     } else if (isCurrent) {
       if (summary.isOver) {
         warning = true;
         before = "This month you're over by";
-        number = formatRand(summary.overBy);
+        number = formatEuro(summary.overBy);
         semantics = "This month you're over by $number.";
       } else if (summary.daysLeft <= 1) {
         before = 'You can spend';
-        number = formatRand(summary.dailyAllowance ?? 0);
+        number = formatEuro(summary.dailyAllowance ?? 0);
         after.add('today, the last day of this budget month');
         semantics = 'You can spend $number today, the last day of this budget month.';
       } else {
         before = 'You can spend';
-        number = formatRand(summary.dailyAllowance ?? 0);
+        number = formatEuro(summary.dailyAllowance ?? 0);
         after.add('a day for the next ${summary.daysLeft} days');
-        after.add('(${formatRand(summary.moneyLeft)} left this month)');
+        after.add('(${formatEuro(summary.moneyLeft)} left this month)');
         semantics = 'You can spend $number a day for the next ${summary.daysLeft} days. '
-            '${formatRand(summary.moneyLeft)} left this month.';
+            '${formatEuro(summary.moneyLeft)} left this month.';
       }
     } else {
       if (summary.isOver) {
         warning = true;
         before = '${month.label} ended over by';
-        number = formatRand(summary.overBy);
+        number = formatEuro(summary.overBy);
         semantics = '$before $number.';
       } else {
         before = '${month.label} ended with';
-        number = formatRand(summary.moneyLeft);
+        number = formatEuro(summary.moneyLeft);
         after.add('left over');
         semantics = '$before $number left over.';
       }
@@ -189,14 +191,14 @@ class _TotalsStrip extends StatelessWidget {
     final c = AppColors.of(context);
     final f = summary.figures;
     Widget cell(String label, int amount, Color color) => Semantics(
-          label: '$label ${formatRand(amount)}',
+          label: '$label ${formatEuro(amount)}',
           excludeSemantics: true,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(label, style: AppText.small.copyWith(color: c.inkSoft)),
               const SizedBox(height: 2),
-              Text(formatRand(amount), style: AppText.amountLarge.copyWith(color: color)),
+              Text(formatEuro(amount), style: AppText.amountLarge.copyWith(color: color)),
             ],
           ),
         );
@@ -220,6 +222,59 @@ class _TotalsStrip extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [for (final cell in cells) Expanded(child: cell)],
               ),
+      ),
+    );
+  }
+}
+
+/// Income and spending per partner this month. Hidden until an entry is
+/// tagged with a partner.
+class _WhoStrip extends StatelessWidget {
+  const _WhoStrip({required this.data, required this.month});
+
+  final AppData data;
+  final BudgetMonth month;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final split = BudgetCalculator.byPerson(data.facts, month.start, month.endExclusive);
+    final tagged = split.entries.any((e) => e.key != Person.joint && (e.value.income > 0 || e.value.spent > 0));
+    if (!tagged) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final p in const [Person.partner1, Person.partner2, Person.joint])
+            if (split[p]!.income > 0 || split[p]!.spent > 0)
+              Semantics(
+                label: '${data.personName(p)}: came in ${formatEuro(split[p]!.income)}, spent ${formatEuro(split[p]!.spent)}',
+                excludeSemantics: true,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 3),
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    spacing: 12,
+                    children: [
+                      Text(data.personName(p), style: AppText.body.copyWith(color: c.ink)),
+                      Text.rich(
+                        TextSpan(children: [
+                          if (split[p]!.income > 0)
+                            TextSpan(
+                              text: '+${formatEuro(split[p]!.income, wholeEuros: true)}  ',
+                              style: TextStyle(color: c.incomeText),
+                            ),
+                          TextSpan(text: '${formatEuro(split[p]!.spent, wholeEuros: true)} spent'),
+                        ]),
+                        style: AppText.amount.copyWith(color: c.ink),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+        ],
       ),
     );
   }
@@ -296,15 +351,15 @@ class _WhereMoneyGoesState extends State<_WhereMoneyGoes> {
   }) {
     final c = AppColors.of(context);
     final warn = status.state == CategoryState.over || status.state == CategoryState.noBudget;
-    final semantics = StringBuffer('$name, ${formatRand(status.spent)} spent');
+    final semantics = StringBuffer('$name, ${formatEuro(status.spent)} spent');
     switch (status.state) {
       case CategoryState.over:
-        semantics.write(' of ${formatRand(status.budget)}, ${formatRand(status.spent - status.budget)} over budget');
+        semantics.write(' of ${formatEuro(status.budget)}, ${formatEuro(status.spent - status.budget)} over budget');
       case CategoryState.noBudget:
       case CategoryState.empty:
         semantics.write(', no budget set');
       case CategoryState.within:
-        semantics.write(' of ${formatRand(status.budget)}, ${formatRand(status.remaining)} left');
+        semantics.write(' of ${formatEuro(status.budget)}, ${formatEuro(status.remaining)} left');
     }
     if (expanded != null) semantics.write(expanded ? '. Tap to hide categories' : '. Tap to show categories');
     return ListRow(
@@ -317,7 +372,7 @@ class _WhereMoneyGoesState extends State<_WhereMoneyGoes> {
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(formatRand(status.spent), style: AppText.amount.copyWith(color: c.ink)),
+          Text(formatEuro(status.spent), style: AppText.amount.copyWith(color: c.ink)),
           if (expanded != null) ...[
             const SizedBox(width: 6),
             Icon(expanded ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down, size: 16, color: c.inkSoft),
@@ -381,7 +436,7 @@ class _EmptyState extends StatelessWidget {
           Highlighter(child: Text('Start here', style: AppText.title.copyWith(color: c.ink))),
           const SizedBox(height: 12),
           Text(
-            'Tell the app how much money comes in each month (family, NSFAS or bursary, a job). '
+            'Tell the app how much money comes in each month (salaries, child benefit, allowances). '
             "It will then work out how much you can spend each day.",
             style: AppText.bodyRegular.copyWith(color: c.ink),
           ),

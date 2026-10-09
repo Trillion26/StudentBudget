@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Student Budget (shown to users as **Emily’s Budget**, `appName` in `lib/app_info.dart`; the home screen shows **Em’s Budget**, `CFBundleDisplayName` in `ios/Runner/Info.plist`) is a Flutter app (iPhone first) for a South African student to plan and track a monthly budget in rand. It is offline only: no accounts, no network requests, no analytics. All data lives in a local SQLite file. The README is written for a beginner developer on Windows; `DECISIONS.md` records every rule where the original brief was ambiguous. Read `DECISIONS.md` before changing a budget rule, and add to it when you make a new choice.
+Student Budget (shown to users as **Veen Budget**: `appName` in `lib/app_info.dart` and `CFBundleDisplayName` in `ios/Runner/Info.plist`) is a Flutter app (iPhone first) for a Dutch household (a couple with children and a mortgage) to plan and track a monthly budget in euros. It began as a student budget in rand; version 2.0 converted it. It is offline only: no accounts, no network requests, no analytics. All data lives in a local SQLite file. The README is written for a beginner developer on Windows; `DECISIONS.md` records every rule where the original brief was ambiguous. Read `DECISIONS.md` before changing a budget rule, and add to it when you make a new choice.
 
 ## Commands
 
@@ -22,7 +22,7 @@ dart format -l 120 <paths>                        # line length is 120 (.vscode/
 
 - **Layout check:** `flutter test tool/screenshots/screenshots_test.dart --dart-define=OUT=build/screenshots` renders every main screen at iPhone SE, 390 wide, Pro Max, dark mode and double text size. It fails on any overflow. Emoji and icons render as boxes in these PNGs.
 - **Sample Excel export:** `flutter test test/export/year_report_test.dart --dart-define=OUT=build/student-budget-2026.xlsx`.
-- **After editing `lib/data/tables.dart`:** run `dart run build_runner build`. The generated `*.g.dart` files are committed. Raise `schemaVersion` in `lib/data/database.dart` and add a migration so phones keep their data.
+- **After editing `lib/data/tables.dart`:** run `dart run build_runner build`. The generated `*.g.dart` files are committed. Raise `schemaVersion` in `lib/data/database.dart` (now 2) and add a migration so phones keep their data; raise `backupSchemaVersion` in `lib/data/backup.dart` (now 2) and keep reading older backups.
 - **App icon:** after replacing `assets/icon/app_icon.png`, run `dart run flutter_launcher_icons`.
 - **Unsigned .ipa** (same steps as `.github/workflows/ios.yml`; needs Xcode, no CocoaPods because plugins use Swift Package Manager):
   ```sh
@@ -36,20 +36,22 @@ dart format -l 120 <paths>                        # line length is 120 (.vscode/
 
 Three layers, with imports only going down:
 
-1. **`lib/logic/`: pure Dart rules, no Flutter or drift imports.** `BudgetCalculator` (month figures, money left, daily allowance, goal progress, year summary), `DebtCalculator`, `BudgetMonth`, `money.dart` (rand formatting and parsing), `dates.dart`, `validation.dart`. The calculators take `TxnFacts` (`models.dart`) rather than database rows, so the tests pass fixed dates and plain values. New budget rules go here, with a test in `test/logic/`.
+1. **`lib/logic/`: pure Dart rules, no Flutter or drift imports.** `BudgetCalculator` (month figures, money left, daily allowance, goal progress, year summary, split by person), `DebtCalculator`, `MortgageCalculator` (annuity/linear/interest-only schedules), `BudgetMonth`, `money.dart` (euro formatting and Dutch-style parsing), `dates.dart`, `validation.dart`. The calculators take `TxnFacts` (`models.dart`) rather than database rows, so the tests pass fixed dates and plain values. New budget rules go here, with a test in `test/logic/`.
 2. **`lib/data/`: drift database and state.**
    - `tables.dart` defines the schema. Row classes are renamed to avoid clashes with Flutter and drift: `Txn`, `BudgetCategory`, `CategoryGroup`, `SavingsGoal`, `Debt`, `AppSettings`.
-   - `BudgetStore` (a `ChangeNotifier`) performs every write, then calls `reload()`. That re-reads all tables into a new immutable **`AppData`** snapshot and notifies listeners. Students have at most a few thousand rows, so everything is held in memory and recalculated; there are no per-screen queries.
+   - `BudgetStore` (a `ChangeNotifier`) performs every write, then calls `reload()`. That re-reads all tables into a new immutable **`AppData`** snapshot and notifies listeners. A household has at most a few thousand rows a year, so everything is held in memory and recalculated; there are no per-screen queries.
    - `AppData` holds the lookups (`categoryById`, `groupById`), the derived lists (`facts`, `spendingGroups`, planned income and spending) and thin wrappers that feed `logic/` calculators (`summary`, `goalProgress`, `debtEstimate`).
    - `backup.dart` handles the JSON backup (with `backupSchemaVersion`; keep reading old versions) and the CSV export. `seed.dart` holds the starter budget.
    - `connection/` uses a conditional import: native SQLite file, or an in-page SQLite in IndexedDB for Chrome.
 3. **`lib/features/<screen>/` and `lib/design/`: Cupertino UI.** Screens get the store with `StoreScope.of(context)` (rebuilds on change) or `StoreScope.read(context)` (in callbacks). `SelectedMonthScope` shares the month shown on Overview and History. Use the shared widgets in `design/widgets.dart` (`PageScaffold`, `ListRow`, `SectionTitle`, buttons, `MonthSwitcher`) and the colour tokens from `AppColors.of(context)`, never hard-coded colours. Every screen must work in light and dark mode at 375×667 and at double text size.
 
-`lib/export/` sits beside `data/`. `xlsx.dart` is a small hand-written .xlsx writer: shared strings, styles, merged cells, and DrawingML bar, doughnut and line charts, zipped with `archive`. `year_report.dart` builds the yearly workbook (Dashboard, Months, Transactions, Goals & debts) from `AppData`. It writes values with cached chart data, not formulas, because Quick Look and other viewers don't recalculate. Colour gains and losses on the cell; colours in number formats (e.g. `[Color10]`) are ignored by Quick Look.
+`lib/export/` sits beside `data/`. `xlsx.dart` is a small hand-written .xlsx writer: shared strings, styles, merged cells, and DrawingML bar, doughnut and line charts, zipped with `archive`. `year_report.dart` builds the yearly workbook (Dashboard, Months, Transactions, Savings, mortgage & loans) from `AppData`. It writes values with cached chart data, not formulas, because Quick Look and other viewers don't recalculate. Colour gains and losses on the cell; colours in number formats (e.g. `[Color10]`) are ignored by Quick Look.
 
 ### Domain rules that span files
 
-- **Money is always whole cents in an `int`.** Format only through `formatRand`; it uses a non-breaking space as the thousands separator.
+- **Money is always whole cents in an `int`.** Format only through `formatEuro` (`€ 1.250,50`, with a non-breaking space after the sign) and read input with `parseAmount`.
+- **Who paid:** every transaction has a `person` (`Person.joint`, `partner1`, `partner2`); names come from settings via `data.personName`. Categories ending in " – <partner name>" are renamed by `BudgetStore.setPartnerNames`.
+- **Mortgage:** `Mortgages` rows are loan parts described by balance + balance date + end month + rate + type; `MortgageCalculator.schedule/status` derive everything else. Mortgage dates are not limited to the 2026–2035 range.
 - **Dates are calendar days** stored as `YYYY-MM-DD` text and handled as UTC midnight (`dateOnly`, `day()` in `dates.dart`). Never use local `DateTime` arithmetic for days.
 - **Budget months:** `BudgetMonth(year, month, startDay)` labelled "October 2026" runs from the start day of October up to the day before the start day of November. The start day (1–28) is a setting, so always find the month for a date with `data.monthOf(date)` / `BudgetMonth.containing`, not `date.month`. The Year view and the Excel export use the budget months labelled January–December; the CSV export uses calendar years.
 - **Transaction kinds** (`TxnKind`): `income` and `expense` need a category; `toSavings` and `fromSavings` need a goal. `fromSavings` may carry a category but is **not** counted as spending or against that category's budget.
@@ -69,4 +71,4 @@ Three layers, with imports only going down:
 - Keep the internal names `student_budget` (database, package, bundle ID) and the backup file name `student-budget-backup-*.json`, so existing installs and backups keep working.
 - Add no package that makes network requests or collects data. `ios/Runner/PrivacyInfo.xcprivacy` declares that nothing is collected.
 - Files leave the phone only through `exportFile` in `features/settings/backup_actions.dart`: the share sheet on iOS, a save dialog on Windows and in Chrome.
-- User-facing text is short, plain and second person ("Pick a date up to 31 Dec 2035"), with amounts in rand.
+- User-facing text is short, plain and second person ("Pick a date up to 31 Dec 2035"), with amounts in euros.

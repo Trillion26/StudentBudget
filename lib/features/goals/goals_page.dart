@@ -50,7 +50,7 @@ class _GoalsPageState extends State<GoalsPage> {
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-            child: Text('${formatRand(total)} saved altogether', style: AppText.body.copyWith(color: c.inkSoft)),
+            child: Text('${formatEuro(total)} saved altogether', style: AppText.body.copyWith(color: c.inkSoft)),
           ),
         ),
         SliverList.list(children: [
@@ -76,7 +76,7 @@ class _GoalsPageState extends State<GoalsPage> {
               ListRow(
                 emoji: g.emoji,
                 title: g.name,
-                subtitle: Text('${formatRand(data.goalProgress(g, current).balance)} in this goal', style: AppText.small.copyWith(color: c.inkSoft)),
+                subtitle: Text('${formatEuro(data.goalProgress(g, current).balance)} in this goal', style: AppText.small.copyWith(color: c.inkSoft)),
                 trailing: CupertinoButton(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   minimumSize: const Size(44, 44),
@@ -107,8 +107,8 @@ class _GoalCard extends StatelessWidget {
     };
     final target = progress.target;
     final plan = progress.planLabel;
-    final semantics = StringBuffer('${goal.name}, ${formatRand(progress.balance)} saved');
-    if (target != null) semantics.write(' of ${formatRand(target)}');
+    final semantics = StringBuffer('${goal.name}, ${formatEuro(progress.balance)} saved');
+    if (target != null) semantics.write(' of ${formatEuro(target)}');
     semantics.write('. ${progress.statusLabel}.');
     if (plan != null) semantics.write(' $plan.');
 
@@ -141,11 +141,11 @@ class _GoalCard extends StatelessWidget {
                       crossAxisAlignment: WrapCrossAlignment.end,
                       spacing: 8,
                       children: [
-                        Text(formatRand(progress.balance), style: AppText.amountLarge.copyWith(color: c.ink, fontSize: 26)),
+                        Text(formatEuro(progress.balance), style: AppText.amountLarge.copyWith(color: c.ink, fontSize: 26)),
                         if (target != null)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 3),
-                            child: Text('of ${formatRand(target)}', style: AppText.body.copyWith(color: c.inkSoft)),
+                            child: Text('of ${formatEuro(target)}', style: AppText.body.copyWith(color: c.inkSoft)),
                           ),
                       ],
                     ),

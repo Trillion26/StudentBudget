@@ -4,7 +4,7 @@ import '../../app_scope.dart';
 import '../../data/database.dart';
 import '../../design/app_colors.dart';
 import '../../design/form_fields.dart';
-import '../../design/rand_field.dart';
+import '../../design/euro_field.dart';
 import '../../design/theme.dart';
 import '../../design/widgets.dart';
 import '../../logic/dates.dart';
@@ -148,15 +148,15 @@ class _DebtEditPageState extends State<DebtEditPage> {
             LabeledField(
               label: 'Name',
               error: _nameError,
-              child: AppTextField(controller: _name, maxLength: Validation.maxNameLength, placeholder: 'e.g. Store card', semanticLabel: 'Debt name', hasError: _nameError != null),
+              child: AppTextField(controller: _name, maxLength: Validation.maxNameLength, placeholder: 'e.g. Car loan', semanticLabel: 'Debt name', hasError: _nameError != null),
             ),
             LabeledField(
               label: 'Lender (optional)',
-              child: AppTextField(controller: _lender, maxLength: Validation.maxNameLength, placeholder: 'e.g. NSFAS, Edgars, my aunt', semanticLabel: 'Lender'),
+              child: AppTextField(controller: _lender, maxLength: Validation.maxNameLength, placeholder: 'e.g. DUO, a bank, family', semanticLabel: 'Lender'),
             ),
             LabeledField(
               label: 'Balance on the start date',
-              child: RandField(cents: _balance, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Balance on the start date', onChanged: (v) => _balance = v),
+              child: EuroField(cents: _balance, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Balance on the start date', onChanged: (v) => _balance = v),
             ),
             LabeledField(
               label: 'Start date',
@@ -210,7 +210,7 @@ class _DebtEditPageState extends State<DebtEditPage> {
             LabeledField(
               label: 'Latest statement balance (optional)',
               help: 'If you enter this, it replaces the estimate.',
-              child: RandField(
+              child: EuroField(
                 cents: _statement,
                 width: double.infinity,
                 textAlign: TextAlign.left,

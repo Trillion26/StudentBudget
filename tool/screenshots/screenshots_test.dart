@@ -23,31 +23,37 @@ const outDir = String.fromEnvironment('OUT', defaultValue: 'build/screenshots');
 Future<void> addSampleMonth(BudgetStore store) async {
   String cat(String name) => store.data.categories.firstWhere((c) => c.name == name).id;
   final goals = store.data.goals;
-  Future<void> add(TxnKind kind, int rand, int dayOfMonth, {String? category, String? goal, String note = '', int month = 10}) =>
-      store.addTransaction(TxnDraft(kind: kind, amount: rand * 100, date: day(2026, month, dayOfMonth), categoryId: category == null ? null : cat(category), goalId: goal, note: note));
-  await add(TxnKind.income, 3000, 1, category: 'Allowance from family');
-  await add(TxnKind.income, 1200, 3, category: 'Part-time job', note: 'Weekend shifts');
-  await add(TxnKind.expense, 640, 2, category: 'Groceries', note: 'Checkers');
-  await add(TxnKind.expense, 85, 4, category: 'Groceries', note: 'Bread and milk');
-  await add(TxnKind.expense, 250, 2, category: 'Data bundles', note: 'Monthly bundle');
-  await add(TxnKind.expense, 120, 5, category: 'Taxi fares', note: 'Taxi to campus');
-  await add(TxnKind.expense, 160, 6, category: 'Eating out & takeaways', note: 'Nando\'s with friends');
-  await add(TxnKind.expense, 230, 6, category: 'Eating out & takeaways');
-  await add(TxnKind.expense, 45, 7, category: 'Coffee & snacks on campus');
+  Future<void> add(TxnKind kind, int euros, int dayOfMonth,
+          {String? category, String? goal, String note = '', int month = 10, Person person = Person.joint}) =>
+      store.addTransaction(TxnDraft(kind: kind, amount: euros * 100, date: day(2026, month, dayOfMonth),
+          categoryId: category == null ? null : cat(category), goalId: goal, note: note, person: person));
+  await store.setPartnerNames('Kathleen', 'Triston');
+  await add(TxnKind.income, 2500, 1, category: 'Salary – Kathleen', person: Person.partner1);
+  await add(TxnKind.income, 2000, 1, category: 'Salary – Triston', person: Person.partner2);
+  await add(TxnKind.expense, 1400, 1, category: 'Mortgage', note: 'ING');
+  await add(TxnKind.expense, 640, 2, category: 'Groceries', note: 'Albert Heijn', person: Person.partner1);
+  await add(TxnKind.expense, 85, 4, category: 'Groceries', note: 'Bread and milk', person: Person.partner2);
+  await add(TxnKind.expense, 600, 2, category: 'Childcare (kinderopvang)');
+  await add(TxnKind.expense, 120, 5, category: 'Fuel & charging', note: 'Shell', person: Person.partner2);
+  await add(TxnKind.expense, 160, 6, category: 'Eating out & takeaway', note: 'Pizza night');
+  await add(TxnKind.expense, 45, 7, category: 'Drugstore', note: 'Kruidvat', person: Person.partner1);
   await add(TxnKind.toSavings, 200, 1, goal: goals[0].id);
   await add(TxnKind.toSavings, 300, 1, goal: goals[1].id);
-  await add(TxnKind.fromSavings, 150, 3, goal: goals[1].id, category: 'Textbooks', note: 'Second-hand textbook');
+  await add(TxnKind.fromSavings, 150, 3, goal: goals[1].id, category: 'Days out', note: 'Zoo tickets');
   for (var m = 1; m <= 9; m++) {
-    await add(TxnKind.expense, 900 + m * 40, 10, category: 'Groceries', month: m);
-    await add(TxnKind.expense, 380, 12, category: 'Taxi fares', month: m);
-    await add(TxnKind.income, 4500, 1, category: 'Allowance from family', month: m);
+    await add(TxnKind.expense, 650 + m * 10, 10, category: 'Groceries', month: m);
+    await add(TxnKind.expense, 1400, 1, category: 'Mortgage', month: m);
+    await add(TxnKind.income, 2500, 1, category: 'Salary – Kathleen', month: m, person: Person.partner1);
+    await add(TxnKind.income, 2000, 1, category: 'Salary – Triston', month: m, person: Person.partner2);
     await add(TxnKind.toSavings, 250, 2, goal: goals[1].id, month: m);
   }
-  await store.saveGoal(id: goals[1].id, name: goals[1].name, emoji: goals[1].emoji, targetAmount: 800000, targetDate: day(2027, 3, 31));
-  await store.saveGoal(id: goals[0].id, name: goals[0].name, emoji: goals[0].emoji, targetAmount: 100000);
-  final debt = store.data.debts.first;
-  await store.saveDebt(id: debt.id, name: debt.name, lender: 'NSFAS', balanceOnStartDate: 2500000, startDate: day(2026, 1, 1),
-      annualInterestRatePercent: 7.5, linkedCategoryId: debt.linkedCategoryId);
+  await store.saveGoal(id: goals[1].id, name: goals[1].name, emoji: goals[1].emoji, targetAmount: 300000, targetDate: day(2027, 6, 30));
+  await store.saveGoal(id: goals[0].id, name: goals[0].name, emoji: goals[0].emoji, targetAmount: 1000000);
+  await store.saveMortgage(name: 'Mortgage', lender: 'ING', type: MortgageType.annuity, balance: 30000000, balanceDate: day(2026, 1, 1),
+      endDate: day(2056, 1, 1), annualInterestRatePercent: 4.1, fixedRateUntil: day(2027, 3, 1),
+      linkedCategoryId: cat('Mortgage'));
+  await store.saveDebt(name: 'Student loan', lender: 'DUO', balanceOnStartDate: 1800000, startDate: day(2026, 1, 1),
+      annualInterestRatePercent: 2.5, linkedCategoryId: cat('Student loan (DUO)'));
   await store.completeOnboarding();
 }
 
@@ -94,9 +100,14 @@ Future<void> tour(WidgetTester tester, String prefix, {Size size = const Size(39
   await snap(tester, '$prefix-7-goals');
   await tester.tap(find.bySemanticsLabel(RegExp('^Budget, tab')));
   await tester.pumpAndSettle();
-  await tester.scrollUntilVisible(find.text('Debts'), 200, scrollable: find.byType(Scrollable).first);
-  await tester.tap(find.text('Debts'));
-  await snap(tester, '$prefix-8-debts');
+  await tester.scrollUntilVisible(find.text('Mortgage'), 200, scrollable: find.byType(Scrollable).first);
+  await tester.tap(find.text('Mortgage').first);
+  await snap(tester, '$prefix-8-mortgage');
+  await tester.pageBack();
+  await tester.pumpAndSettle();
+  await tester.scrollUntilVisible(find.text('Loans'), 200, scrollable: find.byType(Scrollable).first);
+  await tester.tap(find.text('Loans'));
+  await snap(tester, '$prefix-8b-loans');
   await tester.pageBack();
   await tester.pumpAndSettle();
   await tester.scrollUntilVisible(find.text('Settings'), 200, scrollable: find.byType(Scrollable).first);
@@ -128,6 +139,8 @@ void main() {
     await snap(tester, 'onboarding-2');
     await tester.tap(find.byKey(const Key('onboardingNext')));
     await snap(tester, 'onboarding-3');
+    await tester.tap(find.byKey(const Key('onboardingNext')));
+    await snap(tester, 'onboarding-4');
     await tester.runAsync(() => store.db.close());
   });
 

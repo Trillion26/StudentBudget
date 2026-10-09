@@ -1,6 +1,6 @@
 // To look at the workbook, save it with:
 //
-//   flutter test test/export/year_report_test.dart --dart-define=OUT=build/emilys-budget-2026.xlsx
+//   flutter test test/export/year_report_test.dart --dart-define=OUT=build/veen-budget-2026.xlsx
 import 'dart:convert';
 import 'dart:io';
 
@@ -10,6 +10,7 @@ import 'package:student_budget/data/budget_store.dart';
 import 'package:student_budget/export/year_report.dart';
 import 'package:student_budget/logic/dates.dart';
 import 'package:student_budget/logic/models.dart';
+import 'package:student_budget/logic/mortgage_calculator.dart';
 
 import '../support/test_store.dart';
 
@@ -37,15 +38,15 @@ Future<void> addSampleYear(BudgetStore store) async {
     ),
   );
   for (var m = 1; m <= 10; m++) {
-    await add(TxnKind.income, 3000, m, 1, category: 'Allowance from family');
-    await add(TxnKind.income, 1200 + m * 30, m, 3, category: 'Part-time job', note: 'Weekend shifts');
-    await add(TxnKind.expense, 950 + m * 25, m, 4, category: 'Groceries', note: 'Checkers & <Spar>');
-    await add(TxnKind.expense, 380, m, 6, category: 'Taxi fares');
-    await add(TxnKind.expense, m.isEven ? 260 : 120, m, 8, category: 'Eating out & takeaways');
+    await add(TxnKind.income, 3000, m, 1, category: 'Salary – Partner 1');
+    await add(TxnKind.income, 1200 + m * 30, m, 3, category: 'Salary – Partner 2', note: 'Weekend shifts');
+    await add(TxnKind.expense, 950 + m * 25, m, 4, category: 'Groceries', note: 'Albert Heijn & <Jumbo>');
+    await add(TxnKind.expense, 380, m, 6, category: 'Fuel & charging');
+    await add(TxnKind.expense, m.isEven ? 260 : 120, m, 8, category: 'Eating out & takeaway');
     await add(TxnKind.toSavings, 300, m, 2, goalId: goal);
   }
-  await add(TxnKind.expense, 1450, 2, 14, category: 'Textbooks', note: 'Semester books');
-  await add(TxnKind.fromSavings, 500, 7, 20, goalId: goal, category: 'Textbooks');
+  await add(TxnKind.expense, 1450, 2, 14, category: 'School & activities', note: 'School trip');
+  await add(TxnKind.fromSavings, 500, 7, 20, goalId: goal, category: 'Holiday');
   // Outside 2026: left out of the 2026 report.
   await store.addTransaction(
     TxnDraft(kind: TxnKind.expense, amount: 99900, date: day(2027, 1, 5), categoryId: cat('Groceries')),
@@ -56,6 +57,17 @@ void main() {
   test('builds a workbook with a dashboard, charts and the year\'s entries', () async {
     final store = await createTestStore();
     await addSampleYear(store);
+    await store.setPartnerNames('Kathleen', 'Triston');
+    await store.saveMortgage(
+      name: 'Part 1',
+      lender: 'ING',
+      type: MortgageType.annuity,
+      balance: 30000000,
+      balanceDate: day(2026, 1, 1),
+      endDate: day(2056, 1, 1),
+      annualInterestRatePercent: 4,
+      linkedCategoryId: store.data.categories.firstWhere((c) => c.name == 'Mortgage').id,
+    );
     final bytes = store.exportExcel(2026);
     if (outPath.isNotEmpty) {
       File(outPath)
@@ -72,7 +84,7 @@ void main() {
         contains('name="Dashboard"'),
         contains('name="Months"'),
         contains('name="Transactions"'),
-        contains('name="Goals &amp; debts"'),
+        contains('name="Savings, mortgage &amp; loans"'),
       ),
     );
     // Dashboard: bar and two doughnuts. Line chart reads the Months sheet.
@@ -81,9 +93,23 @@ void main() {
     expect(part('xl/charts/chart4.xml'), allOf(contains('<c:lineChart>'), contains("'Months'!\$A\$4:\$A\$15")));
 
     final strings = part('xl/sharedStrings.xml');
-    expect(strings, contains('EMILY’S BUDGET DASHBOARD'));
-    expect(strings, contains('Checkers &amp; &lt;Spar&gt;'));
+    expect(strings, contains('VEEN BUDGET DASHBOARD'));
+    expect(strings, contains('Albert Heijn &amp; &lt;Jumbo&gt;'));
     // 10 months × 6 entries + 2, and nothing from 2027.
+    // Who paid, and the mortgage section with its interest for the year.
+    expect(strings, allOf(contains('Spent by Kathleen'), contains('Spent by Triston'), contains('Mortgage interest 2026')));
+    expect(strings, allOf(contains('Part 1 · ING'), contains('Owed 31 Dec')));
+    // February–December 2026: 11 annuity payments of € 1.432,25.
+    final mortgage = MortgageCalculator.status(
+      balance: 30000000,
+      balanceDate: day(2026, 1, 1),
+      endDate: day(2056, 1, 1),
+      annualRatePercent: 4,
+      type: MortgageType.annuity,
+      today: day(2026, 10, 7),
+    ).inYear(2026);
+    expect(mortgage.interest + mortgage.repayment, 11 * 143225);
+    expect(part('xl/worksheets/sheet4.xml'), contains('<v>${mortgage.interest / 100}</v>'));
     final transactions = part('xl/worksheets/sheet3.xml');
     expect(RegExp('<row ').allMatches(transactions).length, 63);
     expect(transactions, isNot(contains('<v>999</v>')));
@@ -98,6 +124,6 @@ void main() {
   });
 
   test('file name', () {
-    expect(yearReportFileName(2026), 'emilys-budget-2026.xlsx');
+    expect(yearReportFileName(2026), 'veen-budget-2026.xlsx');
   });
 }

@@ -5,11 +5,11 @@ import '../logic/money.dart';
 import 'app_colors.dart';
 import 'theme.dart';
 
-/// An inline rand amount field ("R 1 100"). Calls [onChanged] with whole
-/// cents whenever the text is a valid amount (empty counts as R0), so
-/// changes save immediately. Keeps what the student typed while focused.
-class RandField extends StatefulWidget {
-  const RandField({
+/// An inline euro amount field ("€ 1100"). Calls [onChanged] with whole
+/// cents whenever the text is a valid amount (empty counts as € 0), so
+/// changes save immediately. Keeps what was typed while focused.
+class EuroField extends StatefulWidget {
+  const EuroField({
     super.key,
     required this.cents,
     required this.onChanged,
@@ -29,10 +29,10 @@ class RandField extends StatefulWidget {
   final TextAlign textAlign;
 
   @override
-  State<RandField> createState() => _RandFieldState();
+  State<EuroField> createState() => _EuroFieldState();
 }
 
-class _RandFieldState extends State<RandField> {
+class _EuroFieldState extends State<EuroField> {
   late final TextEditingController _controller = TextEditingController(text: formatAmountForField(widget.cents));
   final FocusNode _focus = FocusNode();
   String? _error;
@@ -42,7 +42,7 @@ class _RandFieldState extends State<RandField> {
     super.initState();
     _focus.addListener(() {
       if (!_focus.hasFocus) {
-        // Tidy the text once the student moves on.
+        // Tidy the text once the field loses focus.
         final parsed = parseAmount(_controller.text, allowZero: widget.allowZero);
         if (parsed.isValid) {
           _controller.text = formatAmountForField(parsed.cents!);
@@ -53,7 +53,7 @@ class _RandFieldState extends State<RandField> {
   }
 
   @override
-  void didUpdateWidget(RandField oldWidget) {
+  void didUpdateWidget(EuroField oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (!_focus.hasFocus && oldWidget.cents != widget.cents) {
       _controller.text = formatAmountForField(widget.cents);
@@ -87,7 +87,7 @@ class _RandFieldState extends State<RandField> {
       style: AppText.amount.copyWith(color: c.ink),
       prefix: Padding(
         padding: const EdgeInsets.only(left: 10),
-        child: Text('R', style: AppText.amount.copyWith(color: c.inkSoft)),
+        child: Text('€', style: AppText.amount.copyWith(color: c.inkSoft)),
       ),
       padding: const EdgeInsets.fromLTRB(6, 10, 10, 10),
       decoration: BoxDecoration(

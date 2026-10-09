@@ -109,7 +109,7 @@ class _GroupEditPageState extends State<GroupEditPage> {
                       emoji: cat.emoji,
                       title: cat.name,
                       subtitle: Text(
-                        cat.monthlyBudget == 0 ? 'No budget' : '${formatRand(cat.monthlyBudget)} a month',
+                        cat.monthlyBudget == 0 ? 'No budget' : '${formatEuro(cat.monthlyBudget)} a month',
                         style: AppText.small.copyWith(color: c.inkSoft),
                       ),
                       onTap: () => Navigator.of(context).push(CupertinoPageRoute<void>(builder: (_) => CategoryEditPage(category: cat))),

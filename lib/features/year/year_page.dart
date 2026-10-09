@@ -67,8 +67,8 @@ class _YearPageState extends State<YearPage> {
               spacing: 24,
               runSpacing: 8,
               children: [
-                _figure(context, 'Spent', formatRand(summary.spent)),
-                _figure(context, 'Came in', formatRand(summary.income)),
+                _figure(context, 'Spent', formatEuro(summary.spent)),
+                _figure(context, 'Came in', formatEuro(summary.income)),
                 _figure(context, 'Savings rate', rate == null ? '–' : '${(rate * 100).toStringAsFixed(rate * 100 < 10 ? 1 : 0)}%'),
               ],
             ),
@@ -139,9 +139,9 @@ class _SpendingChart extends StatelessWidget {
     final planned = summary.plannedSpendingPerMonth / 100;
     final maxSpent = summary.spentPerMonth.fold(0, math.max) / 100;
     final top = math.max(1.0, math.max(planned, maxSpent) * 1.15);
-    final description = StringBuffer('Bar chart of spending per month in ${summary.year}. Planned spending is ${formatRand(summary.plannedSpendingPerMonth)} a month. ');
+    final description = StringBuffer('Bar chart of spending per month in ${summary.year}. Planned spending is ${formatEuro(summary.plannedSpendingPerMonth)} a month. ');
     for (var i = 0; i < 12; i++) {
-      if (summary.spentPerMonth[i] > 0) description.write('${shortMonthNames[i]} ${formatRand(summary.spentPerMonth[i])}. ');
+      if (summary.spentPerMonth[i] > 0) description.write('${shortMonthNames[i]} ${formatEuro(summary.spentPerMonth[i])}. ');
     }
     return Semantics(
       label: description.toString(),
@@ -168,7 +168,7 @@ class _SpendingChart extends StatelessWidget {
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: (_) => c.ink,
                       getTooltipItem: (group, _, rod, _) => BarTooltipItem(
-                        '${shortMonthNames[group.x]}\n${formatRand((rod.toY * 100).round())}',
+                        '${shortMonthNames[group.x]}\n${formatEuro((rod.toY * 100).round())}',
                         AppText.small.copyWith(color: c.onInk),
                       ),
                     ),
@@ -225,7 +225,7 @@ class _SpendingChart extends StatelessWidget {
                 children: [
                   _legend(context, c.ink, 'Spent'),
                   _legend(context, c.over, 'Over the plan'),
-                  _legend(context, c.highlight, 'Planned spending (${formatRand(summary.plannedSpendingPerMonth)})'),
+                  _legend(context, c.highlight, 'Planned spending (${formatEuro(summary.plannedSpendingPerMonth)})'),
                 ],
               ),
             ),
@@ -244,12 +244,12 @@ class _SpendingChart extends StatelessWidget {
     return 10 * magnitude;
   }
 
-  static String _short(double rand) {
-    if (rand >= 1000) {
-      final k = rand / 1000;
-      return 'R${k == k.roundToDouble() ? k.toStringAsFixed(0) : k.toStringAsFixed(1)}k';
+  static String _short(double euros) {
+    if (euros >= 1000) {
+      final k = euros / 1000;
+      return '€${(k == k.roundToDouble() ? k.toStringAsFixed(0) : k.toStringAsFixed(1)).replaceAll('.', ',')}k';
     }
-    return 'R${rand.toStringAsFixed(0)}';
+    return '€${euros.toStringAsFixed(0)}';
   }
 
   Widget _legend(BuildContext context, Color color, String label) {
@@ -286,7 +286,7 @@ class _GroupTable extends StatelessWidget {
           child: Text(value, textAlign: align, style: style, softWrap: false),
         );
 
-    String amount(int cents) => cents == 0 ? '–' : formatRand(cents, wholeRand: true);
+    String amount(int cents) => cents == 0 ? '–' : formatEuro(cents, wholeEuros: true);
 
     final totalPerMonth = summary.spentPerMonth;
     final totalBudget = rows.fold(0, (a, g) => a + g.annualBudget);
@@ -298,7 +298,7 @@ class _GroupTable extends StatelessWidget {
     Widget difference(int value) {
       final over = value < 0;
       return text(
-        over ? '${formatRand(-value, wholeRand: true)} over' : formatRand(value, wholeRand: true),
+        over ? '${formatEuro(-value, wholeEuros: true)} over' : formatEuro(value, wholeEuros: true),
         cell.copyWith(color: over ? c.overText : c.ink, fontWeight: over ? FontWeight.w800 : FontWeight.w600),
       );
     }

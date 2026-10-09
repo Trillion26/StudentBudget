@@ -1,11 +1,11 @@
 {
-    "name": "Emily’s Budget",
-    "short_name": "Emily’s Budget",
+    "name": "Veen Budget",
+    "short_name": "Veen Budget",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0E4D6E",
-    "theme_color": "#0E4D6E",
-    "description": "Plan and track a student budget in rand.",
+    "background_color": "#2F553B",
+    "theme_color": "#2F553B",
+    "description": "Plan and track a household budget in euros.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

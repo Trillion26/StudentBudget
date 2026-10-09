@@ -1,17 +1,16 @@
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
-import '../logic/dates.dart';
 import '../logic/models.dart';
 import 'database.dart';
 
-/// A category in the starter budget. [budgetRand] is the monthly budget in
-/// whole rand (0 when the brief gives no amount).
+/// A category in the starter budget. [budgetEuros] is the monthly budget in
+/// whole euros (0 leaves it for the household to fill in).
 class SeedCategory {
-  const SeedCategory(this.emoji, this.name, [this.budgetRand = 0]);
+  const SeedCategory(this.emoji, this.name, [this.budgetEuros = 0]);
   final String emoji;
   final String name;
-  final int budgetRand;
+  final int budgetEuros;
 }
 
 class SeedGroup {
@@ -22,125 +21,120 @@ class SeedGroup {
   final List<SeedCategory> categories;
 }
 
-/// The default categories and starter budget from Student_Budget_ZAR.xlsx:
-/// R4 500 coming in, R4 200 of spending.
+/// Categories named "… – Partner 1" or "… – Partner 2" are renamed when the
+/// partners' names are set (see BudgetStore.setPartnerNames).
+const String partner1Suffix = ' – Partner 1';
+const String partner2Suffix = ' – Partner 2';
+
+/// The default categories for a Dutch household with children and a
+/// mortgage. Budgets start at € 0 so the household fills in its own.
 const List<SeedGroup> seedGroups = [
-  SeedGroup('💰', 'Income', GroupKind.income, [
-    SeedCategory('👪', 'Allowance from family', 3000),
-    SeedCategory('🎓', 'NSFAS / bursary allowance'),
-    SeedCategory('💼', 'Part-time job', 1500),
-    SeedCategory('✏️', 'Tutoring & side gigs'),
+  SeedGroup('💶', 'Income', GroupKind.income, [
+    SeedCategory('💼', 'Salary$partner1Suffix'),
+    SeedCategory('💼', 'Salary$partner2Suffix'),
+    SeedCategory('👶', 'Child benefit (kinderbijslag)'),
+    SeedCategory('🧒', 'Child budget (kindgebonden budget)'),
+    SeedCategory('🏫', 'Childcare allowance (toeslag)'),
+    SeedCategory('🧾', 'Tax refund'),
     SeedCategory('➕', 'Other income'),
   ]),
-  SeedGroup('🏠', 'Accommodation', GroupKind.spending, [
-    SeedCategory('🏠', 'Rent / res fees'),
-    SeedCategory('⚡', 'Electricity – prepaid', 200),
+  SeedGroup('🏠', 'Housing & utilities', GroupKind.spending, [
+    SeedCategory('🏠', mortgageCategoryName),
+    SeedCategory('⚡', 'Energy (gas & electricity)'),
     SeedCategory('💧', 'Water'),
-    SeedCategory('📡', 'Wi-Fi'),
-    SeedCategory('🧾', 'Res / flat levies & admin fees'),
-    SeedCategory('🛡️', 'Contents insurance'),
-    SeedCategory('🧺', 'Laundry', 60),
-    SeedCategory('🍽️', 'Household items', 50),
-    SeedCategory('🛏️', 'Furniture & bedding'),
-    SeedCategory('🧽', 'Cleaning supplies', 60),
-    SeedCategory('🏘️', 'Other accommodation'),
+    SeedCategory('📡', 'Internet & TV'),
+    SeedCategory('🏛️', 'Municipal taxes'),
+    SeedCategory('🌊', 'Water board tax'),
+    SeedCategory('🛡️', 'Home & contents insurance'),
+    SeedCategory('⚖️', 'Liability & legal insurance'),
+    SeedCategory('🔧', 'Maintenance & repairs'),
+    SeedCategory('🛋️', 'Furniture & household items'),
   ]),
-  SeedGroup('🩺', 'Health & insurance', GroupKind.spending, [
-    SeedCategory('🏥', 'Medical aid / hospital plan'),
-    SeedCategory('📱', 'Phone & laptop insurance'),
-    SeedCategory('💊', 'Medication', 80),
-    SeedCategory('🦷', 'Doctor & dentist'),
-    SeedCategory('👓', 'Glasses & contact lenses'),
+  SeedGroup('🩺', 'Health', GroupKind.spending, [
+    SeedCategory('🏥', 'Health insurance$partner1Suffix'),
+    SeedCategory('🏥', 'Health insurance$partner2Suffix'),
+    SeedCategory('💶', 'Deductible (eigen risico)'),
+    SeedCategory('🦷', 'Dentist & physio'),
+    SeedCategory('💊', 'Pharmacy'),
   ]),
-  SeedGroup('🎓', 'Studies', GroupKind.spending, [
-    SeedCategory('🏛️', 'Tuition fees – my share'),
-    SeedCategory('📝', 'Registration fees'),
-    SeedCategory('📚', 'Textbooks', 200),
-    SeedCategory('🖊️', 'Stationery', 60),
-    SeedCategory('💻', 'Laptop / device repayment'),
-    SeedCategory('🧩', 'Software & apps for studies'),
-    SeedCategory('🖨️', 'Printing & photocopies', 80),
-    SeedCategory('🔬', 'Course materials & lab kit'),
-    SeedCategory('📋', 'Exam & application fees'),
-    SeedCategory('🚌', 'Field trips & projects'),
-    SeedCategory('📎', 'Other study costs'),
+  SeedGroup('👶', 'Children & childcare', GroupKind.spending, [
+    SeedCategory('🧸', 'Childcare (kinderopvang)'),
+    SeedCategory('🍼', 'Nappies & baby food'),
+    SeedCategory('👕', "Kids' clothes & shoes"),
+    SeedCategory('🎒', 'School & activities'),
+    SeedCategory('🧩', 'Toys & books'),
+    SeedCategory('🧑‍🍼', 'Babysitter'),
   ]),
   SeedGroup('🛒', 'Groceries & household', GroupKind.spending, [
-    SeedCategory('🛒', 'Groceries', 1100),
-    SeedCategory('🍱', 'Meal plan / campus food', 200),
+    SeedCategory('🛒', 'Groceries'),
+    SeedCategory('🧴', 'Drugstore'),
+    SeedCategory('🧽', 'Cleaning products'),
   ]),
-  SeedGroup('🚕', 'Transport', GroupKind.spending, [
-    SeedCategory('🚆', 'Bus / train pass'),
+  SeedGroup('🚗', 'Transport', GroupKind.spending, [
     SeedCategory('🚗', 'Car insurance'),
-    SeedCategory('⛽', 'Petrol'),
+    SeedCategory('🧾', 'Road tax'),
+    SeedCategory('⛽', 'Fuel & charging'),
+    SeedCategory('🔧', 'Car maintenance & APK'),
     SeedCategory('🅿️', 'Parking'),
-    SeedCategory('🔧', 'Car service & repairs'),
-    SeedCategory('🚕', 'Taxi fares', 400),
-    SeedCategory('🚙', 'Uber / Bolt', 100),
-    SeedCategory('🚲', 'Bicycle / scooter'),
-    SeedCategory('🛣️', 'Other transport'),
+    SeedCategory('🚆', 'Public transport'),
+    SeedCategory('🚲', 'Bikes'),
   ]),
-  SeedGroup('📶', 'Subscriptions & phone', GroupKind.spending, [
-    SeedCategory('🏋️', 'Gym'),
-    SeedCategory('🎭', 'Clubs & societies', 50),
-    SeedCategory('🎧', 'Music streaming', 40),
-    SeedCategory('📺', 'Showmax / DStv'),
-    SeedCategory('🎬', 'Netflix & other streaming'),
-    SeedCategory('📞', 'Airtime / cellphone contract', 50),
-    SeedCategory('📶', 'Data bundles', 250),
+  SeedGroup('📱', 'Sport, subs & phones', GroupKind.spending, [
+    SeedCategory('📱', 'Phone$partner1Suffix'),
+    SeedCategory('📱', 'Phone$partner2Suffix'),
+    SeedCategory('🎬', 'Streaming'),
+    SeedCategory('🏋️', 'Sport & gym'),
+    SeedCategory('📰', 'Other subscriptions'),
   ]),
   SeedGroup('🙂', 'Personal & lifestyle', GroupKind.spending, [
-    SeedCategory('🍔', 'Eating out & takeaways', 200),
-    SeedCategory('🎉', 'Going out & parties', 150),
-    SeedCategory('👟', 'Clothes & shoes', 100),
-    SeedCategory('🧴', 'Toiletries & personal care', 200),
-    SeedCategory('💈', 'Haircuts & grooming', 80),
+    SeedCategory('👗', 'Clothes & shoes'),
+    SeedCategory('🍽️', 'Eating out & takeaway'),
+    SeedCategory('🎉', 'Going out'),
+    SeedCategory('💈', 'Hairdresser & care'),
+    SeedCategory('🎁', 'Gifts & celebrations'),
     SeedCategory('🎨', 'Hobbies'),
-    SeedCategory('⛪', 'Church & charity'),
-    SeedCategory('☕', 'Coffee & snacks on campus', 80),
-    SeedCategory('🎁', 'Gifts & celebrations', 50),
-    SeedCategory('🛍️', 'Other personal', 100),
+    SeedCategory('💝', 'Charity'),
   ]),
-  SeedGroup('🤝', 'Family & stokvel', GroupKind.spending, [
-    SeedCategory('🏡', 'Money sent home'),
-    SeedCategory('🤝', 'Stokvel contribution'),
+  SeedGroup('🐾', 'Pets', GroupKind.spending, [
+    SeedCategory('🥫', 'Pet food'),
+    SeedCategory('🩺', 'Vet'),
+    SeedCategory('🛡️', 'Pet insurance'),
   ]),
   SeedGroup('🧳', 'Holidays & trips', GroupKind.spending, [
-    SeedCategory('🏖️', 'Holiday spending'),
-    SeedCategory('✈️', 'Bus or flight home', 200),
+    SeedCategory('🏖️', 'Holiday'),
     SeedCategory('🏕️', 'Weekends away'),
-    SeedCategory('🎡', 'Day trips & outings'),
-    SeedCategory('🎟️', 'Other one-off costs'),
+    SeedCategory('🎡', 'Days out'),
   ]),
-  SeedGroup('💳', 'Debt repayments', GroupKind.spending, [
-    SeedCategory('💳', 'Credit / store card'),
-    SeedCategory('🎓', 'Student loan repayment'),
-    SeedCategory('🤲', 'Other loan (e.g. family)'),
+  SeedGroup('💳', 'Loans', GroupKind.spending, [
+    SeedCategory('🎓', 'Student loan (DUO)'),
+    SeedCategory('🚙', 'Car loan'),
+    SeedCategory('💳', 'Other loans'),
   ]),
   SeedGroup('👛', 'Personal money', GroupKind.spending, [
-    SeedCategory('👛', 'Pocket money'),
+    SeedCategory('👛', 'Pocket money$partner1Suffix'),
+    SeedCategory('👛', 'Pocket money$partner2Suffix'),
   ]),
-  SeedGroup('🏦', 'Bank & cash', GroupKind.spending, [
-    SeedCategory('🏦', 'Bank fees', 60),
-    SeedCategory('🏧', 'Cash withdrawals'),
+  SeedGroup('🏦', 'Bank & other', GroupKind.spending, [
+    SeedCategory('🏦', 'Bank fees'),
+    SeedCategory('🧾', 'Other costs'),
   ]),
 ];
 
-/// Default savings goals (all start at R0 with no target).
+/// Default savings goals (all start at € 0 with no target).
 const List<(String, String)> seedGoals = [
-  ('🛟', 'Emergency fund'),
-  ('💻', 'Laptop & tech fund'),
-  ('🌍', 'Holiday & travel fund'),
-  ('🚗', "Driver's licence fund"),
-  ('📚', "Next year's textbooks fund"),
-  ('🎓', 'Graduation & moving fund'),
+  ('🛟', 'Emergency buffer'),
+  ('🏖️', 'Holiday fund'),
+  ('👶', "Kids' savings"),
+  ('🔨', 'Home improvements'),
+  ('🚗', 'Next car'),
+  ('📈', 'Investments'),
 ];
 
-/// Name of the category the default "Student loan" debt is linked to.
-const String studentLoanCategoryName = 'Student loan repayment';
+/// The category that mortgage payments are logged in.
+const String mortgageCategoryName = 'Mortgage';
 
-/// Suggested monthly saving for the Emergency fund, shown in onboarding.
-const int suggestedEmergencySavingCents = 20000;
+/// Suggested monthly saving for the Emergency buffer, shown in onboarding.
+const int suggestedEmergencySavingCents = 10000;
 
 /// Writes the starter data. Does nothing if the settings row already exists.
 Future<void> seedIfEmpty(AppDatabase db, {DateTime? now}) async {
@@ -154,50 +148,53 @@ Future<void> seedDefaults(AppDatabase db, {DateTime? now}) async {
   const uuid = Uuid();
   final created = (now ?? DateTime.now()).toUtc();
   await db.transaction(() async {
-    String? loanCategoryId;
     var groupOrder = 0;
     for (final g in seedGroups) {
       final groupId = uuid.v4();
-      await db.into(db.categoryGroups).insert(CategoryGroupsCompanion.insert(
-            id: groupId,
-            createdAt: created,
-            name: g.name,
-            icon: g.icon,
-            sortOrder: groupOrder++,
-            kind: g.kind,
-          ));
+      await db
+          .into(db.categoryGroups)
+          .insert(
+            CategoryGroupsCompanion.insert(
+              id: groupId,
+              createdAt: created,
+              name: g.name,
+              icon: g.icon,
+              sortOrder: groupOrder++,
+              kind: g.kind,
+            ),
+          );
       var categoryOrder = 0;
       for (final c in g.categories) {
         final id = uuid.v4();
-        if (c.name == studentLoanCategoryName) loanCategoryId = id;
-        await db.into(db.categories).insert(CategoriesCompanion.insert(
-              id: id,
-              createdAt: created,
-              name: c.name,
-              emoji: c.emoji,
-              groupId: groupId,
-              monthlyBudget: Value(c.budgetRand * 100),
-              sortOrder: categoryOrder++,
-            ));
+        await db
+            .into(db.categories)
+            .insert(
+              CategoriesCompanion.insert(
+                id: id,
+                createdAt: created,
+                name: c.name,
+                emoji: c.emoji,
+                groupId: groupId,
+                monthlyBudget: Value(c.budgetEuros * 100),
+                sortOrder: categoryOrder++,
+              ),
+            );
       }
     }
     var goalOrder = 0;
     for (final (emoji, name) in seedGoals) {
-      await db.into(db.savingsGoals).insert(SavingsGoalsCompanion.insert(
-            id: uuid.v4(),
-            createdAt: created,
-            name: name,
-            emoji: emoji,
-            sortOrder: Value(goalOrder++),
-          ));
+      await db
+          .into(db.savingsGoals)
+          .insert(
+            SavingsGoalsCompanion.insert(
+              id: uuid.v4(),
+              createdAt: created,
+              name: name,
+              emoji: emoji,
+              sortOrder: Value(goalOrder++),
+            ),
+          );
     }
-    await db.into(db.debts).insert(DebtsCompanion.insert(
-          id: uuid.v4(),
-          createdAt: created,
-          name: 'Student loan',
-          startDate: dateOnly(now ?? DateTime.now()),
-          linkedCategoryId: Value(loanCategoryId),
-        ));
     await db.into(db.settings).insert(SettingsCompanion.insert(id: const Value(1), createdAt: created));
   });
 }

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../app_scope.dart';
 import '../../design/app_colors.dart';
-import '../../design/rand_field.dart';
+import '../../design/euro_field.dart';
 import '../../design/theme.dart';
 import '../../design/widgets.dart';
 import '../../logic/money.dart';
@@ -38,7 +38,7 @@ class IncomeFields extends StatelessWidget {
                   Expanded(child: Text(cat.name, style: AppText.body.copyWith(color: c.ink))),
                 ],
                 if (stacked) const SizedBox(height: 8) else const SizedBox(width: 12),
-                RandField(
+                EuroField(
                   key: ValueKey('income-${cat.id}'),
                   cents: cat.monthlyBudget,
                   width: stacked ? double.infinity : 130,
@@ -51,7 +51,7 @@ class IncomeFields extends StatelessWidget {
         ],
         const SizedBox(height: 12),
         Text(
-          'Total each month: ${formatRand(data.plannedIncome)}',
+          'Total each month: ${formatEuro(data.plannedIncome)}',
           style: AppText.body.copyWith(color: c.ink, fontWeight: FontWeight.w800),
         ),
       ],

@@ -1,8 +1,8 @@
 # Student Budget
 
-On the phone the app is called **Emily’s Budget** (`appName` in `lib/app_info.dart`). The home screen shows the shorter **Em’s Budget** (`CFBundleDisplayName` in `ios/Runner/Info.plist`). The code and repository keep the name Student Budget.
+On the phone the app is called **Veen Budget** (`appName` in `lib/app_info.dart` and `CFBundleDisplayName` in `ios/Runner/Info.plist`). The code and repository keep the name Student Budget.
 
-An iPhone app for a South African student to plan and track a monthly budget in rand. Everything stays on the phone. There are no accounts, no internet, no ads and no tracking.
+An iPhone app for a Dutch household (a couple with children and a mortgage) to plan and track a monthly budget in euros. Everything stays on the phone. There are no accounts, no internet, no ads and no tracking.
 
 This README is for the developer. Friends who just want to install the app should read [INSTALL-ON-IPHONE.md](INSTALL-ON-IPHONE.md).
 
@@ -67,7 +67,7 @@ Data you enter on Windows or in Chrome stays on that computer. It is separate fr
   flutter test
   ```
 
-- The tests cover every budget rule with fixed dates: budget-month boundaries, the daily allowance, goals, debts and rand formatting. They also cover seed data, the backup round trip, rejection of damaged backups, and the main screens.
+- The tests cover every budget rule with fixed dates: budget-month boundaries, the daily allowance, goals, loans, the mortgage schedule and euro formatting. They also cover seed data, the backup round trip, rejection of damaged backups, and the main screens.
 - The integration tests in `integration_test/` cover adding an expense and backup with restore. GitHub Actions runs them on an iPhone simulator. On Windows you can run them with `flutter test integration_test -d windows`.
 - Optional: render every screen to PNG files and check for layouts that overflow at iPhone SE size, Pro Max size, in dark mode and at double text size:
 
@@ -128,7 +128,7 @@ The `.ipa` is **unsigned**. Each person who installs it signs it with their own 
 lib/
   main.dart, app.dart      start-up, theme, onboarding vs. tabs
   logic/                   plain Dart rules (no Flutter): BudgetCalculator, DebtCalculator,
-                           BudgetMonth, rand formatting and parsing, validation
+                           BudgetMonth, MortgageCalculator, euro formatting and parsing, validation
   data/                    drift database and tables, seed data, BudgetStore (all changes),
                            backup JSON encoder/decoder, CSV export
   export/                  Excel (.xlsx) writer and the year overview workbook
@@ -158,7 +158,7 @@ DECISIONS.md               choices made where the brief was ambiguous
 
 - The app makes no network requests and contains no analytics or ads. No package that does is included.
 - `ios/Runner/PrivacyInfo.xcprivacy` declares that no data is collected and nothing is tracked.
-- Data stays in an SQLite file on the phone, unless the student saves a backup or exports a CSV or Excel file themselves.
+- Data stays in an SQLite file on the phone, unless the household saves a backup or exports a CSV or Excel file themselves.
 - App lock (optional) uses Face ID, Touch ID or the passcode through `local_auth`. It locks on launch and after 2 minutes in the background. While the app is in the app switcher, its screen is covered.
 
 ## 9. Optional: TestFlight (paid Apple Developer account)

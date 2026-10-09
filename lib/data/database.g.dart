@@ -3,8 +3,7 @@
 part of 'database.dart';
 
 // ignore_for_file: type=lint
-class $CategoryGroupsTable extends CategoryGroups
-    with TableInfo<$CategoryGroupsTable, CategoryGroup> {
+class $CategoryGroupsTable extends CategoryGroups with TableInfo<$CategoryGroupsTable, CategoryGroup> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -18,9 +17,7 @@ class $CategoryGroupsTable extends CategoryGroups
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -35,10 +32,7 @@ class $CategoryGroupsTable extends CategoryGroups
     'name',
     aliasedName,
     false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 40,
-    ),
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 40),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
@@ -51,9 +45,7 @@ class $CategoryGroupsTable extends CategoryGroups
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
-    'sortOrder',
-  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta('sortOrder');
   @override
   late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
     'sort_order',
@@ -63,33 +55,22 @@ class $CategoryGroupsTable extends CategoryGroups
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<GroupKind, String> kind =
-      GeneratedColumn<String>(
-        'kind',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<GroupKind>($CategoryGroupsTable.$converterkind);
+  late final GeneratedColumnWithTypeConverter<GroupKind, String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<GroupKind>($CategoryGroupsTable.$converterkind);
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    createdAt,
-    name,
-    icon,
-    sortOrder,
-    kind,
-  ];
+  List<GeneratedColumn> get $columns => [id, createdAt, name, icon, sortOrder, kind];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'category_groups';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<CategoryGroup> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<CategoryGroup> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -98,34 +79,22 @@ class $CategoryGroupsTable extends CategoryGroups
       context.missing(_idMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('icon')) {
-      context.handle(
-        _iconMeta,
-        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
-      );
+      context.handle(_iconMeta, icon.isAcceptableOrUnknown(data['icon']!, _iconMeta));
     } else if (isInserting) {
       context.missing(_iconMeta);
     }
     if (data.containsKey('sort_order')) {
-      context.handle(
-        _sortOrderMeta,
-        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
-      );
+      context.handle(_sortOrderMeta, sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
     } else if (isInserting) {
       context.missing(_sortOrderMeta);
     }
@@ -138,31 +107,13 @@ class $CategoryGroupsTable extends CategoryGroups
   CategoryGroup map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return CategoryGroup(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      icon: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}icon'],
-      )!,
-      sortOrder: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sort_order'],
-      )!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      icon: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}icon'])!,
+      sortOrder: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
       kind: $CategoryGroupsTable.$converterkind.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}kind'],
-        )!,
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}kind'])!,
       ),
     );
   }
@@ -172,8 +123,9 @@ class $CategoryGroupsTable extends CategoryGroups
     return $CategoryGroupsTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<GroupKind, String, String> $converterkind =
-      const EnumNameConverter<GroupKind>(GroupKind.values);
+  static JsonTypeConverter2<GroupKind, String, String> $converterkind = const EnumNameConverter<GroupKind>(
+    GroupKind.values,
+  );
 }
 
 class CategoryGroup extends DataClass implements Insertable<CategoryGroup> {
@@ -202,9 +154,7 @@ class CategoryGroup extends DataClass implements Insertable<CategoryGroup> {
     map['icon'] = Variable<String>(icon);
     map['sort_order'] = Variable<int>(sortOrder);
     {
-      map['kind'] = Variable<String>(
-        $CategoryGroupsTable.$converterkind.toSql(kind),
-      );
+      map['kind'] = Variable<String>($CategoryGroupsTable.$converterkind.toSql(kind));
     }
     return map;
   }
@@ -220,10 +170,7 @@ class CategoryGroup extends DataClass implements Insertable<CategoryGroup> {
     );
   }
 
-  factory CategoryGroup.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory CategoryGroup.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return CategoryGroup(
       id: serializer.fromJson<String>(json['id']),
@@ -231,9 +178,7 @@ class CategoryGroup extends DataClass implements Insertable<CategoryGroup> {
       name: serializer.fromJson<String>(json['name']),
       icon: serializer.fromJson<String>(json['icon']),
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
-      kind: $CategoryGroupsTable.$converterkind.fromJson(
-        serializer.fromJson<String>(json['kind']),
-      ),
+      kind: $CategoryGroupsTable.$converterkind.fromJson(serializer.fromJson<String>(json['kind'])),
     );
   }
   @override
@@ -245,9 +190,7 @@ class CategoryGroup extends DataClass implements Insertable<CategoryGroup> {
       'name': serializer.toJson<String>(name),
       'icon': serializer.toJson<String>(icon),
       'sortOrder': serializer.toJson<int>(sortOrder),
-      'kind': serializer.toJson<String>(
-        $CategoryGroupsTable.$converterkind.toJson(kind),
-      ),
+      'kind': serializer.toJson<String>($CategoryGroupsTable.$converterkind.toJson(kind)),
     };
   }
 
@@ -394,9 +337,7 @@ class CategoryGroupsCompanion extends UpdateCompanion<CategoryGroup> {
       map['sort_order'] = Variable<int>(sortOrder.value);
     }
     if (kind.present) {
-      map['kind'] = Variable<String>(
-        $CategoryGroupsTable.$converterkind.toSql(kind.value),
-      );
+      map['kind'] = Variable<String>($CategoryGroupsTable.$converterkind.toSql(kind.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -419,8 +360,7 @@ class CategoryGroupsCompanion extends UpdateCompanion<CategoryGroup> {
   }
 }
 
-class $CategoriesTable extends Categories
-    with TableInfo<$CategoriesTable, BudgetCategory> {
+class $CategoriesTable extends Categories with TableInfo<$CategoriesTable, BudgetCategory> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -434,9 +374,7 @@ class $CategoriesTable extends Categories
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -451,10 +389,7 @@ class $CategoriesTable extends Categories
     'name',
     aliasedName,
     false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 40,
-    ),
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 40),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
@@ -467,9 +402,7 @@ class $CategoriesTable extends Categories
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _groupIdMeta = const VerificationMeta(
-    'groupId',
-  );
+  static const VerificationMeta _groupIdMeta = const VerificationMeta('groupId');
   @override
   late final GeneratedColumn<String> groupId = GeneratedColumn<String>(
     'group_id',
@@ -477,13 +410,9 @@ class $CategoriesTable extends Categories
     false,
     type: DriftSqlType.string,
     requiredDuringInsert: true,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES category_groups (id)',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES category_groups (id)'),
   );
-  static const VerificationMeta _monthlyBudgetMeta = const VerificationMeta(
-    'monthlyBudget',
-  );
+  static const VerificationMeta _monthlyBudgetMeta = const VerificationMeta('monthlyBudget');
   @override
   late final GeneratedColumn<int> monthlyBudget = GeneratedColumn<int>(
     'monthly_budget',
@@ -493,9 +422,7 @@ class $CategoriesTable extends Categories
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
-  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
-    'sortOrder',
-  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta('sortOrder');
   @override
   late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
     'sort_order',
@@ -504,9 +431,7 @@ class $CategoriesTable extends Categories
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
-    'isArchived',
-  );
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta('isArchived');
   @override
   late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
     'is_archived',
@@ -514,32 +439,18 @@ class $CategoriesTable extends Categories
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_archived" IN (0, 1))',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_archived" IN (0, 1))'),
     defaultValue: const Constant(false),
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    createdAt,
-    name,
-    emoji,
-    groupId,
-    monthlyBudget,
-    sortOrder,
-    isArchived,
-  ];
+  List<GeneratedColumn> get $columns => [id, createdAt, name, emoji, groupId, monthlyBudget, sortOrder, isArchived];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'categories';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<BudgetCategory> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<BudgetCategory> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -548,59 +459,38 @@ class $CategoriesTable extends Categories
       context.missing(_idMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('emoji')) {
-      context.handle(
-        _emojiMeta,
-        emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta),
-      );
+      context.handle(_emojiMeta, emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta));
     } else if (isInserting) {
       context.missing(_emojiMeta);
     }
     if (data.containsKey('group_id')) {
-      context.handle(
-        _groupIdMeta,
-        groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta),
-      );
+      context.handle(_groupIdMeta, groupId.isAcceptableOrUnknown(data['group_id']!, _groupIdMeta));
     } else if (isInserting) {
       context.missing(_groupIdMeta);
     }
     if (data.containsKey('monthly_budget')) {
       context.handle(
         _monthlyBudgetMeta,
-        monthlyBudget.isAcceptableOrUnknown(
-          data['monthly_budget']!,
-          _monthlyBudgetMeta,
-        ),
+        monthlyBudget.isAcceptableOrUnknown(data['monthly_budget']!, _monthlyBudgetMeta),
       );
     }
     if (data.containsKey('sort_order')) {
-      context.handle(
-        _sortOrderMeta,
-        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
-      );
+      context.handle(_sortOrderMeta, sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
     } else if (isInserting) {
       context.missing(_sortOrderMeta);
     }
     if (data.containsKey('is_archived')) {
-      context.handle(
-        _isArchivedMeta,
-        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
-      );
+      context.handle(_isArchivedMeta, isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta));
     }
     return context;
   }
@@ -611,38 +501,14 @@ class $CategoriesTable extends Categories
   BudgetCategory map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return BudgetCategory(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      emoji: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}emoji'],
-      )!,
-      groupId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}group_id'],
-      )!,
-      monthlyBudget: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}monthly_budget'],
-      )!,
-      sortOrder: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sort_order'],
-      )!,
-      isArchived: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_archived'],
-      )!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      emoji: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}emoji'])!,
+      groupId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}group_id'])!,
+      monthlyBudget: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}monthly_budget'])!,
+      sortOrder: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      isArchived: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_archived'])!,
     );
   }
 
@@ -700,10 +566,7 @@ class BudgetCategory extends DataClass implements Insertable<BudgetCategory> {
     );
   }
 
-  factory BudgetCategory.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory BudgetCategory.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BudgetCategory(
       id: serializer.fromJson<String>(json['id']),
@@ -757,13 +620,9 @@ class BudgetCategory extends DataClass implements Insertable<BudgetCategory> {
       name: data.name.present ? data.name.value : this.name,
       emoji: data.emoji.present ? data.emoji.value : this.emoji,
       groupId: data.groupId.present ? data.groupId.value : this.groupId,
-      monthlyBudget: data.monthlyBudget.present
-          ? data.monthlyBudget.value
-          : this.monthlyBudget,
+      monthlyBudget: data.monthlyBudget.present ? data.monthlyBudget.value : this.monthlyBudget,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
-      isArchived: data.isArchived.present
-          ? data.isArchived.value
-          : this.isArchived,
+      isArchived: data.isArchived.present ? data.isArchived.value : this.isArchived,
     );
   }
 
@@ -783,16 +642,7 @@ class BudgetCategory extends DataClass implements Insertable<BudgetCategory> {
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    createdAt,
-    name,
-    emoji,
-    groupId,
-    monthlyBudget,
-    sortOrder,
-    isArchived,
-  );
+  int get hashCode => Object.hash(id, createdAt, name, emoji, groupId, monthlyBudget, sortOrder, isArchived);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -942,8 +792,7 @@ class CategoriesCompanion extends UpdateCompanion<BudgetCategory> {
   }
 }
 
-class $SavingsGoalsTable extends SavingsGoals
-    with TableInfo<$SavingsGoalsTable, SavingsGoal> {
+class $SavingsGoalsTable extends SavingsGoals with TableInfo<$SavingsGoalsTable, SavingsGoal> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -957,9 +806,7 @@ class $SavingsGoalsTable extends SavingsGoals
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -974,10 +821,7 @@ class $SavingsGoalsTable extends SavingsGoals
     'name',
     aliasedName,
     false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 40,
-    ),
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 40),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
@@ -990,9 +834,7 @@ class $SavingsGoalsTable extends SavingsGoals
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _targetAmountMeta = const VerificationMeta(
-    'targetAmount',
-  );
+  static const VerificationMeta _targetAmountMeta = const VerificationMeta('targetAmount');
   @override
   late final GeneratedColumn<int> targetAmount = GeneratedColumn<int>(
     'target_amount',
@@ -1002,17 +844,14 @@ class $SavingsGoalsTable extends SavingsGoals
     requiredDuringInsert: false,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime?, String> targetDate =
-      GeneratedColumn<String>(
-        'target_date',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      ).withConverter<DateTime?>($SavingsGoalsTable.$convertertargetDaten);
-  static const VerificationMeta _startingBalanceMeta = const VerificationMeta(
-    'startingBalance',
-  );
+  late final GeneratedColumnWithTypeConverter<DateTime?, String> targetDate = GeneratedColumn<String>(
+    'target_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<DateTime?>($SavingsGoalsTable.$convertertargetDaten);
+  static const VerificationMeta _startingBalanceMeta = const VerificationMeta('startingBalance');
   @override
   late final GeneratedColumn<int> startingBalance = GeneratedColumn<int>(
     'starting_balance',
@@ -1022,9 +861,7 @@ class $SavingsGoalsTable extends SavingsGoals
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
-  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
-    'sortOrder',
-  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta('sortOrder');
   @override
   late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
     'sort_order',
@@ -1034,9 +871,7 @@ class $SavingsGoalsTable extends SavingsGoals
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
-  static const VerificationMeta _isArchivedMeta = const VerificationMeta(
-    'isArchived',
-  );
+  static const VerificationMeta _isArchivedMeta = const VerificationMeta('isArchived');
   @override
   late final GeneratedColumn<bool> isArchived = GeneratedColumn<bool>(
     'is_archived',
@@ -1044,9 +879,7 @@ class $SavingsGoalsTable extends SavingsGoals
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_archived" IN (0, 1))',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("is_archived" IN (0, 1))'),
     defaultValue: const Constant(false),
   );
   @override
@@ -1067,10 +900,7 @@ class $SavingsGoalsTable extends SavingsGoals
   String get actualTableName => $name;
   static const String $name = 'savings_goals';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<SavingsGoal> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<SavingsGoal> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1079,58 +909,34 @@ class $SavingsGoalsTable extends SavingsGoals
       context.missing(_idMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('emoji')) {
-      context.handle(
-        _emojiMeta,
-        emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta),
-      );
+      context.handle(_emojiMeta, emoji.isAcceptableOrUnknown(data['emoji']!, _emojiMeta));
     } else if (isInserting) {
       context.missing(_emojiMeta);
     }
     if (data.containsKey('target_amount')) {
-      context.handle(
-        _targetAmountMeta,
-        targetAmount.isAcceptableOrUnknown(
-          data['target_amount']!,
-          _targetAmountMeta,
-        ),
-      );
+      context.handle(_targetAmountMeta, targetAmount.isAcceptableOrUnknown(data['target_amount']!, _targetAmountMeta));
     }
     if (data.containsKey('starting_balance')) {
       context.handle(
         _startingBalanceMeta,
-        startingBalance.isAcceptableOrUnknown(
-          data['starting_balance']!,
-          _startingBalanceMeta,
-        ),
+        startingBalance.isAcceptableOrUnknown(data['starting_balance']!, _startingBalanceMeta),
       );
     }
     if (data.containsKey('sort_order')) {
-      context.handle(
-        _sortOrderMeta,
-        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
-      );
+      context.handle(_sortOrderMeta, sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
     }
     if (data.containsKey('is_archived')) {
-      context.handle(
-        _isArchivedMeta,
-        isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
-      );
+      context.handle(_isArchivedMeta, isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta));
     }
     return context;
   }
@@ -1141,44 +947,17 @@ class $SavingsGoalsTable extends SavingsGoals
   SavingsGoal map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return SavingsGoal(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      emoji: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}emoji'],
-      )!,
-      targetAmount: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}target_amount'],
-      ),
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      emoji: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}emoji'])!,
+      targetAmount: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}target_amount']),
       targetDate: $SavingsGoalsTable.$convertertargetDaten.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}target_date'],
-        ),
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}target_date']),
       ),
-      startingBalance: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}starting_balance'],
-      )!,
-      sortOrder: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sort_order'],
-      )!,
-      isArchived: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_archived'],
-      )!,
+      startingBalance: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}starting_balance'])!,
+      sortOrder: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+      isArchived: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}is_archived'])!,
     );
   }
 
@@ -1187,10 +966,8 @@ class $SavingsGoalsTable extends SavingsGoals
     return $SavingsGoalsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<DateTime, String> $convertertargetDate =
-      const DateOnlyConverter();
-  static TypeConverter<DateTime?, String?> $convertertargetDaten =
-      NullAwareTypeConverter.wrap($convertertargetDate);
+  static TypeConverter<DateTime, String> $convertertargetDate = const DateOnlyConverter();
+  static TypeConverter<DateTime?, String?> $convertertargetDaten = NullAwareTypeConverter.wrap($convertertargetDate);
 }
 
 class SavingsGoal extends DataClass implements Insertable<SavingsGoal> {
@@ -1227,9 +1004,7 @@ class SavingsGoal extends DataClass implements Insertable<SavingsGoal> {
       map['target_amount'] = Variable<int>(targetAmount);
     }
     if (!nullToAbsent || targetDate != null) {
-      map['target_date'] = Variable<String>(
-        $SavingsGoalsTable.$convertertargetDaten.toSql(targetDate),
-      );
+      map['target_date'] = Variable<String>($SavingsGoalsTable.$convertertargetDaten.toSql(targetDate));
     }
     map['starting_balance'] = Variable<int>(startingBalance);
     map['sort_order'] = Variable<int>(sortOrder);
@@ -1243,22 +1018,15 @@ class SavingsGoal extends DataClass implements Insertable<SavingsGoal> {
       createdAt: Value(createdAt),
       name: Value(name),
       emoji: Value(emoji),
-      targetAmount: targetAmount == null && nullToAbsent
-          ? const Value.absent()
-          : Value(targetAmount),
-      targetDate: targetDate == null && nullToAbsent
-          ? const Value.absent()
-          : Value(targetDate),
+      targetAmount: targetAmount == null && nullToAbsent ? const Value.absent() : Value(targetAmount),
+      targetDate: targetDate == null && nullToAbsent ? const Value.absent() : Value(targetDate),
       startingBalance: Value(startingBalance),
       sortOrder: Value(sortOrder),
       isArchived: Value(isArchived),
     );
   }
 
-  factory SavingsGoal.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory SavingsGoal.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SavingsGoal(
       id: serializer.fromJson<String>(json['id']),
@@ -1315,19 +1083,11 @@ class SavingsGoal extends DataClass implements Insertable<SavingsGoal> {
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       name: data.name.present ? data.name.value : this.name,
       emoji: data.emoji.present ? data.emoji.value : this.emoji,
-      targetAmount: data.targetAmount.present
-          ? data.targetAmount.value
-          : this.targetAmount,
-      targetDate: data.targetDate.present
-          ? data.targetDate.value
-          : this.targetDate,
-      startingBalance: data.startingBalance.present
-          ? data.startingBalance.value
-          : this.startingBalance,
+      targetAmount: data.targetAmount.present ? data.targetAmount.value : this.targetAmount,
+      targetDate: data.targetDate.present ? data.targetDate.value : this.targetDate,
+      startingBalance: data.startingBalance.present ? data.startingBalance.value : this.startingBalance,
       sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
-      isArchived: data.isArchived.present
-          ? data.isArchived.value
-          : this.isArchived,
+      isArchived: data.isArchived.present ? data.isArchived.value : this.isArchived,
     );
   }
 
@@ -1348,17 +1108,8 @@ class SavingsGoal extends DataClass implements Insertable<SavingsGoal> {
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    createdAt,
-    name,
-    emoji,
-    targetAmount,
-    targetDate,
-    startingBalance,
-    sortOrder,
-    isArchived,
-  );
+  int get hashCode =>
+      Object.hash(id, createdAt, name, emoji, targetAmount, targetDate, startingBalance, sortOrder, isArchived);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1483,9 +1234,7 @@ class SavingsGoalsCompanion extends UpdateCompanion<SavingsGoal> {
       map['target_amount'] = Variable<int>(targetAmount.value);
     }
     if (targetDate.present) {
-      map['target_date'] = Variable<String>(
-        $SavingsGoalsTable.$convertertargetDaten.toSql(targetDate.value),
-      );
+      map['target_date'] = Variable<String>($SavingsGoalsTable.$convertertargetDaten.toSql(targetDate.value));
     }
     if (startingBalance.present) {
       map['starting_balance'] = Variable<int>(startingBalance.value);
@@ -1520,8 +1269,7 @@ class SavingsGoalsCompanion extends UpdateCompanion<SavingsGoal> {
   }
 }
 
-class $TransactionsTable extends Transactions
-    with TableInfo<$TransactionsTable, Txn> {
+class $TransactionsTable extends Transactions with TableInfo<$TransactionsTable, Txn> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1535,9 +1283,7 @@ class $TransactionsTable extends Transactions
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -1547,14 +1293,13 @@ class $TransactionsTable extends Transactions
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<TxnKind, String> kind =
-      GeneratedColumn<String>(
-        'kind',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<TxnKind>($TransactionsTable.$converterkind);
+  late final GeneratedColumnWithTypeConverter<TxnKind, String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<TxnKind>($TransactionsTable.$converterkind);
   static const VerificationMeta _amountMeta = const VerificationMeta('amount');
   @override
   late final GeneratedColumn<int> amount = GeneratedColumn<int>(
@@ -1566,14 +1311,13 @@ class $TransactionsTable extends Transactions
     requiredDuringInsert: true,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String> date =
-      GeneratedColumn<String>(
-        'date',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<DateTime>($TransactionsTable.$converterdate);
+  late final GeneratedColumnWithTypeConverter<DateTime, String> date = GeneratedColumn<String>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<DateTime>($TransactionsTable.$converterdate);
   static const VerificationMeta _noteMeta = const VerificationMeta('note');
   @override
   late final GeneratedColumn<String> note = GeneratedColumn<String>(
@@ -1585,9 +1329,7 @@ class $TransactionsTable extends Transactions
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
-  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
-    'categoryId',
-  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta('categoryId');
   @override
   late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
     'category_id',
@@ -1595,9 +1337,7 @@ class $TransactionsTable extends Transactions
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES categories (id)',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'),
   );
   static const VerificationMeta _goalIdMeta = const VerificationMeta('goalId');
   @override
@@ -1607,31 +1347,26 @@ class $TransactionsTable extends Transactions
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES savings_goals (id)',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES savings_goals (id)'),
   );
   @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    createdAt,
-    kind,
-    amount,
-    date,
-    note,
-    categoryId,
-    goalId,
-  ];
+  late final GeneratedColumnWithTypeConverter<Person, String> person = GeneratedColumn<String>(
+    'person',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('joint'),
+  ).withConverter<Person>($TransactionsTable.$converterperson);
+  @override
+  List<GeneratedColumn> get $columns => [id, createdAt, kind, amount, date, note, categoryId, goalId, person];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'transactions';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<Txn> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<Txn> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -1640,38 +1375,23 @@ class $TransactionsTable extends Transactions
       context.missing(_idMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('amount')) {
-      context.handle(
-        _amountMeta,
-        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
-      );
+      context.handle(_amountMeta, amount.isAcceptableOrUnknown(data['amount']!, _amountMeta));
     } else if (isInserting) {
       context.missing(_amountMeta);
     }
     if (data.containsKey('note')) {
-      context.handle(
-        _noteMeta,
-        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
-      );
+      context.handle(_noteMeta, note.isAcceptableOrUnknown(data['note']!, _noteMeta));
     }
     if (data.containsKey('category_id')) {
-      context.handle(
-        _categoryIdMeta,
-        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
-      );
+      context.handle(_categoryIdMeta, categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta));
     }
     if (data.containsKey('goal_id')) {
-      context.handle(
-        _goalIdMeta,
-        goalId.isAcceptableOrUnknown(data['goal_id']!, _goalIdMeta),
-      );
+      context.handle(_goalIdMeta, goalId.isAcceptableOrUnknown(data['goal_id']!, _goalIdMeta));
     }
     return context;
   }
@@ -1682,41 +1402,20 @@ class $TransactionsTable extends Transactions
   Txn map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Txn(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       kind: $TransactionsTable.$converterkind.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}kind'],
-        )!,
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}kind'])!,
       ),
-      amount: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}amount'],
-      )!,
+      amount: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}amount'])!,
       date: $TransactionsTable.$converterdate.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}date'],
-        )!,
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}date'])!,
       ),
-      note: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}note'],
-      )!,
-      categoryId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}category_id'],
-      ),
-      goalId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}goal_id'],
+      note: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}note'])!,
+      categoryId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}category_id']),
+      goalId: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}goal_id']),
+      person: $TransactionsTable.$converterperson.fromSql(
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}person'])!,
       ),
     );
   }
@@ -1726,10 +1425,9 @@ class $TransactionsTable extends Transactions
     return $TransactionsTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<TxnKind, String, String> $converterkind =
-      const EnumNameConverter<TxnKind>(TxnKind.values);
-  static TypeConverter<DateTime, String> $converterdate =
-      const DateOnlyConverter();
+  static JsonTypeConverter2<TxnKind, String, String> $converterkind = const EnumNameConverter<TxnKind>(TxnKind.values);
+  static TypeConverter<DateTime, String> $converterdate = const DateOnlyConverter();
+  static JsonTypeConverter2<Person, String, String> $converterperson = const EnumNameConverter<Person>(Person.values);
 }
 
 class Txn extends DataClass implements Insertable<Txn> {
@@ -1743,6 +1441,9 @@ class Txn extends DataClass implements Insertable<Txn> {
   final String note;
   final String? categoryId;
   final String? goalId;
+
+  /// Who the money belongs to (added in schema 2).
+  final Person person;
   const Txn({
     required this.id,
     required this.createdAt,
@@ -1752,6 +1453,7 @@ class Txn extends DataClass implements Insertable<Txn> {
     required this.note,
     this.categoryId,
     this.goalId,
+    required this.person,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1759,15 +1461,11 @@ class Txn extends DataClass implements Insertable<Txn> {
     map['id'] = Variable<String>(id);
     map['created_at'] = Variable<DateTime>(createdAt);
     {
-      map['kind'] = Variable<String>(
-        $TransactionsTable.$converterkind.toSql(kind),
-      );
+      map['kind'] = Variable<String>($TransactionsTable.$converterkind.toSql(kind));
     }
     map['amount'] = Variable<int>(amount);
     {
-      map['date'] = Variable<String>(
-        $TransactionsTable.$converterdate.toSql(date),
-      );
+      map['date'] = Variable<String>($TransactionsTable.$converterdate.toSql(date));
     }
     map['note'] = Variable<String>(note);
     if (!nullToAbsent || categoryId != null) {
@@ -1775,6 +1473,9 @@ class Txn extends DataClass implements Insertable<Txn> {
     }
     if (!nullToAbsent || goalId != null) {
       map['goal_id'] = Variable<String>(goalId);
+    }
+    {
+      map['person'] = Variable<String>($TransactionsTable.$converterperson.toSql(person));
     }
     return map;
   }
@@ -1787,31 +1488,24 @@ class Txn extends DataClass implements Insertable<Txn> {
       amount: Value(amount),
       date: Value(date),
       note: Value(note),
-      categoryId: categoryId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(categoryId),
-      goalId: goalId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(goalId),
+      categoryId: categoryId == null && nullToAbsent ? const Value.absent() : Value(categoryId),
+      goalId: goalId == null && nullToAbsent ? const Value.absent() : Value(goalId),
+      person: Value(person),
     );
   }
 
-  factory Txn.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory Txn.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Txn(
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      kind: $TransactionsTable.$converterkind.fromJson(
-        serializer.fromJson<String>(json['kind']),
-      ),
+      kind: $TransactionsTable.$converterkind.fromJson(serializer.fromJson<String>(json['kind'])),
       amount: serializer.fromJson<int>(json['amount']),
       date: serializer.fromJson<DateTime>(json['date']),
       note: serializer.fromJson<String>(json['note']),
       categoryId: serializer.fromJson<String?>(json['categoryId']),
       goalId: serializer.fromJson<String?>(json['goalId']),
+      person: $TransactionsTable.$converterperson.fromJson(serializer.fromJson<String>(json['person'])),
     );
   }
   @override
@@ -1820,14 +1514,13 @@ class Txn extends DataClass implements Insertable<Txn> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'kind': serializer.toJson<String>(
-        $TransactionsTable.$converterkind.toJson(kind),
-      ),
+      'kind': serializer.toJson<String>($TransactionsTable.$converterkind.toJson(kind)),
       'amount': serializer.toJson<int>(amount),
       'date': serializer.toJson<DateTime>(date),
       'note': serializer.toJson<String>(note),
       'categoryId': serializer.toJson<String?>(categoryId),
       'goalId': serializer.toJson<String?>(goalId),
+      'person': serializer.toJson<String>($TransactionsTable.$converterperson.toJson(person)),
     };
   }
 
@@ -1840,6 +1533,7 @@ class Txn extends DataClass implements Insertable<Txn> {
     String? note,
     Value<String?> categoryId = const Value.absent(),
     Value<String?> goalId = const Value.absent(),
+    Person? person,
   }) => Txn(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -1849,6 +1543,7 @@ class Txn extends DataClass implements Insertable<Txn> {
     note: note ?? this.note,
     categoryId: categoryId.present ? categoryId.value : this.categoryId,
     goalId: goalId.present ? goalId.value : this.goalId,
+    person: person ?? this.person,
   );
   Txn copyWithCompanion(TransactionsCompanion data) {
     return Txn(
@@ -1858,10 +1553,9 @@ class Txn extends DataClass implements Insertable<Txn> {
       amount: data.amount.present ? data.amount.value : this.amount,
       date: data.date.present ? data.date.value : this.date,
       note: data.note.present ? data.note.value : this.note,
-      categoryId: data.categoryId.present
-          ? data.categoryId.value
-          : this.categoryId,
+      categoryId: data.categoryId.present ? data.categoryId.value : this.categoryId,
       goalId: data.goalId.present ? data.goalId.value : this.goalId,
+      person: data.person.present ? data.person.value : this.person,
     );
   }
 
@@ -1875,14 +1569,14 @@ class Txn extends DataClass implements Insertable<Txn> {
           ..write('date: $date, ')
           ..write('note: $note, ')
           ..write('categoryId: $categoryId, ')
-          ..write('goalId: $goalId')
+          ..write('goalId: $goalId, ')
+          ..write('person: $person')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, createdAt, kind, amount, date, note, categoryId, goalId);
+  int get hashCode => Object.hash(id, createdAt, kind, amount, date, note, categoryId, goalId, person);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1894,7 +1588,8 @@ class Txn extends DataClass implements Insertable<Txn> {
           other.date == this.date &&
           other.note == this.note &&
           other.categoryId == this.categoryId &&
-          other.goalId == this.goalId);
+          other.goalId == this.goalId &&
+          other.person == this.person);
 }
 
 class TransactionsCompanion extends UpdateCompanion<Txn> {
@@ -1906,6 +1601,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
   final Value<String> note;
   final Value<String?> categoryId;
   final Value<String?> goalId;
+  final Value<Person> person;
   final Value<int> rowid;
   const TransactionsCompanion({
     this.id = const Value.absent(),
@@ -1916,6 +1612,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
     this.note = const Value.absent(),
     this.categoryId = const Value.absent(),
     this.goalId = const Value.absent(),
+    this.person = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TransactionsCompanion.insert({
@@ -1927,6 +1624,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
     this.note = const Value.absent(),
     this.categoryId = const Value.absent(),
     this.goalId = const Value.absent(),
+    this.person = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -1942,6 +1640,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
     Expression<String>? note,
     Expression<String>? categoryId,
     Expression<String>? goalId,
+    Expression<String>? person,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1953,6 +1652,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
       if (note != null) 'note': note,
       if (categoryId != null) 'category_id': categoryId,
       if (goalId != null) 'goal_id': goalId,
+      if (person != null) 'person': person,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1966,6 +1666,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
     Value<String>? note,
     Value<String?>? categoryId,
     Value<String?>? goalId,
+    Value<Person>? person,
     Value<int>? rowid,
   }) {
     return TransactionsCompanion(
@@ -1977,6 +1678,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
       note: note ?? this.note,
       categoryId: categoryId ?? this.categoryId,
       goalId: goalId ?? this.goalId,
+      person: person ?? this.person,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1991,17 +1693,13 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (kind.present) {
-      map['kind'] = Variable<String>(
-        $TransactionsTable.$converterkind.toSql(kind.value),
-      );
+      map['kind'] = Variable<String>($TransactionsTable.$converterkind.toSql(kind.value));
     }
     if (amount.present) {
       map['amount'] = Variable<int>(amount.value);
     }
     if (date.present) {
-      map['date'] = Variable<String>(
-        $TransactionsTable.$converterdate.toSql(date.value),
-      );
+      map['date'] = Variable<String>($TransactionsTable.$converterdate.toSql(date.value));
     }
     if (note.present) {
       map['note'] = Variable<String>(note.value);
@@ -2011,6 +1709,9 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
     }
     if (goalId.present) {
       map['goal_id'] = Variable<String>(goalId.value);
+    }
+    if (person.present) {
+      map['person'] = Variable<String>($TransactionsTable.$converterperson.toSql(person.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -2029,6 +1730,7 @@ class TransactionsCompanion extends UpdateCompanion<Txn> {
           ..write('note: $note, ')
           ..write('categoryId: $categoryId, ')
           ..write('goalId: $goalId, ')
+          ..write('person: $person, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2049,9 +1751,7 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -2066,10 +1766,7 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     'name',
     aliasedName,
     false,
-    additionalChecks: GeneratedColumn.checkTextLength(
-      minTextLength: 1,
-      maxTextLength: 40,
-    ),
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 40),
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
@@ -2082,8 +1779,7 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _balanceOnStartDateMeta =
-      const VerificationMeta('balanceOnStartDate');
+  static const VerificationMeta _balanceOnStartDateMeta = const VerificationMeta('balanceOnStartDate');
   @override
   late final GeneratedColumn<int> balanceOnStartDate = GeneratedColumn<int>(
     'balance_on_start_date',
@@ -2094,29 +1790,24 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     defaultValue: const Constant(0),
   );
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime, String> startDate =
-      GeneratedColumn<String>(
-        'start_date',
-        aliasedName,
-        false,
-        type: DriftSqlType.string,
-        requiredDuringInsert: true,
-      ).withConverter<DateTime>($DebtsTable.$converterstartDate);
-  static const VerificationMeta _annualInterestRatePercentMeta =
-      const VerificationMeta('annualInterestRatePercent');
+  late final GeneratedColumnWithTypeConverter<DateTime, String> startDate = GeneratedColumn<String>(
+    'start_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<DateTime>($DebtsTable.$converterstartDate);
+  static const VerificationMeta _annualInterestRatePercentMeta = const VerificationMeta('annualInterestRatePercent');
   @override
-  late final GeneratedColumn<double> annualInterestRatePercent =
-      GeneratedColumn<double>(
-        'annual_interest_rate_percent',
-        aliasedName,
-        false,
-        type: DriftSqlType.double,
-        requiredDuringInsert: false,
-        defaultValue: const Constant(0),
-      );
-  static const VerificationMeta _linkedCategoryIdMeta = const VerificationMeta(
-    'linkedCategoryId',
+  late final GeneratedColumn<double> annualInterestRatePercent = GeneratedColumn<double>(
+    'annual_interest_rate_percent',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
   );
+  static const VerificationMeta _linkedCategoryIdMeta = const VerificationMeta('linkedCategoryId');
   @override
   late final GeneratedColumn<String> linkedCategoryId = GeneratedColumn<String>(
     'linked_category_id',
@@ -2124,12 +1815,9 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES categories (id)',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'),
   );
-  static const VerificationMeta _latestStatementBalanceMeta =
-      const VerificationMeta('latestStatementBalance');
+  static const VerificationMeta _latestStatementBalanceMeta = const VerificationMeta('latestStatementBalance');
   @override
   late final GeneratedColumn<int> latestStatementBalance = GeneratedColumn<int>(
     'latest_statement_balance',
@@ -2139,8 +1827,7 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     requiredDuringInsert: false,
   );
   @override
-  late final GeneratedColumnWithTypeConverter<DateTime?, String>
-  latestStatementDate = GeneratedColumn<String>(
+  late final GeneratedColumnWithTypeConverter<DateTime?, String> latestStatementDate = GeneratedColumn<String>(
     'latest_statement_date',
     aliasedName,
     true,
@@ -2166,10 +1853,7 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
   String get actualTableName => $name;
   static const String $name = 'debts';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<Debt> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<Debt> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -2178,34 +1862,22 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
       context.missing(_idMeta);
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('name')) {
-      context.handle(
-        _nameMeta,
-        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
-      );
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('lender')) {
-      context.handle(
-        _lenderMeta,
-        lender.isAcceptableOrUnknown(data['lender']!, _lenderMeta),
-      );
+      context.handle(_lenderMeta, lender.isAcceptableOrUnknown(data['lender']!, _lenderMeta));
     }
     if (data.containsKey('balance_on_start_date')) {
       context.handle(
         _balanceOnStartDateMeta,
-        balanceOnStartDate.isAcceptableOrUnknown(
-          data['balance_on_start_date']!,
-          _balanceOnStartDateMeta,
-        ),
+        balanceOnStartDate.isAcceptableOrUnknown(data['balance_on_start_date']!, _balanceOnStartDateMeta),
       );
     }
     if (data.containsKey('annual_interest_rate_percent')) {
@@ -2220,19 +1892,13 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     if (data.containsKey('linked_category_id')) {
       context.handle(
         _linkedCategoryIdMeta,
-        linkedCategoryId.isAcceptableOrUnknown(
-          data['linked_category_id']!,
-          _linkedCategoryIdMeta,
-        ),
+        linkedCategoryId.isAcceptableOrUnknown(data['linked_category_id']!, _linkedCategoryIdMeta),
       );
     }
     if (data.containsKey('latest_statement_balance')) {
       context.handle(
         _latestStatementBalanceMeta,
-        latestStatementBalance.isAcceptableOrUnknown(
-          data['latest_statement_balance']!,
-          _latestStatementBalanceMeta,
-        ),
+        latestStatementBalance.isAcceptableOrUnknown(data['latest_statement_balance']!, _latestStatementBalanceMeta),
       );
     }
     return context;
@@ -2244,31 +1910,16 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
   Debt map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Debt(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      name: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}name'],
-      )!,
-      lender: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}lender'],
-      ),
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      lender: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}lender']),
       balanceOnStartDate: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}balance_on_start_date'],
       )!,
       startDate: $DebtsTable.$converterstartDate.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}start_date'],
-        )!,
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}start_date'])!,
       ),
       annualInterestRatePercent: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
@@ -2283,10 +1934,7 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
         data['${effectivePrefix}latest_statement_balance'],
       ),
       latestStatementDate: $DebtsTable.$converterlatestStatementDaten.fromSql(
-        attachedDatabase.typeMapping.read(
-          DriftSqlType.string,
-          data['${effectivePrefix}latest_statement_date'],
-        ),
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}latest_statement_date']),
       ),
     );
   }
@@ -2296,12 +1944,11 @@ class $DebtsTable extends Debts with TableInfo<$DebtsTable, Debt> {
     return $DebtsTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<DateTime, String> $converterstartDate =
-      const DateOnlyConverter();
-  static TypeConverter<DateTime, String> $converterlatestStatementDate =
-      const DateOnlyConverter();
-  static TypeConverter<DateTime?, String?> $converterlatestStatementDaten =
-      NullAwareTypeConverter.wrap($converterlatestStatementDate);
+  static TypeConverter<DateTime, String> $converterstartDate = const DateOnlyConverter();
+  static TypeConverter<DateTime, String> $converterlatestStatementDate = const DateOnlyConverter();
+  static TypeConverter<DateTime?, String?> $converterlatestStatementDaten = NullAwareTypeConverter.wrap(
+    $converterlatestStatementDate,
+  );
 }
 
 class Debt extends DataClass implements Insertable<Debt> {
@@ -2340,13 +1987,9 @@ class Debt extends DataClass implements Insertable<Debt> {
     }
     map['balance_on_start_date'] = Variable<int>(balanceOnStartDate);
     {
-      map['start_date'] = Variable<String>(
-        $DebtsTable.$converterstartDate.toSql(startDate),
-      );
+      map['start_date'] = Variable<String>($DebtsTable.$converterstartDate.toSql(startDate));
     }
-    map['annual_interest_rate_percent'] = Variable<double>(
-      annualInterestRatePercent,
-    );
+    map['annual_interest_rate_percent'] = Variable<double>(annualInterestRatePercent);
     if (!nullToAbsent || linkedCategoryId != null) {
       map['linked_category_id'] = Variable<String>(linkedCategoryId);
     }
@@ -2366,15 +2009,11 @@ class Debt extends DataClass implements Insertable<Debt> {
       id: Value(id),
       createdAt: Value(createdAt),
       name: Value(name),
-      lender: lender == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lender),
+      lender: lender == null && nullToAbsent ? const Value.absent() : Value(lender),
       balanceOnStartDate: Value(balanceOnStartDate),
       startDate: Value(startDate),
       annualInterestRatePercent: Value(annualInterestRatePercent),
-      linkedCategoryId: linkedCategoryId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(linkedCategoryId),
+      linkedCategoryId: linkedCategoryId == null && nullToAbsent ? const Value.absent() : Value(linkedCategoryId),
       latestStatementBalance: latestStatementBalance == null && nullToAbsent
           ? const Value.absent()
           : Value(latestStatementBalance),
@@ -2384,10 +2023,7 @@ class Debt extends DataClass implements Insertable<Debt> {
     );
   }
 
-  factory Debt.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory Debt.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Debt(
       id: serializer.fromJson<String>(json['id']),
@@ -2396,16 +2032,10 @@ class Debt extends DataClass implements Insertable<Debt> {
       lender: serializer.fromJson<String?>(json['lender']),
       balanceOnStartDate: serializer.fromJson<int>(json['balanceOnStartDate']),
       startDate: serializer.fromJson<DateTime>(json['startDate']),
-      annualInterestRatePercent: serializer.fromJson<double>(
-        json['annualInterestRatePercent'],
-      ),
+      annualInterestRatePercent: serializer.fromJson<double>(json['annualInterestRatePercent']),
       linkedCategoryId: serializer.fromJson<String?>(json['linkedCategoryId']),
-      latestStatementBalance: serializer.fromJson<int?>(
-        json['latestStatementBalance'],
-      ),
-      latestStatementDate: serializer.fromJson<DateTime?>(
-        json['latestStatementDate'],
-      ),
+      latestStatementBalance: serializer.fromJson<int?>(json['latestStatementBalance']),
+      latestStatementDate: serializer.fromJson<DateTime?>(json['latestStatementDate']),
     );
   }
   @override
@@ -2418,9 +2048,7 @@ class Debt extends DataClass implements Insertable<Debt> {
       'lender': serializer.toJson<String?>(lender),
       'balanceOnStartDate': serializer.toJson<int>(balanceOnStartDate),
       'startDate': serializer.toJson<DateTime>(startDate),
-      'annualInterestRatePercent': serializer.toJson<double>(
-        annualInterestRatePercent,
-      ),
+      'annualInterestRatePercent': serializer.toJson<double>(annualInterestRatePercent),
       'linkedCategoryId': serializer.toJson<String?>(linkedCategoryId),
       'latestStatementBalance': serializer.toJson<int?>(latestStatementBalance),
       'latestStatementDate': serializer.toJson<DateTime?>(latestStatementDate),
@@ -2445,17 +2073,10 @@ class Debt extends DataClass implements Insertable<Debt> {
     lender: lender.present ? lender.value : this.lender,
     balanceOnStartDate: balanceOnStartDate ?? this.balanceOnStartDate,
     startDate: startDate ?? this.startDate,
-    annualInterestRatePercent:
-        annualInterestRatePercent ?? this.annualInterestRatePercent,
-    linkedCategoryId: linkedCategoryId.present
-        ? linkedCategoryId.value
-        : this.linkedCategoryId,
-    latestStatementBalance: latestStatementBalance.present
-        ? latestStatementBalance.value
-        : this.latestStatementBalance,
-    latestStatementDate: latestStatementDate.present
-        ? latestStatementDate.value
-        : this.latestStatementDate,
+    annualInterestRatePercent: annualInterestRatePercent ?? this.annualInterestRatePercent,
+    linkedCategoryId: linkedCategoryId.present ? linkedCategoryId.value : this.linkedCategoryId,
+    latestStatementBalance: latestStatementBalance.present ? latestStatementBalance.value : this.latestStatementBalance,
+    latestStatementDate: latestStatementDate.present ? latestStatementDate.value : this.latestStatementDate,
   );
   Debt copyWithCompanion(DebtsCompanion data) {
     return Debt(
@@ -2463,22 +2084,16 @@ class Debt extends DataClass implements Insertable<Debt> {
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       name: data.name.present ? data.name.value : this.name,
       lender: data.lender.present ? data.lender.value : this.lender,
-      balanceOnStartDate: data.balanceOnStartDate.present
-          ? data.balanceOnStartDate.value
-          : this.balanceOnStartDate,
+      balanceOnStartDate: data.balanceOnStartDate.present ? data.balanceOnStartDate.value : this.balanceOnStartDate,
       startDate: data.startDate.present ? data.startDate.value : this.startDate,
       annualInterestRatePercent: data.annualInterestRatePercent.present
           ? data.annualInterestRatePercent.value
           : this.annualInterestRatePercent,
-      linkedCategoryId: data.linkedCategoryId.present
-          ? data.linkedCategoryId.value
-          : this.linkedCategoryId,
+      linkedCategoryId: data.linkedCategoryId.present ? data.linkedCategoryId.value : this.linkedCategoryId,
       latestStatementBalance: data.latestStatementBalance.present
           ? data.latestStatementBalance.value
           : this.latestStatementBalance,
-      latestStatementDate: data.latestStatementDate.present
-          ? data.latestStatementDate.value
-          : this.latestStatementDate,
+      latestStatementDate: data.latestStatementDate.present ? data.latestStatementDate.value : this.latestStatementDate,
     );
   }
 
@@ -2587,16 +2202,12 @@ class DebtsCompanion extends UpdateCompanion<Debt> {
       if (createdAt != null) 'created_at': createdAt,
       if (name != null) 'name': name,
       if (lender != null) 'lender': lender,
-      if (balanceOnStartDate != null)
-        'balance_on_start_date': balanceOnStartDate,
+      if (balanceOnStartDate != null) 'balance_on_start_date': balanceOnStartDate,
       if (startDate != null) 'start_date': startDate,
-      if (annualInterestRatePercent != null)
-        'annual_interest_rate_percent': annualInterestRatePercent,
+      if (annualInterestRatePercent != null) 'annual_interest_rate_percent': annualInterestRatePercent,
       if (linkedCategoryId != null) 'linked_category_id': linkedCategoryId,
-      if (latestStatementBalance != null)
-        'latest_statement_balance': latestStatementBalance,
-      if (latestStatementDate != null)
-        'latest_statement_date': latestStatementDate,
+      if (latestStatementBalance != null) 'latest_statement_balance': latestStatementBalance,
+      if (latestStatementDate != null) 'latest_statement_date': latestStatementDate,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2621,11 +2232,9 @@ class DebtsCompanion extends UpdateCompanion<Debt> {
       lender: lender ?? this.lender,
       balanceOnStartDate: balanceOnStartDate ?? this.balanceOnStartDate,
       startDate: startDate ?? this.startDate,
-      annualInterestRatePercent:
-          annualInterestRatePercent ?? this.annualInterestRatePercent,
+      annualInterestRatePercent: annualInterestRatePercent ?? this.annualInterestRatePercent,
       linkedCategoryId: linkedCategoryId ?? this.linkedCategoryId,
-      latestStatementBalance:
-          latestStatementBalance ?? this.latestStatementBalance,
+      latestStatementBalance: latestStatementBalance ?? this.latestStatementBalance,
       latestStatementDate: latestStatementDate ?? this.latestStatementDate,
       rowid: rowid ?? this.rowid,
     );
@@ -2650,28 +2259,20 @@ class DebtsCompanion extends UpdateCompanion<Debt> {
       map['balance_on_start_date'] = Variable<int>(balanceOnStartDate.value);
     }
     if (startDate.present) {
-      map['start_date'] = Variable<String>(
-        $DebtsTable.$converterstartDate.toSql(startDate.value),
-      );
+      map['start_date'] = Variable<String>($DebtsTable.$converterstartDate.toSql(startDate.value));
     }
     if (annualInterestRatePercent.present) {
-      map['annual_interest_rate_percent'] = Variable<double>(
-        annualInterestRatePercent.value,
-      );
+      map['annual_interest_rate_percent'] = Variable<double>(annualInterestRatePercent.value);
     }
     if (linkedCategoryId.present) {
       map['linked_category_id'] = Variable<String>(linkedCategoryId.value);
     }
     if (latestStatementBalance.present) {
-      map['latest_statement_balance'] = Variable<int>(
-        latestStatementBalance.value,
-      );
+      map['latest_statement_balance'] = Variable<int>(latestStatementBalance.value);
     }
     if (latestStatementDate.present) {
       map['latest_statement_date'] = Variable<String>(
-        $DebtsTable.$converterlatestStatementDaten.toSql(
-          latestStatementDate.value,
-        ),
+        $DebtsTable.$converterlatestStatementDaten.toSql(latestStatementDate.value),
       );
     }
     if (rowid.present) {
@@ -2699,8 +2300,635 @@ class DebtsCompanion extends UpdateCompanion<Debt> {
   }
 }
 
-class $SettingsTable extends Settings
-    with TableInfo<$SettingsTable, AppSettings> {
+class $MortgagesTable extends Mortgages with TableInfo<$MortgagesTable, Mortgage> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MortgagesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 40),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lenderMeta = const VerificationMeta('lender');
+  @override
+  late final GeneratedColumn<String> lender = GeneratedColumn<String>(
+    'lender',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<MortgageType, String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<MortgageType>($MortgagesTable.$convertertype);
+  static const VerificationMeta _balanceMeta = const VerificationMeta('balance');
+  @override
+  late final GeneratedColumn<int> balance = GeneratedColumn<int>(
+    'balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> balanceDate = GeneratedColumn<String>(
+    'balance_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<DateTime>($MortgagesTable.$converterbalanceDate);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, String> endDate = GeneratedColumn<String>(
+    'end_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  ).withConverter<DateTime>($MortgagesTable.$converterendDate);
+  static const VerificationMeta _annualInterestRatePercentMeta = const VerificationMeta('annualInterestRatePercent');
+  @override
+  late final GeneratedColumn<double> annualInterestRatePercent = GeneratedColumn<double>(
+    'annual_interest_rate_percent',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime?, String> fixedRateUntil = GeneratedColumn<String>(
+    'fixed_rate_until',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  ).withConverter<DateTime?>($MortgagesTable.$converterfixedRateUntiln);
+  static const VerificationMeta _linkedCategoryIdMeta = const VerificationMeta('linkedCategoryId');
+  @override
+  late final GeneratedColumn<String> linkedCategoryId = GeneratedColumn<String>(
+    'linked_category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('REFERENCES categories (id)'),
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta('sortOrder');
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    name,
+    lender,
+    type,
+    balance,
+    balanceDate,
+    endDate,
+    annualInterestRatePercent,
+    fixedRateUntil,
+    linkedCategoryId,
+    sortOrder,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'mortgages';
+  @override
+  VerificationContext validateIntegrity(Insertable<Mortgage> instance, {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(_nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('lender')) {
+      context.handle(_lenderMeta, lender.isAcceptableOrUnknown(data['lender']!, _lenderMeta));
+    }
+    if (data.containsKey('balance')) {
+      context.handle(_balanceMeta, balance.isAcceptableOrUnknown(data['balance']!, _balanceMeta));
+    } else if (isInserting) {
+      context.missing(_balanceMeta);
+    }
+    if (data.containsKey('annual_interest_rate_percent')) {
+      context.handle(
+        _annualInterestRatePercentMeta,
+        annualInterestRatePercent.isAcceptableOrUnknown(
+          data['annual_interest_rate_percent']!,
+          _annualInterestRatePercentMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_annualInterestRatePercentMeta);
+    }
+    if (data.containsKey('linked_category_id')) {
+      context.handle(
+        _linkedCategoryIdMeta,
+        linkedCategoryId.isAcceptableOrUnknown(data['linked_category_id']!, _linkedCategoryIdMeta),
+      );
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(_sortOrderMeta, sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Mortgage map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Mortgage(
+      id: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      lender: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}lender']),
+      type: $MortgagesTable.$convertertype.fromSql(
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}type'])!,
+      ),
+      balance: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}balance'])!,
+      balanceDate: $MortgagesTable.$converterbalanceDate.fromSql(
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}balance_date'])!,
+      ),
+      endDate: $MortgagesTable.$converterendDate.fromSql(
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}end_date'])!,
+      ),
+      annualInterestRatePercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}annual_interest_rate_percent'],
+      )!,
+      fixedRateUntil: $MortgagesTable.$converterfixedRateUntiln.fromSql(
+        attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}fixed_rate_until']),
+      ),
+      linkedCategoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linked_category_id'],
+      ),
+      sortOrder: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}sort_order'])!,
+    );
+  }
+
+  @override
+  $MortgagesTable createAlias(String alias) {
+    return $MortgagesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<MortgageType, String, String> $convertertype = const EnumNameConverter<MortgageType>(
+    MortgageType.values,
+  );
+  static TypeConverter<DateTime, String> $converterbalanceDate = const DateOnlyConverter();
+  static TypeConverter<DateTime, String> $converterendDate = const DateOnlyConverter();
+  static TypeConverter<DateTime, String> $converterfixedRateUntil = const DateOnlyConverter();
+  static TypeConverter<DateTime?, String?> $converterfixedRateUntiln = NullAwareTypeConverter.wrap(
+    $converterfixedRateUntil,
+  );
+}
+
+class Mortgage extends DataClass implements Insertable<Mortgage> {
+  final String id;
+  final DateTime createdAt;
+  final String name;
+  final String? lender;
+  final MortgageType type;
+
+  /// Whole cents still owed on [balanceDate].
+  final int balance;
+  final DateTime balanceDate;
+
+  /// The month of the last payment.
+  final DateTime endDate;
+  final double annualInterestRatePercent;
+  final DateTime? fixedRateUntil;
+
+  /// Expenses in this category are the actual payments.
+  final String? linkedCategoryId;
+  final int sortOrder;
+  const Mortgage({
+    required this.id,
+    required this.createdAt,
+    required this.name,
+    this.lender,
+    required this.type,
+    required this.balance,
+    required this.balanceDate,
+    required this.endDate,
+    required this.annualInterestRatePercent,
+    this.fixedRateUntil,
+    this.linkedCategoryId,
+    required this.sortOrder,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || lender != null) {
+      map['lender'] = Variable<String>(lender);
+    }
+    {
+      map['type'] = Variable<String>($MortgagesTable.$convertertype.toSql(type));
+    }
+    map['balance'] = Variable<int>(balance);
+    {
+      map['balance_date'] = Variable<String>($MortgagesTable.$converterbalanceDate.toSql(balanceDate));
+    }
+    {
+      map['end_date'] = Variable<String>($MortgagesTable.$converterendDate.toSql(endDate));
+    }
+    map['annual_interest_rate_percent'] = Variable<double>(annualInterestRatePercent);
+    if (!nullToAbsent || fixedRateUntil != null) {
+      map['fixed_rate_until'] = Variable<String>($MortgagesTable.$converterfixedRateUntiln.toSql(fixedRateUntil));
+    }
+    if (!nullToAbsent || linkedCategoryId != null) {
+      map['linked_category_id'] = Variable<String>(linkedCategoryId);
+    }
+    map['sort_order'] = Variable<int>(sortOrder);
+    return map;
+  }
+
+  MortgagesCompanion toCompanion(bool nullToAbsent) {
+    return MortgagesCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      name: Value(name),
+      lender: lender == null && nullToAbsent ? const Value.absent() : Value(lender),
+      type: Value(type),
+      balance: Value(balance),
+      balanceDate: Value(balanceDate),
+      endDate: Value(endDate),
+      annualInterestRatePercent: Value(annualInterestRatePercent),
+      fixedRateUntil: fixedRateUntil == null && nullToAbsent ? const Value.absent() : Value(fixedRateUntil),
+      linkedCategoryId: linkedCategoryId == null && nullToAbsent ? const Value.absent() : Value(linkedCategoryId),
+      sortOrder: Value(sortOrder),
+    );
+  }
+
+  factory Mortgage.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Mortgage(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      name: serializer.fromJson<String>(json['name']),
+      lender: serializer.fromJson<String?>(json['lender']),
+      type: $MortgagesTable.$convertertype.fromJson(serializer.fromJson<String>(json['type'])),
+      balance: serializer.fromJson<int>(json['balance']),
+      balanceDate: serializer.fromJson<DateTime>(json['balanceDate']),
+      endDate: serializer.fromJson<DateTime>(json['endDate']),
+      annualInterestRatePercent: serializer.fromJson<double>(json['annualInterestRatePercent']),
+      fixedRateUntil: serializer.fromJson<DateTime?>(json['fixedRateUntil']),
+      linkedCategoryId: serializer.fromJson<String?>(json['linkedCategoryId']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'name': serializer.toJson<String>(name),
+      'lender': serializer.toJson<String?>(lender),
+      'type': serializer.toJson<String>($MortgagesTable.$convertertype.toJson(type)),
+      'balance': serializer.toJson<int>(balance),
+      'balanceDate': serializer.toJson<DateTime>(balanceDate),
+      'endDate': serializer.toJson<DateTime>(endDate),
+      'annualInterestRatePercent': serializer.toJson<double>(annualInterestRatePercent),
+      'fixedRateUntil': serializer.toJson<DateTime?>(fixedRateUntil),
+      'linkedCategoryId': serializer.toJson<String?>(linkedCategoryId),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+    };
+  }
+
+  Mortgage copyWith({
+    String? id,
+    DateTime? createdAt,
+    String? name,
+    Value<String?> lender = const Value.absent(),
+    MortgageType? type,
+    int? balance,
+    DateTime? balanceDate,
+    DateTime? endDate,
+    double? annualInterestRatePercent,
+    Value<DateTime?> fixedRateUntil = const Value.absent(),
+    Value<String?> linkedCategoryId = const Value.absent(),
+    int? sortOrder,
+  }) => Mortgage(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    name: name ?? this.name,
+    lender: lender.present ? lender.value : this.lender,
+    type: type ?? this.type,
+    balance: balance ?? this.balance,
+    balanceDate: balanceDate ?? this.balanceDate,
+    endDate: endDate ?? this.endDate,
+    annualInterestRatePercent: annualInterestRatePercent ?? this.annualInterestRatePercent,
+    fixedRateUntil: fixedRateUntil.present ? fixedRateUntil.value : this.fixedRateUntil,
+    linkedCategoryId: linkedCategoryId.present ? linkedCategoryId.value : this.linkedCategoryId,
+    sortOrder: sortOrder ?? this.sortOrder,
+  );
+  Mortgage copyWithCompanion(MortgagesCompanion data) {
+    return Mortgage(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      name: data.name.present ? data.name.value : this.name,
+      lender: data.lender.present ? data.lender.value : this.lender,
+      type: data.type.present ? data.type.value : this.type,
+      balance: data.balance.present ? data.balance.value : this.balance,
+      balanceDate: data.balanceDate.present ? data.balanceDate.value : this.balanceDate,
+      endDate: data.endDate.present ? data.endDate.value : this.endDate,
+      annualInterestRatePercent: data.annualInterestRatePercent.present
+          ? data.annualInterestRatePercent.value
+          : this.annualInterestRatePercent,
+      fixedRateUntil: data.fixedRateUntil.present ? data.fixedRateUntil.value : this.fixedRateUntil,
+      linkedCategoryId: data.linkedCategoryId.present ? data.linkedCategoryId.value : this.linkedCategoryId,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Mortgage(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('name: $name, ')
+          ..write('lender: $lender, ')
+          ..write('type: $type, ')
+          ..write('balance: $balance, ')
+          ..write('balanceDate: $balanceDate, ')
+          ..write('endDate: $endDate, ')
+          ..write('annualInterestRatePercent: $annualInterestRatePercent, ')
+          ..write('fixedRateUntil: $fixedRateUntil, ')
+          ..write('linkedCategoryId: $linkedCategoryId, ')
+          ..write('sortOrder: $sortOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    name,
+    lender,
+    type,
+    balance,
+    balanceDate,
+    endDate,
+    annualInterestRatePercent,
+    fixedRateUntil,
+    linkedCategoryId,
+    sortOrder,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Mortgage &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.name == this.name &&
+          other.lender == this.lender &&
+          other.type == this.type &&
+          other.balance == this.balance &&
+          other.balanceDate == this.balanceDate &&
+          other.endDate == this.endDate &&
+          other.annualInterestRatePercent == this.annualInterestRatePercent &&
+          other.fixedRateUntil == this.fixedRateUntil &&
+          other.linkedCategoryId == this.linkedCategoryId &&
+          other.sortOrder == this.sortOrder);
+}
+
+class MortgagesCompanion extends UpdateCompanion<Mortgage> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<String> name;
+  final Value<String?> lender;
+  final Value<MortgageType> type;
+  final Value<int> balance;
+  final Value<DateTime> balanceDate;
+  final Value<DateTime> endDate;
+  final Value<double> annualInterestRatePercent;
+  final Value<DateTime?> fixedRateUntil;
+  final Value<String?> linkedCategoryId;
+  final Value<int> sortOrder;
+  final Value<int> rowid;
+  const MortgagesCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.name = const Value.absent(),
+    this.lender = const Value.absent(),
+    this.type = const Value.absent(),
+    this.balance = const Value.absent(),
+    this.balanceDate = const Value.absent(),
+    this.endDate = const Value.absent(),
+    this.annualInterestRatePercent = const Value.absent(),
+    this.fixedRateUntil = const Value.absent(),
+    this.linkedCategoryId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  MortgagesCompanion.insert({
+    required String id,
+    required DateTime createdAt,
+    required String name,
+    this.lender = const Value.absent(),
+    required MortgageType type,
+    required int balance,
+    required DateTime balanceDate,
+    required DateTime endDate,
+    required double annualInterestRatePercent,
+    this.fixedRateUntil = const Value.absent(),
+    this.linkedCategoryId = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       createdAt = Value(createdAt),
+       name = Value(name),
+       type = Value(type),
+       balance = Value(balance),
+       balanceDate = Value(balanceDate),
+       endDate = Value(endDate),
+       annualInterestRatePercent = Value(annualInterestRatePercent);
+  static Insertable<Mortgage> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<String>? name,
+    Expression<String>? lender,
+    Expression<String>? type,
+    Expression<int>? balance,
+    Expression<String>? balanceDate,
+    Expression<String>? endDate,
+    Expression<double>? annualInterestRatePercent,
+    Expression<String>? fixedRateUntil,
+    Expression<String>? linkedCategoryId,
+    Expression<int>? sortOrder,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (name != null) 'name': name,
+      if (lender != null) 'lender': lender,
+      if (type != null) 'type': type,
+      if (balance != null) 'balance': balance,
+      if (balanceDate != null) 'balance_date': balanceDate,
+      if (endDate != null) 'end_date': endDate,
+      if (annualInterestRatePercent != null) 'annual_interest_rate_percent': annualInterestRatePercent,
+      if (fixedRateUntil != null) 'fixed_rate_until': fixedRateUntil,
+      if (linkedCategoryId != null) 'linked_category_id': linkedCategoryId,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  MortgagesCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? createdAt,
+    Value<String>? name,
+    Value<String?>? lender,
+    Value<MortgageType>? type,
+    Value<int>? balance,
+    Value<DateTime>? balanceDate,
+    Value<DateTime>? endDate,
+    Value<double>? annualInterestRatePercent,
+    Value<DateTime?>? fixedRateUntil,
+    Value<String?>? linkedCategoryId,
+    Value<int>? sortOrder,
+    Value<int>? rowid,
+  }) {
+    return MortgagesCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      name: name ?? this.name,
+      lender: lender ?? this.lender,
+      type: type ?? this.type,
+      balance: balance ?? this.balance,
+      balanceDate: balanceDate ?? this.balanceDate,
+      endDate: endDate ?? this.endDate,
+      annualInterestRatePercent: annualInterestRatePercent ?? this.annualInterestRatePercent,
+      fixedRateUntil: fixedRateUntil ?? this.fixedRateUntil,
+      linkedCategoryId: linkedCategoryId ?? this.linkedCategoryId,
+      sortOrder: sortOrder ?? this.sortOrder,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (lender.present) {
+      map['lender'] = Variable<String>(lender.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>($MortgagesTable.$convertertype.toSql(type.value));
+    }
+    if (balance.present) {
+      map['balance'] = Variable<int>(balance.value);
+    }
+    if (balanceDate.present) {
+      map['balance_date'] = Variable<String>($MortgagesTable.$converterbalanceDate.toSql(balanceDate.value));
+    }
+    if (endDate.present) {
+      map['end_date'] = Variable<String>($MortgagesTable.$converterendDate.toSql(endDate.value));
+    }
+    if (annualInterestRatePercent.present) {
+      map['annual_interest_rate_percent'] = Variable<double>(annualInterestRatePercent.value);
+    }
+    if (fixedRateUntil.present) {
+      map['fixed_rate_until'] = Variable<String>($MortgagesTable.$converterfixedRateUntiln.toSql(fixedRateUntil.value));
+    }
+    if (linkedCategoryId.present) {
+      map['linked_category_id'] = Variable<String>(linkedCategoryId.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MortgagesCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('name: $name, ')
+          ..write('lender: $lender, ')
+          ..write('type: $type, ')
+          ..write('balance: $balance, ')
+          ..write('balanceDate: $balanceDate, ')
+          ..write('endDate: $endDate, ')
+          ..write('annualInterestRatePercent: $annualInterestRatePercent, ')
+          ..write('fixedRateUntil: $fixedRateUntil, ')
+          ..write('linkedCategoryId: $linkedCategoryId, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SettingsTable extends Settings with TableInfo<$SettingsTable, AppSettings> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -2714,9 +2942,7 @@ class $SettingsTable extends Settings
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
     'created_at',
@@ -2725,8 +2951,7 @@ class $SettingsTable extends Settings
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _budgetMonthStartDayMeta =
-      const VerificationMeta('budgetMonthStartDay');
+  static const VerificationMeta _budgetMonthStartDayMeta = const VerificationMeta('budgetMonthStartDay');
   @override
   late final GeneratedColumn<int> budgetMonthStartDay = GeneratedColumn<int>(
     'budget_month_start_day',
@@ -2737,9 +2962,7 @@ class $SettingsTable extends Settings
     requiredDuringInsert: false,
     defaultValue: const Constant(1),
   );
-  static const VerificationMeta _appLockEnabledMeta = const VerificationMeta(
-    'appLockEnabled',
-  );
+  static const VerificationMeta _appLockEnabledMeta = const VerificationMeta('appLockEnabled');
   @override
   late final GeneratedColumn<bool> appLockEnabled = GeneratedColumn<bool>(
     'app_lock_enabled',
@@ -2747,29 +2970,21 @@ class $SettingsTable extends Settings
     false,
     type: DriftSqlType.bool,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("app_lock_enabled" IN (0, 1))',
-    ),
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("app_lock_enabled" IN (0, 1))'),
     defaultValue: const Constant(false),
   );
-  static const VerificationMeta _hasCompletedOnboardingMeta =
-      const VerificationMeta('hasCompletedOnboarding');
+  static const VerificationMeta _hasCompletedOnboardingMeta = const VerificationMeta('hasCompletedOnboarding');
   @override
-  late final GeneratedColumn<bool> hasCompletedOnboarding =
-      GeneratedColumn<bool>(
-        'has_completed_onboarding',
-        aliasedName,
-        false,
-        type: DriftSqlType.bool,
-        requiredDuringInsert: false,
-        defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("has_completed_onboarding" IN (0, 1))',
-        ),
-        defaultValue: const Constant(false),
-      );
-  static const VerificationMeta _lastBackupAtMeta = const VerificationMeta(
-    'lastBackupAt',
+  late final GeneratedColumn<bool> hasCompletedOnboarding = GeneratedColumn<bool>(
+    'has_completed_onboarding',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('CHECK ("has_completed_onboarding" IN (0, 1))'),
+    defaultValue: const Constant(false),
   );
+  static const VerificationMeta _lastBackupAtMeta = const VerificationMeta('lastBackupAt');
   @override
   late final GeneratedColumn<DateTime> lastBackupAt = GeneratedColumn<DateTime>(
     'last_backup_at',
@@ -2778,17 +2993,35 @@ class $SettingsTable extends Settings
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
-  static const VerificationMeta _backupReminderHiddenUntilMeta =
-      const VerificationMeta('backupReminderHiddenUntil');
+  static const VerificationMeta _backupReminderHiddenUntilMeta = const VerificationMeta('backupReminderHiddenUntil');
   @override
-  late final GeneratedColumn<DateTime> backupReminderHiddenUntil =
-      GeneratedColumn<DateTime>(
-        'backup_reminder_hidden_until',
-        aliasedName,
-        true,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: false,
-      );
+  late final GeneratedColumn<DateTime> backupReminderHiddenUntil = GeneratedColumn<DateTime>(
+    'backup_reminder_hidden_until',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _partner1NameMeta = const VerificationMeta('partner1Name');
+  @override
+  late final GeneratedColumn<String> partner1Name = GeneratedColumn<String>(
+    'partner1_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Partner 1'),
+  );
+  static const VerificationMeta _partner2NameMeta = const VerificationMeta('partner2Name');
+  @override
+  late final GeneratedColumn<String> partner2Name = GeneratedColumn<String>(
+    'partner2_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Partner 2'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2798,6 +3031,8 @@ class $SettingsTable extends Settings
     hasCompletedOnboarding,
     lastBackupAt,
     backupReminderHiddenUntil,
+    partner1Name,
+    partner2Name,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2805,58 +3040,37 @@ class $SettingsTable extends Settings
   String get actualTableName => $name;
   static const String $name = 'settings';
   @override
-  VerificationContext validateIntegrity(
-    Insertable<AppSettings> instance, {
-    bool isInserting = false,
-  }) {
+  VerificationContext validateIntegrity(Insertable<AppSettings> instance, {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
+      context.handle(_createdAtMeta, createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('budget_month_start_day')) {
       context.handle(
         _budgetMonthStartDayMeta,
-        budgetMonthStartDay.isAcceptableOrUnknown(
-          data['budget_month_start_day']!,
-          _budgetMonthStartDayMeta,
-        ),
+        budgetMonthStartDay.isAcceptableOrUnknown(data['budget_month_start_day']!, _budgetMonthStartDayMeta),
       );
     }
     if (data.containsKey('app_lock_enabled')) {
       context.handle(
         _appLockEnabledMeta,
-        appLockEnabled.isAcceptableOrUnknown(
-          data['app_lock_enabled']!,
-          _appLockEnabledMeta,
-        ),
+        appLockEnabled.isAcceptableOrUnknown(data['app_lock_enabled']!, _appLockEnabledMeta),
       );
     }
     if (data.containsKey('has_completed_onboarding')) {
       context.handle(
         _hasCompletedOnboardingMeta,
-        hasCompletedOnboarding.isAcceptableOrUnknown(
-          data['has_completed_onboarding']!,
-          _hasCompletedOnboardingMeta,
-        ),
+        hasCompletedOnboarding.isAcceptableOrUnknown(data['has_completed_onboarding']!, _hasCompletedOnboardingMeta),
       );
     }
     if (data.containsKey('last_backup_at')) {
-      context.handle(
-        _lastBackupAtMeta,
-        lastBackupAt.isAcceptableOrUnknown(
-          data['last_backup_at']!,
-          _lastBackupAtMeta,
-        ),
-      );
+      context.handle(_lastBackupAtMeta, lastBackupAt.isAcceptableOrUnknown(data['last_backup_at']!, _lastBackupAtMeta));
     }
     if (data.containsKey('backup_reminder_hidden_until')) {
       context.handle(
@@ -2867,6 +3081,12 @@ class $SettingsTable extends Settings
         ),
       );
     }
+    if (data.containsKey('partner1_name')) {
+      context.handle(_partner1NameMeta, partner1Name.isAcceptableOrUnknown(data['partner1_name']!, _partner1NameMeta));
+    }
+    if (data.containsKey('partner2_name')) {
+      context.handle(_partner2NameMeta, partner2Name.isAcceptableOrUnknown(data['partner2_name']!, _partner2NameMeta));
+    }
     return context;
   }
 
@@ -2876,34 +3096,24 @@ class $SettingsTable extends Settings
   AppSettings map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return AppSettings(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
+      id: attachedDatabase.typeMapping.read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
       budgetMonthStartDay: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}budget_month_start_day'],
       )!,
-      appLockEnabled: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}app_lock_enabled'],
-      )!,
+      appLockEnabled: attachedDatabase.typeMapping.read(DriftSqlType.bool, data['${effectivePrefix}app_lock_enabled'])!,
       hasCompletedOnboarding: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}has_completed_onboarding'],
       )!,
-      lastBackupAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_backup_at'],
-      ),
+      lastBackupAt: attachedDatabase.typeMapping.read(DriftSqlType.dateTime, data['${effectivePrefix}last_backup_at']),
       backupReminderHiddenUntil: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}backup_reminder_hidden_until'],
       ),
+      partner1Name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}partner1_name'])!,
+      partner2Name: attachedDatabase.typeMapping.read(DriftSqlType.string, data['${effectivePrefix}partner2_name'])!,
     );
   }
 
@@ -2925,6 +3135,10 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
 
   /// The backup reminder stays hidden until this moment.
   final DateTime? backupReminderHiddenUntil;
+
+  /// The two people in the household (added in schema 2).
+  final String partner1Name;
+  final String partner2Name;
   const AppSettings({
     required this.id,
     required this.createdAt,
@@ -2933,6 +3147,8 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
     required this.hasCompletedOnboarding,
     this.lastBackupAt,
     this.backupReminderHiddenUntil,
+    required this.partner1Name,
+    required this.partner2Name,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -2946,10 +3162,10 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
       map['last_backup_at'] = Variable<DateTime>(lastBackupAt);
     }
     if (!nullToAbsent || backupReminderHiddenUntil != null) {
-      map['backup_reminder_hidden_until'] = Variable<DateTime>(
-        backupReminderHiddenUntil,
-      );
+      map['backup_reminder_hidden_until'] = Variable<DateTime>(backupReminderHiddenUntil);
     }
+    map['partner1_name'] = Variable<String>(partner1Name);
+    map['partner2_name'] = Variable<String>(partner2Name);
     return map;
   }
 
@@ -2960,35 +3176,27 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
       budgetMonthStartDay: Value(budgetMonthStartDay),
       appLockEnabled: Value(appLockEnabled),
       hasCompletedOnboarding: Value(hasCompletedOnboarding),
-      lastBackupAt: lastBackupAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastBackupAt),
-      backupReminderHiddenUntil:
-          backupReminderHiddenUntil == null && nullToAbsent
+      lastBackupAt: lastBackupAt == null && nullToAbsent ? const Value.absent() : Value(lastBackupAt),
+      backupReminderHiddenUntil: backupReminderHiddenUntil == null && nullToAbsent
           ? const Value.absent()
           : Value(backupReminderHiddenUntil),
+      partner1Name: Value(partner1Name),
+      partner2Name: Value(partner2Name),
     );
   }
 
-  factory AppSettings.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
+  factory AppSettings.fromJson(Map<String, dynamic> json, {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return AppSettings(
       id: serializer.fromJson<int>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      budgetMonthStartDay: serializer.fromJson<int>(
-        json['budgetMonthStartDay'],
-      ),
+      budgetMonthStartDay: serializer.fromJson<int>(json['budgetMonthStartDay']),
       appLockEnabled: serializer.fromJson<bool>(json['appLockEnabled']),
-      hasCompletedOnboarding: serializer.fromJson<bool>(
-        json['hasCompletedOnboarding'],
-      ),
+      hasCompletedOnboarding: serializer.fromJson<bool>(json['hasCompletedOnboarding']),
       lastBackupAt: serializer.fromJson<DateTime?>(json['lastBackupAt']),
-      backupReminderHiddenUntil: serializer.fromJson<DateTime?>(
-        json['backupReminderHiddenUntil'],
-      ),
+      backupReminderHiddenUntil: serializer.fromJson<DateTime?>(json['backupReminderHiddenUntil']),
+      partner1Name: serializer.fromJson<String>(json['partner1Name']),
+      partner2Name: serializer.fromJson<String>(json['partner2Name']),
     );
   }
   @override
@@ -3001,9 +3209,9 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
       'appLockEnabled': serializer.toJson<bool>(appLockEnabled),
       'hasCompletedOnboarding': serializer.toJson<bool>(hasCompletedOnboarding),
       'lastBackupAt': serializer.toJson<DateTime?>(lastBackupAt),
-      'backupReminderHiddenUntil': serializer.toJson<DateTime?>(
-        backupReminderHiddenUntil,
-      ),
+      'backupReminderHiddenUntil': serializer.toJson<DateTime?>(backupReminderHiddenUntil),
+      'partner1Name': serializer.toJson<String>(partner1Name),
+      'partner2Name': serializer.toJson<String>(partner2Name),
     };
   }
 
@@ -3015,37 +3223,36 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
     bool? hasCompletedOnboarding,
     Value<DateTime?> lastBackupAt = const Value.absent(),
     Value<DateTime?> backupReminderHiddenUntil = const Value.absent(),
+    String? partner1Name,
+    String? partner2Name,
   }) => AppSettings(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
     budgetMonthStartDay: budgetMonthStartDay ?? this.budgetMonthStartDay,
     appLockEnabled: appLockEnabled ?? this.appLockEnabled,
-    hasCompletedOnboarding:
-        hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+    hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
     lastBackupAt: lastBackupAt.present ? lastBackupAt.value : this.lastBackupAt,
     backupReminderHiddenUntil: backupReminderHiddenUntil.present
         ? backupReminderHiddenUntil.value
         : this.backupReminderHiddenUntil,
+    partner1Name: partner1Name ?? this.partner1Name,
+    partner2Name: partner2Name ?? this.partner2Name,
   );
   AppSettings copyWithCompanion(SettingsCompanion data) {
     return AppSettings(
       id: data.id.present ? data.id.value : this.id,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      budgetMonthStartDay: data.budgetMonthStartDay.present
-          ? data.budgetMonthStartDay.value
-          : this.budgetMonthStartDay,
-      appLockEnabled: data.appLockEnabled.present
-          ? data.appLockEnabled.value
-          : this.appLockEnabled,
+      budgetMonthStartDay: data.budgetMonthStartDay.present ? data.budgetMonthStartDay.value : this.budgetMonthStartDay,
+      appLockEnabled: data.appLockEnabled.present ? data.appLockEnabled.value : this.appLockEnabled,
       hasCompletedOnboarding: data.hasCompletedOnboarding.present
           ? data.hasCompletedOnboarding.value
           : this.hasCompletedOnboarding,
-      lastBackupAt: data.lastBackupAt.present
-          ? data.lastBackupAt.value
-          : this.lastBackupAt,
+      lastBackupAt: data.lastBackupAt.present ? data.lastBackupAt.value : this.lastBackupAt,
       backupReminderHiddenUntil: data.backupReminderHiddenUntil.present
           ? data.backupReminderHiddenUntil.value
           : this.backupReminderHiddenUntil,
+      partner1Name: data.partner1Name.present ? data.partner1Name.value : this.partner1Name,
+      partner2Name: data.partner2Name.present ? data.partner2Name.value : this.partner2Name,
     );
   }
 
@@ -3058,7 +3265,9 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
           ..write('appLockEnabled: $appLockEnabled, ')
           ..write('hasCompletedOnboarding: $hasCompletedOnboarding, ')
           ..write('lastBackupAt: $lastBackupAt, ')
-          ..write('backupReminderHiddenUntil: $backupReminderHiddenUntil')
+          ..write('backupReminderHiddenUntil: $backupReminderHiddenUntil, ')
+          ..write('partner1Name: $partner1Name, ')
+          ..write('partner2Name: $partner2Name')
           ..write(')'))
         .toString();
   }
@@ -3072,6 +3281,8 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
     hasCompletedOnboarding,
     lastBackupAt,
     backupReminderHiddenUntil,
+    partner1Name,
+    partner2Name,
   );
   @override
   bool operator ==(Object other) =>
@@ -3083,7 +3294,9 @@ class AppSettings extends DataClass implements Insertable<AppSettings> {
           other.appLockEnabled == this.appLockEnabled &&
           other.hasCompletedOnboarding == this.hasCompletedOnboarding &&
           other.lastBackupAt == this.lastBackupAt &&
-          other.backupReminderHiddenUntil == this.backupReminderHiddenUntil);
+          other.backupReminderHiddenUntil == this.backupReminderHiddenUntil &&
+          other.partner1Name == this.partner1Name &&
+          other.partner2Name == this.partner2Name);
 }
 
 class SettingsCompanion extends UpdateCompanion<AppSettings> {
@@ -3094,6 +3307,8 @@ class SettingsCompanion extends UpdateCompanion<AppSettings> {
   final Value<bool> hasCompletedOnboarding;
   final Value<DateTime?> lastBackupAt;
   final Value<DateTime?> backupReminderHiddenUntil;
+  final Value<String> partner1Name;
+  final Value<String> partner2Name;
   const SettingsCompanion({
     this.id = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -3102,6 +3317,8 @@ class SettingsCompanion extends UpdateCompanion<AppSettings> {
     this.hasCompletedOnboarding = const Value.absent(),
     this.lastBackupAt = const Value.absent(),
     this.backupReminderHiddenUntil = const Value.absent(),
+    this.partner1Name = const Value.absent(),
+    this.partner2Name = const Value.absent(),
   });
   SettingsCompanion.insert({
     this.id = const Value.absent(),
@@ -3111,6 +3328,8 @@ class SettingsCompanion extends UpdateCompanion<AppSettings> {
     this.hasCompletedOnboarding = const Value.absent(),
     this.lastBackupAt = const Value.absent(),
     this.backupReminderHiddenUntil = const Value.absent(),
+    this.partner1Name = const Value.absent(),
+    this.partner2Name = const Value.absent(),
   }) : createdAt = Value(createdAt);
   static Insertable<AppSettings> custom({
     Expression<int>? id,
@@ -3120,18 +3339,19 @@ class SettingsCompanion extends UpdateCompanion<AppSettings> {
     Expression<bool>? hasCompletedOnboarding,
     Expression<DateTime>? lastBackupAt,
     Expression<DateTime>? backupReminderHiddenUntil,
+    Expression<String>? partner1Name,
+    Expression<String>? partner2Name,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (createdAt != null) 'created_at': createdAt,
-      if (budgetMonthStartDay != null)
-        'budget_month_start_day': budgetMonthStartDay,
+      if (budgetMonthStartDay != null) 'budget_month_start_day': budgetMonthStartDay,
       if (appLockEnabled != null) 'app_lock_enabled': appLockEnabled,
-      if (hasCompletedOnboarding != null)
-        'has_completed_onboarding': hasCompletedOnboarding,
+      if (hasCompletedOnboarding != null) 'has_completed_onboarding': hasCompletedOnboarding,
       if (lastBackupAt != null) 'last_backup_at': lastBackupAt,
-      if (backupReminderHiddenUntil != null)
-        'backup_reminder_hidden_until': backupReminderHiddenUntil,
+      if (backupReminderHiddenUntil != null) 'backup_reminder_hidden_until': backupReminderHiddenUntil,
+      if (partner1Name != null) 'partner1_name': partner1Name,
+      if (partner2Name != null) 'partner2_name': partner2Name,
     });
   }
 
@@ -3143,17 +3363,19 @@ class SettingsCompanion extends UpdateCompanion<AppSettings> {
     Value<bool>? hasCompletedOnboarding,
     Value<DateTime?>? lastBackupAt,
     Value<DateTime?>? backupReminderHiddenUntil,
+    Value<String>? partner1Name,
+    Value<String>? partner2Name,
   }) {
     return SettingsCompanion(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       budgetMonthStartDay: budgetMonthStartDay ?? this.budgetMonthStartDay,
       appLockEnabled: appLockEnabled ?? this.appLockEnabled,
-      hasCompletedOnboarding:
-          hasCompletedOnboarding ?? this.hasCompletedOnboarding,
+      hasCompletedOnboarding: hasCompletedOnboarding ?? this.hasCompletedOnboarding,
       lastBackupAt: lastBackupAt ?? this.lastBackupAt,
-      backupReminderHiddenUntil:
-          backupReminderHiddenUntil ?? this.backupReminderHiddenUntil,
+      backupReminderHiddenUntil: backupReminderHiddenUntil ?? this.backupReminderHiddenUntil,
+      partner1Name: partner1Name ?? this.partner1Name,
+      partner2Name: partner2Name ?? this.partner2Name,
     );
   }
 
@@ -3173,17 +3395,19 @@ class SettingsCompanion extends UpdateCompanion<AppSettings> {
       map['app_lock_enabled'] = Variable<bool>(appLockEnabled.value);
     }
     if (hasCompletedOnboarding.present) {
-      map['has_completed_onboarding'] = Variable<bool>(
-        hasCompletedOnboarding.value,
-      );
+      map['has_completed_onboarding'] = Variable<bool>(hasCompletedOnboarding.value);
     }
     if (lastBackupAt.present) {
       map['last_backup_at'] = Variable<DateTime>(lastBackupAt.value);
     }
     if (backupReminderHiddenUntil.present) {
-      map['backup_reminder_hidden_until'] = Variable<DateTime>(
-        backupReminderHiddenUntil.value,
-      );
+      map['backup_reminder_hidden_until'] = Variable<DateTime>(backupReminderHiddenUntil.value);
+    }
+    if (partner1Name.present) {
+      map['partner1_name'] = Variable<String>(partner1Name.value);
+    }
+    if (partner2Name.present) {
+      map['partner2_name'] = Variable<String>(partner2Name.value);
     }
     return map;
   }
@@ -3197,7 +3421,9 @@ class SettingsCompanion extends UpdateCompanion<AppSettings> {
           ..write('appLockEnabled: $appLockEnabled, ')
           ..write('hasCompletedOnboarding: $hasCompletedOnboarding, ')
           ..write('lastBackupAt: $lastBackupAt, ')
-          ..write('backupReminderHiddenUntil: $backupReminderHiddenUntil')
+          ..write('backupReminderHiddenUntil: $backupReminderHiddenUntil, ')
+          ..write('partner1Name: $partner1Name, ')
+          ..write('partner2Name: $partner2Name')
           ..write(')'))
         .toString();
   }
@@ -3210,14 +3436,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SavingsGoalsTable savingsGoals = $SavingsGoalsTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $DebtsTable debts = $DebtsTable(this);
+  late final $MortgagesTable mortgages = $MortgagesTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
   late final Index categoriesNameUnique = Index(
     'categories_name_unique',
     'CREATE UNIQUE INDEX IF NOT EXISTS categories_name_unique ON categories (lower(name))',
   );
   @override
-  Iterable<TableInfo<Table, Object?>> get allTables =>
-      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  Iterable<TableInfo<Table, Object?>> get allTables => allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     categoryGroups,
@@ -3225,10 +3451,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     savingsGoals,
     transactions,
     debts,
+    mortgages,
     settings,
     categoriesNameUnique,
   ];
   @override
-  DriftDatabaseOptions get options =>
-      const DriftDatabaseOptions(storeDateTimeAsText: true);
+  DriftDatabaseOptions get options => const DriftDatabaseOptions(storeDateTimeAsText: true);
 }

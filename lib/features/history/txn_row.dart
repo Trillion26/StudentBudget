@@ -27,14 +27,15 @@ class TxnRow extends StatelessWidget {
       if (txn.kind == TxnKind.toSavings) 'Saved',
       if (txn.kind == TxnKind.fromSavings) 'From savings${goal != null ? ' · ${goal.name}' : ''}',
       if (txn.kind == TxnKind.income) 'Received',
+      if (txn.person != Person.joint) data.personName(txn.person),
       if (txn.note.isNotEmpty) txn.note,
       if (showDate) shortDate(txn.date),
     ];
     final amountText = switch (txn.kind) {
-      TxnKind.income => '+${formatRand(txn.amount)}',
-      TxnKind.expense => formatRand(txn.amount),
-      TxnKind.toSavings => formatRand(txn.amount),
-      TxnKind.fromSavings => formatRand(txn.amount),
+      TxnKind.income => '+${formatEuro(txn.amount)}',
+      TxnKind.expense => formatEuro(txn.amount),
+      TxnKind.toSavings => formatEuro(txn.amount),
+      TxnKind.fromSavings => formatEuro(txn.amount),
     };
     final amountColor = switch (txn.kind) {
       TxnKind.income => c.incomeText,
@@ -55,7 +56,8 @@ class TxnRow extends StatelessWidget {
           : Text(details.join(' · '), style: AppText.small.copyWith(color: c.inkSoft)),
       trailing: Text(amountText, style: AppText.amount.copyWith(color: amountColor)),
       onTap: onTap,
-      semanticLabel: '$title, ${formatRand(txn.amount)} $kindWords'
+      semanticLabel: '$title, ${formatEuro(txn.amount)} $kindWords'
+          '${txn.person != Person.joint ? ' by ${data.personName(txn.person)}' : ''}'
           '${txn.note.isNotEmpty ? ', ${txn.note}' : ''}, ${shortDate(txn.date)}',
     );
   }

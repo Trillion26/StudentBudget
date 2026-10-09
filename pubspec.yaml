@@ -1,9 +1,9 @@
 name: student_budget
-description: "Plan and track a monthly student budget in rand, entirely on your iPhone."
+description: "Plan and track a household budget in euros, entirely on your iPhone."
 publish_to: 'none'
 
 # Bump this before tagging a release (e.g. 1.0.1+2, then tag v1.0.1).
-version: 1.1.0+2
+version: 2.1.0+4
 
 environment:
   sdk: ^3.13.5
@@ -57,8 +57,8 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   web:
     generate: true
-    background_color: "#0E4D6E"
-    theme_color: "#0E4D6E"
+    background_color: "#2F553B"
+    theme_color: "#2F553B"
   windows:
     generate: true
     icon_size: 256

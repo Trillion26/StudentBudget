@@ -11,8 +11,8 @@ import '../logic/models.dart';
 import '../logic/money.dart';
 import 'xlsx.dart';
 
-/// `emilys-budget-2026.xlsx`
-String yearReportFileName(int year) => 'emilys-budget-$year.xlsx';
+/// `veen-budget-2026.xlsx`
+String yearReportFileName(int year) => 'veen-budget-$year.xlsx';
 
 /// The year as an Excel workbook: a one-page dashboard like the Year view,
 /// then the months, every transaction, and goals and debts. All figures use
@@ -20,36 +20,36 @@ String yearReportFileName(int year) => 'emilys-budget-$year.xlsx';
 Uint8List buildYearReport(AppData data, int year, DateTime today) => _YearReport(data, year, today).build();
 
 // The app's light colours (see AppColors.light).
-const _ink = '0E4D6E';
-const _inkSoft = '4A6F80';
-const _line = 'D3E5E6';
-const _paper = 'F1F7F6';
+const _ink = '2F553B';
+const _inkSoft = '626F5F';
+const _line = 'E6E0D2';
+const _paper = 'F5F3EC';
 const _white = 'FFFFFF';
-const _highlight = 'F5C343';
-const _gold = 'E0A92A';
-const _overText = 'B3261E';
-const _overFill = 'FFE6E1';
-const _incomeText = '1E7A55';
-const _okFill = 'E1F4EA';
-const _income = '2FAE6B';
-const _savings = '4A90D9';
+const _highlight = 'F2C063';
+const _gold = 'D9A441';
+const _overText = 'B03A2E';
+const _overFill = 'FCE4DF';
+const _incomeText = '3B7A45';
+const _okFill = 'E6F1E1';
+const _income = '4F9856';
+const _savings = 'F2A277';
 
 /// Slice colours for the spending groups, in group order.
 const _groupColors = [
-  '0E4D6E',
-  '2FAE6B',
-  'E0A92A',
-  '4A90D9',
-  'FF9C8A',
-  '4A6F80',
-  'F4A261',
-  'B39DDB',
-  '7FD1D8',
+  '2F553B',
+  '4F9856',
+  'D9A441',
+  'F2A277',
+  '8FB5A0',
+  '7A6A53',
+  'C9D7A0',
+  'E8C9A8',
+  'A7C4D9',
   'C9CCDA',
 ];
 
-const _rand = '"R"#,##0;-"R"#,##0;"–"';
-const _randCents = '"R"#,##0.00;-"R"#,##0.00';
+const _euro = '"€ "#,##0;-"€ "#,##0;"–"';
+const _euroCents = '"€ "#,##0.00;-"€ "#,##0.00';
 const _percent = '0%';
 const _date = 'd mmm yyyy';
 
@@ -62,23 +62,23 @@ final _headerLeft = _header.copyWith(align: HAlign.left, indent: 1);
 final _cell = _base.copyWith(bottomBorder: _line);
 final _cellText = _cell.copyWith(indent: 1);
 final _cellSoft = _cell.copyWith(color: _inkSoft, size: 9);
-final _cellRand = _cell.copyWith(numFmt: _rand, align: HAlign.right);
+final _cellEuro = _cell.copyWith(numFmt: _euro, align: HAlign.right);
 
 /// [base] coloured green above zero and red below. The colour is set on the
 /// cell, not in the number format, because Quick Look on iPhone ignores
 /// colours in number formats.
-CellStyle _signed(int cents, [CellStyle? base]) => (base ?? _cellRand).copyWith(
-  numFmt: _rand,
+CellStyle _signed(int cents, [CellStyle? base]) => (base ?? _cellEuro).copyWith(
+  numFmt: _euro,
   align: HAlign.right,
   color: cents > 0 ? _incomeText : (cents < 0 ? _overText : _inkSoft),
 );
-final _cellPercent = _cellRand.copyWith(numFmt: _percent);
+final _cellPercent = _cellEuro.copyWith(numFmt: _percent);
 final _total = _cell.copyWith(bold: true, fill: _line);
 final _note = _base.copyWith(italic: true, size: 8, color: _inkSoft);
 
 double _r(int cents) => cents / 100;
 
-String _whole(int cents) => formatRand(cents, wholeRand: true);
+String _whole(int cents) => formatEuro(cents, wholeEuros: true);
 
 /// Days since 30 Dec 1899, which is how Excel stores dates.
 int _excelDate(DateTime d) => DateTime.utc(d.year, d.month, d.day).difference(DateTime.utc(1899, 12, 30)).inDays;
@@ -244,8 +244,8 @@ class _YearReport {
     final lastGroupRow = r;
     r++;
     s.merge(r, 1, r, 2, 'Total spending', _total.copyWith(indent: 1));
-    s.set(r, 3, _r(totalBudget), _total.copyWith(numFmt: _rand, align: HAlign.right));
-    s.set(r, 4, _r(totalSpent), _total.copyWith(numFmt: _rand, align: HAlign.right));
+    s.set(r, 3, _r(totalBudget), _total.copyWith(numFmt: _euro, align: HAlign.right));
+    s.set(r, 4, _r(totalSpent), _total.copyWith(numFmt: _euro, align: HAlign.right));
     s.set(r, 5, _r(totalBudget - totalSpent), _signed(totalBudget - totalSpent, _total));
     s.set(
       r,
@@ -323,7 +323,7 @@ class _YearReport {
     for (var i = 0; i < uses.length; i++) {
       final row = useTop + 1 + i;
       s.merge(row, 5, row, 6, uses[i].$1, _cellText);
-      s.set(row, 7, _r(uses[i].$2), _cellRand);
+      s.set(row, 7, _r(uses[i].$2), _cellEuro);
       s.set(row, 8, base > 0 ? uses[i].$2 / base : '', _cellPercent);
     }
     s.charts.add(
@@ -362,7 +362,7 @@ class _YearReport {
       q++;
       s.merge(q, 9, q, 10, c.name, _cellText);
       s.set(q, 11, data.groupById[c.groupId]?.name ?? '', _cellSoft.copyWith(align: HAlign.center, wrap: true));
-      s.set(q, 12, _r(categorySpent(c.id)), _cellRand.copyWith(bold: true));
+      s.set(q, 12, _r(categorySpent(c.id)), _cellEuro.copyWith(bold: true));
     }
     q += 2;
     s.merge(q, 9, q, 12, 'Quick facts', _section.copyWith(size: 10));
@@ -370,11 +370,17 @@ class _YearReport {
         ? null
         : (groups.toList()..sort((a, b) => groupSpent(b.id) - groupSpent(a.id))).first;
     final expenses = yearTxns.where((t) => t.kind == TxnKind.expense).toList()..sort((a, b) => b.amount - a.amount);
+    final split = BudgetCalculator.byPerson(data.facts, months.first.start, months.last.endExclusive);
+    final mortgageInterest = data.mortgages.fold(0, (a, m) => a + data.mortgageStatus(m, today).inYear(year).interest);
     final facts = <(String, Object)>[
       ('Income this year', _r(income)),
       ('Spent this year', _r(spent)),
+      ('Spent by ${data.personName(Person.partner1)}', _r(split[Person.partner1]!.spent)),
+      ('Spent by ${data.personName(Person.partner2)}', _r(split[Person.partner2]!.spent)),
+      ('Spent jointly', _r(split[Person.joint]!.spent)),
       ('Put into savings', _r(saved)),
       ('Taken from savings', _r(fromSavings)),
+      if (data.mortgages.isNotEmpty) ('Mortgage interest $year', _r(mortgageInterest)),
       ('Average spent a month', _r(spent ~/ monthsWithData)),
       ('Biggest single expense', expenses.isEmpty ? '–' : _r(expenses.first.amount)),
       ('Entries logged', yearTxns.length),
@@ -387,8 +393,8 @@ class _YearReport {
         q,
         12,
         value,
-        (value is String ? _cell.copyWith(bold: true, align: HAlign.right, size: 9) : _cellRand).copyWith(
-          numFmt: value is int ? '0' : _rand,
+        (value is String ? _cell.copyWith(bold: true, align: HAlign.right, size: 9) : _cellEuro).copyWith(
+          numFmt: value is int ? '0' : _euro,
         ),
       );
     }
@@ -413,8 +419,8 @@ class _YearReport {
       final monthly = byCategory[c.id] ?? List.filled(12, 0);
       final budget = c.isArchived ? 0 : c.monthlyBudget;
       s.merge(r, 1, r, 2, c.name, _cellText);
-      s.set(r, 3, _r(budget * planMonths), _cellRand);
-      s.set(r, 4, _r(categorySpent(c.id)), _cellRand);
+      s.set(r, 3, _r(budget * planMonths), _cellEuro);
+      s.set(r, 4, _r(categorySpent(c.id)), _cellEuro);
       s.set(r, 5, _r(budget * planMonths - categorySpent(c.id)), _signed(budget * planMonths - categorySpent(c.id)));
       final over = budget > 0 ? monthly.where((v) => v > budget).length : 0;
       final String status;
@@ -476,7 +482,7 @@ class _YearReport {
     Object value,
     String line1,
     (String, String) line2, {
-    String numFmt = _rand,
+    String numFmt = _euro,
   }) {
     final c = 1 + index * 2;
     s.merge(5, c, 5, c + 1, label, _header);
@@ -485,7 +491,7 @@ class _YearReport {
     s.merge(9, c, 9, c + 1, line2.$1, _base.copyWith(size: 8, bold: true, color: line2.$2, align: HAlign.center));
   }
 
-  /// "▲ R1 200 above" or "▼ R300 below", green when that is good news.
+  /// "▲ € 1.200 above" or "▼ € 300 below", green when that is good news.
   (String, String) _versus(int difference, {required bool higherIsGood}) {
     if (difference == 0) return ('On plan', _inkSoft);
     final above = difference > 0;
@@ -498,8 +504,8 @@ class _YearReport {
 
   void _budgetRow(Sheet s, int r, String name, int budget, int actual) {
     s.merge(r, 1, r, 2, name, _cellText);
-    s.set(r, 3, _r(budget), _cellRand);
-    s.set(r, 4, _r(actual), _cellRand);
+    s.set(r, 3, _r(budget), _cellEuro);
+    s.set(r, 4, _r(actual), _cellEuro);
     s.set(r, 5, _r(budget - actual), _signed(budget - actual));
     final over = actual > budget && budget > 0;
     s.set(
@@ -541,16 +547,16 @@ class _YearReport {
       final f = figures[i];
       final r = 3 + i;
       s.set(r, 0, months[i].shortLabel, _cellText);
-      s.set(r, 1, _r(f.income), _cellRand);
-      s.set(r, 2, _r(f.spent), _cellRand);
-      s.set(r, 3, _r(f.saved), _cellRand);
-      s.set(r, 4, _r(f.fromSavings), _cellRand);
+      s.set(r, 1, _r(f.income), _cellEuro);
+      s.set(r, 2, _r(f.spent), _cellEuro);
+      s.set(r, 3, _r(f.saved), _cellEuro);
+      s.set(r, 4, _r(f.fromSavings), _cellEuro);
       s.set(r, 5, _r(f.income - f.spent - f.saved), _signed(f.income - f.spent - f.saved));
       s.set(r, 6, f.income > 0 ? f.saved / f.income : '', _cellPercent);
       if (shifted) s.set(r, 7, months[i].rangeLabel, _cellSoft);
     }
     final totalRow = 15;
-    final money = _total.copyWith(numFmt: _rand, align: HAlign.right);
+    final money = _total.copyWith(numFmt: _euro, align: HAlign.right);
     s.set(totalRow, 0, 'Year', _total.copyWith(indent: 1));
     s.set(totalRow, 1, _r(income), money);
     s.set(totalRow, 2, _r(spent), money);
@@ -585,12 +591,12 @@ class _YearReport {
           r,
           m + 2,
           _r(cats.fold(0, (a, c) => a + (byCategory[c.id]?[m] ?? 0))),
-          groupStyle.copyWith(numFmt: _rand, align: HAlign.right),
+          groupStyle.copyWith(numFmt: _euro, align: HAlign.right),
         );
       }
       final groupBudget = data.groupBudget(g.id) * planMonths;
-      s.set(r, 14, _r(groupSpent(g.id)), groupStyle.copyWith(numFmt: _rand, align: HAlign.right));
-      s.set(r, 15, _r(groupBudget), groupStyle.copyWith(numFmt: _rand, align: HAlign.right));
+      s.set(r, 14, _r(groupSpent(g.id)), groupStyle.copyWith(numFmt: _euro, align: HAlign.right));
+      s.set(r, 15, _r(groupBudget), groupStyle.copyWith(numFmt: _euro, align: HAlign.right));
       s.set(r, 16, _r(groupBudget - groupSpent(g.id)), _signed(groupBudget - groupSpent(g.id), groupStyle));
       for (final c in cats) {
         r++;
@@ -598,10 +604,10 @@ class _YearReport {
         s.set(r, 0, c.name, _cellText.copyWith(indent: 2));
         s.set(r, 1, g.name, _cellSoft);
         for (var m = 0; m < 12; m++) {
-          s.set(r, m + 2, _r(byCategory[c.id]?[m] ?? 0), _cellRand);
+          s.set(r, m + 2, _r(byCategory[c.id]?[m] ?? 0), _cellEuro);
         }
-        s.set(r, 14, _r(categorySpent(c.id)), _cellRand.copyWith(bold: true));
-        s.set(r, 15, _r(budget), _cellRand);
+        s.set(r, 14, _r(categorySpent(c.id)), _cellEuro.copyWith(bold: true));
+        s.set(r, 15, _r(budget), _cellEuro);
         s.set(r, 16, _r(budget - categorySpent(c.id)), _signed(budget - categorySpent(c.id)));
       }
     }
@@ -615,11 +621,11 @@ class _YearReport {
   void _transactions() {
     final s = workbook.addSheet('Transactions', tabColor: _income);
     s.frozenRows = 1;
-    const widths = [13.0, 14.0, 13.0, 30.0, 22.0, 34.0, 14.0];
-    const heads = ['Date', 'Budget month', 'Type', 'Category or goal', 'Group', 'Note', 'Amount'];
+    const widths = [13.0, 14.0, 13.0, 14.0, 30.0, 22.0, 34.0, 14.0];
+    const heads = ['Date', 'Budget month', 'Type', 'Who', 'Category or goal', 'Group', 'Note', 'Amount'];
     for (var c = 0; c < heads.length; c++) {
       s.columnWidth(c, widths[c]);
-      s.set(0, c, heads[c], c == 6 ? _header.copyWith(align: HAlign.right) : _headerLeft);
+      s.set(0, c, heads[c], c == 7 ? _header.copyWith(align: HAlign.right) : _headerLeft);
     }
     var r = 0;
     for (final t in yearTxns) {
@@ -630,23 +636,24 @@ class _YearReport {
       s.set(r, 0, _excelDate(t.date), _cell.copyWith(numFmt: _date, align: HAlign.left, indent: 1));
       s.set(r, 1, data.monthOf(t.date).label, _cellSoft);
       s.set(r, 2, _kindLabel(t.kind), _cell.copyWith(color: isIn ? _incomeText : _ink));
-      s.set(r, 3, data.describe(t), _cell);
-      s.set(r, 4, group?.name ?? (t.goalId != null ? 'Savings' : ''), _cellSoft);
-      s.set(r, 5, t.note, _cellSoft);
-      s.set(r, 6, _r(t.amount), _cellRand.copyWith(numFmt: _randCents, color: isIn ? _incomeText : _ink));
+      s.set(r, 3, data.personName(t.person), _cellSoft);
+      s.set(r, 4, data.describe(t), _cell);
+      s.set(r, 5, group?.name ?? (t.goalId != null ? 'Savings' : ''), _cellSoft);
+      s.set(r, 6, t.note, _cellSoft);
+      s.set(r, 7, _r(t.amount), _cellEuro.copyWith(numFmt: _euroCents, color: isIn ? _incomeText : _ink));
     }
     if (r == 0) {
       s.set(1, 0, 'No entries in $year.', _note);
     } else {
-      s.autoFilter = 'A1:G${r + 1}';
+      s.autoFilter = 'A1:H${r + 1}';
     }
   }
 
-  // ───────────────────────── Goals and debts ─────────────────────────
+  // ───────────────────────── Savings, mortgage and loans ─────────────────────────
 
   void _goalsAndDebts() {
-    final s = workbook.addSheet('Goals & debts', tabColor: _savings);
-    const widths = [30.0, 15.0, 15.0, 15.0, 16.0, 16.0, 36.0];
+    final s = workbook.addSheet('Savings, mortgage & loans', tabColor: _savings);
+    const widths = [30.0, 15.0, 15.0, 15.0, 16.0, 16.0, 36.0, 16.0, 16.0];
     for (var c = 0; c < widths.length; c++) {
       s.columnWidth(c, widths[c]);
     }
@@ -675,11 +682,11 @@ class _YearReport {
                     : 0),
           );
       s.set(r, 0, '${g.name}${g.isArchived ? ' (archived)' : ''}', _cellText);
-      s.set(r, 1, _r(p.balance), _cellRand.copyWith(bold: true));
-      s.set(r, 2, p.target == null ? '–' : _r(p.target!), _cellRand);
+      s.set(r, 1, _r(p.balance), _cellEuro.copyWith(bold: true));
+      s.set(r, 2, p.target == null ? '–' : _r(p.target!), _cellEuro);
       s.set(r, 3, p.targetDate == null ? '–' : monthYearLabel(p.targetDate!), _cell.copyWith(align: HAlign.right));
       s.set(r, 4, _r(net), _signed(net));
-      s.set(r, 5, p.neededPerMonth == null ? '–' : _r(p.neededPerMonth!), _cellRand);
+      s.set(r, 5, p.neededPerMonth == null ? '–' : _r(p.neededPerMonth!), _cellEuro);
       final behind = p.state == GoalState.behind;
       s.set(
         r,
@@ -694,12 +701,14 @@ class _YearReport {
     }
     if (goals.isEmpty) s.set(++r, 0, 'No savings goals yet.', _note);
 
+    r = _mortgage(s, r + 3);
+
     r += 3;
-    s.merge(r, 0, r, 6, 'Debts', _section.copyWith(size: 14));
+    s.merge(r, 0, r, 6, 'Loans', _section.copyWith(size: 14));
     s.rowHeight(r, 24);
     r++;
     final debtHeads = [
-      'Debt',
+      'Loan',
       'Lender',
       'Balance now',
       'Interest a year',
@@ -716,10 +725,10 @@ class _YearReport {
       final repaid = d.linkedCategoryId == null ? 0 : categorySpent(d.linkedCategoryId!);
       s.set(r, 0, d.name, _cellText);
       s.set(r, 1, d.lender ?? '', _cellSoft.copyWith(indent: 1));
-      s.set(r, 2, _r(e.balance), _cellRand.copyWith(bold: true));
+      s.set(r, 2, _r(e.balance), _cellEuro.copyWith(bold: true));
       s.set(r, 3, d.annualInterestRatePercent / 100, _cellPercent.copyWith(numFmt: '0.0%'));
-      s.set(r, 4, _r(repaid), _cellRand);
-      s.set(r, 5, _r(e.monthlyRepayment), _cellRand);
+      s.set(r, 4, _r(repaid), _cellEuro);
+      s.set(r, 5, _r(e.monthlyRepayment), _cellEuro);
       s.set(
         r,
         6,
@@ -729,6 +738,119 @@ class _YearReport {
         _cellText,
       );
     }
-    if (data.debts.isEmpty) s.set(++r, 0, 'No debts. 🎉', _note);
+    if (data.debts.isEmpty) s.set(++r, 0, 'No loans. 🎉', _note);
+  }
+
+  /// The mortgage parts and the year's payments, month by month. Returns
+  /// the last row used.
+  int _mortgage(Sheet s, int r) {
+    s.merge(r, 0, r, 6, 'Mortgage', _section.copyWith(size: 14));
+    s.rowHeight(r, 24);
+    if (data.mortgages.isEmpty) {
+      s.set(++r, 0, 'No mortgage added.', _note);
+      return r;
+    }
+    s.set(
+      ++r,
+      0,
+      'Interest is charged on the balance at the start of each month. Payments follow the calendar months of $year.',
+      _note,
+    );
+    r++;
+    final heads = [
+      'Loan part',
+      'Type',
+      'Rate',
+      'Fixed until',
+      'Owed 1 Jan',
+      'Interest $year',
+      'Repayment $year',
+      'Owed 31 Dec',
+      'Last payment',
+    ];
+    for (var c = 0; c < heads.length; c++) {
+      s.set(r, c, heads[c], c == 0 ? _headerLeft : _header);
+    }
+    final statuses = [for (final m in data.mortgages) (m, data.mortgageStatus(m, today))];
+    var startTotal = 0, interestTotal = 0, repaymentTotal = 0, endTotal = 0;
+    for (final (m, status) in statuses) {
+      r++;
+      final opening = status.balanceAtEndOf(year - 1, m.balance);
+      final inYear = status.inYear(year);
+      final closing = status.balanceAtEndOf(year, m.balance);
+      startTotal += opening;
+      interestTotal += inYear.interest;
+      repaymentTotal += inYear.repayment;
+      endTotal += closing;
+      s.set(r, 0, m.lender == null ? m.name : '${m.name} · ${m.lender}', _cellText);
+      s.set(r, 1, switch (m.type) {
+        MortgageType.annuity => 'Annuity',
+        MortgageType.linear => 'Linear',
+        MortgageType.interestOnly => 'Interest-only',
+      }, _cell.copyWith(align: HAlign.center));
+      s.set(r, 2, m.annualInterestRatePercent / 100, _cellPercent.copyWith(numFmt: '0.00%'));
+      s.set(
+        r,
+        3,
+        m.fixedRateUntil == null ? '–' : monthYearLabel(m.fixedRateUntil!),
+        _cell.copyWith(align: HAlign.right),
+      );
+      s.set(r, 4, _r(opening), _cellEuro);
+      s.set(r, 5, _r(inYear.interest), _cellEuro);
+      s.set(r, 6, _r(inYear.repayment), _cellEuro);
+      s.set(r, 7, _r(closing), _cellEuro.copyWith(bold: true));
+      s.set(r, 8, monthYearLabel(m.endDate), _cell.copyWith(align: HAlign.right));
+    }
+    if (statuses.length > 1) {
+      r++;
+      final money = _total.copyWith(numFmt: _euro, align: HAlign.right);
+      s.set(r, 0, 'Total', _total.copyWith(indent: 1));
+      for (final c in [1, 2, 3, 8]) {
+        s.set(r, c, '', _total);
+      }
+      s.set(r, 4, _r(startTotal), money);
+      s.set(r, 5, _r(interestTotal), money);
+      s.set(r, 6, _r(repaymentTotal), money);
+      s.set(r, 7, _r(endTotal), money);
+    }
+
+    // Month by month, all parts together, next to what was logged.
+    r += 2;
+    final linked = {for (final m in data.mortgages) ?m.linkedCategoryId};
+    final monthHeads = ['Month', 'Payment', 'Interest', 'Repayment', 'Owed after', 'Logged'];
+    for (var c = 0; c < monthHeads.length; c++) {
+      s.set(r, c, monthHeads[c], c == 0 ? _headerLeft : _header);
+    }
+    var paymentSum = 0, loggedSum = 0;
+    for (var m = 1; m <= 12; m++) {
+      r++;
+      var interest = 0, repayment = 0, owed = 0;
+      for (final (part, status) in statuses) {
+        final p = status.schedule.where((p) => p.month.year == year && p.month.month == m).firstOrNull;
+        interest += p?.interest ?? 0;
+        repayment += p?.repayment ?? 0;
+        // Balance after this month: the last payment up to and including it.
+        owed += status.balanceAtEndOfMonth(year, m, part.balance);
+      }
+      final logged = linked.fold(0, (a, id) => a + (byCategory[id]?[m - 1] ?? 0));
+      paymentSum += interest + repayment;
+      loggedSum += logged;
+      s.set(r, 0, monthNames[m - 1], _cellText);
+      s.set(r, 1, _r(interest + repayment), _cellEuro.copyWith(bold: true));
+      s.set(r, 2, _r(interest), _cellEuro);
+      s.set(r, 3, _r(repayment), _cellEuro);
+      s.set(r, 4, _r(owed), _cellEuro);
+      s.set(r, 5, _r(logged), _cellEuro.copyWith(color: logged == 0 ? _inkSoft : _ink));
+    }
+    r++;
+    final money = _total.copyWith(numFmt: _euro, align: HAlign.right);
+    s.set(r, 0, 'Year', _total.copyWith(indent: 1));
+    s.set(r, 1, _r(paymentSum), money);
+    s.set(r, 2, _r(interestTotal), money);
+    s.set(r, 3, _r(repaymentTotal), money);
+    s.set(r, 4, '', _total);
+    s.set(r, 5, _r(loggedSum), money);
+    s.set(++r, 0, '"Logged" is what you entered in the mortgage category in each budget month.', _note);
+    return r;
   }
 }

@@ -1,32 +1,36 @@
-/// Rand formatting and parsing. Amounts are always whole cents in an [int].
+/// Euro formatting and parsing, the Dutch way: `€ 1.250,50`. Amounts are
+/// always whole cents in an [int].
 library;
 
-/// Non-breaking space used as the thousands separator, so "R1 250" never
-/// wraps onto two lines at large text sizes.
-const String thousandsSeparator = ' ';
+/// Non-breaking space between the euro sign and the number, so "€ 1.250"
+/// never wraps onto two lines at large text sizes.
+const String euroSign = '€\u00A0';
 
-/// The largest amount a single entry may have: R10 000 000.
+/// Thousands separator in Dutch amounts.
+const String thousandsSeparator = '.';
+
+/// The largest amount a single entry may have: € 10.000.000.
 const int maxAmountCents = 10000000 * 100;
 
-/// Formats [cents] as South African rand.
+/// Formats [cents] as euros in the Dutch style.
 ///
-/// * `125000` → `R1 250` (no cents when the amount is whole)
-/// * `8550` → `R85,50`
-/// * `-32000` → `-R320`
+/// * `125000` → `€ 1.250` (no cents when the amount is whole)
+/// * `8550` → `€ 85,50`
+/// * `-32000` → `-€ 320`
 ///
 /// Set [alwaysShowCents] to show `,00` on whole amounts (used in amount
-/// fields). Set [wholeRand] to drop the cents entirely (rounded down for
+/// fields). Set [wholeEuros] to drop the cents entirely (rounded down for
 /// positive amounts, towards zero for negative ones).
-String formatRand(int cents, {bool alwaysShowCents = false, bool wholeRand = false}) {
+String formatEuro(int cents, {bool alwaysShowCents = false, bool wholeEuros = false}) {
   final negative = cents < 0;
   var abs = cents.abs();
-  if (wholeRand) abs = abs - abs % 100;
-  final rands = abs ~/ 100;
+  if (wholeEuros) abs = abs - abs % 100;
+  final euros = abs ~/ 100;
   final rem = abs % 100;
   final buffer = StringBuffer();
   if (negative && abs != 0) buffer.write('-');
-  buffer.write('R');
-  buffer.write(groupThousands(rands));
+  buffer.write(euroSign);
+  buffer.write(groupThousands(euros));
   if (rem != 0 || alwaysShowCents) {
     buffer.write(',');
     buffer.write(rem.toString().padLeft(2, '0'));
@@ -34,7 +38,7 @@ String formatRand(int cents, {bool alwaysShowCents = false, bool wholeRand = fal
   return buffer.toString();
 }
 
-/// Groups digits in threes with a non-breaking space: 1250 → "1 250".
+/// Groups digits in threes with a point: 1250 → "1.250".
 String groupThousands(int value) {
   final digits = value.abs().toString();
   final out = StringBuffer();
@@ -49,19 +53,20 @@ String groupThousands(int value) {
 /// `120000` → `1200`. Empty for zero when [emptyForZero] is set.
 String formatAmountForField(int cents, {bool emptyForZero = true}) {
   if (cents == 0 && emptyForZero) return '';
-  final rands = cents ~/ 100;
+  final euros = cents ~/ 100;
   final rem = cents % 100;
-  return rem == 0 ? '$rands' : '$rands,${rem.toString().padLeft(2, '0')}';
+  return rem == 0 ? '$euros' : '$euros,${rem.toString().padLeft(2, '0')}';
 }
 
-/// Formats cents for CSV export: `8550` → `85.50` (a point, no grouping).
+/// Formats cents for CSV export the way Dutch Excel reads it: `8550` →
+/// `85,50` (a comma, no grouping).
 String formatAmountForCsv(int cents) {
   final negative = cents < 0;
   final abs = cents.abs();
-  return '${negative ? '-' : ''}${abs ~/ 100}.${(abs % 100).toString().padLeft(2, '0')}';
+  return '${negative ? '-' : ''}${abs ~/ 100},${(abs % 100).toString().padLeft(2, '0')}';
 }
 
-/// The result of reading an amount the student typed.
+/// The result of reading a typed amount.
 class AmountParseResult {
   const AmountParseResult.ok(int this.cents) : error = null;
   const AmountParseResult.error(String this.error) : cents = null;
@@ -72,46 +77,84 @@ class AmountParseResult {
   bool get isValid => cents != null;
 }
 
-/// Reads an amount typed by the student. Accepts a comma or a point for
-/// cents ("85,50", "85.50"), spaces as thousands separators ("1 250") and an
-/// optional leading "R".
+/// Reads a typed amount, Dutch style first:
+///
+/// * a comma is the decimal separator: "85,50"
+/// * points group thousands: "1.250" and "1.250,50"
+/// * a single point followed by 1 or 2 digits is read as decimals too, so
+///   "85.50" works for people who type it the English way
+/// * spaces and a leading "€" or "EUR" are ignored
 ///
 /// When [allowZero] is true, an empty field or 0 is accepted (used for
-/// budget fields); otherwise the amount must be above R0.
+/// budget fields); otherwise the amount must be above € 0.
 AmountParseResult parseAmount(String input, {bool allowZero = false}) {
-  var text = input.trim().replaceAll(RegExp(r'[\s  ]'), '');
-  if (text.startsWith('R') || text.startsWith('r')) text = text.substring(1);
+  var text = input.trim().replaceAll(RegExp('[\\s\u00A0\u202F]'), '');
+  final lower = text.toLowerCase();
+  if (lower.startsWith('eur')) {
+    text = text.substring(3);
+  } else if (text.startsWith('€')) {
+    text = text.substring(1);
+  }
   if (text.isEmpty) {
-    return allowZero
-        ? const AmountParseResult.ok(0)
-        : const AmountParseResult.error('Enter an amount above R0');
+    return allowZero ? const AmountParseResult.ok(0) : const AmountParseResult.error('Enter an amount above € 0');
   }
   if (!RegExp(r'^[0-9.,]+$').hasMatch(text)) {
     return const AmountParseResult.error('Enter a number, like 85,50');
   }
-  final separators = RegExp(r'[.,]').allMatches(text).length;
-  if (separators > 1) {
-    return const AmountParseResult.error('Use one comma or point for cents, like 85,50');
+
+  String wholePart;
+  String centsPart;
+  final commas = ','.allMatches(text).length;
+  if (commas > 1) {
+    return const AmountParseResult.error('Use one comma for cents, like 85,50');
   }
-  final parts = text.split(RegExp(r'[.,]'));
-  final wholePart = parts[0].isEmpty ? '0' : parts[0];
-  final centsPart = parts.length > 1 ? parts[1] : '';
+  if (commas == 1) {
+    // "1.250,50": points before the comma group thousands.
+    final parts = text.split(',');
+    if (!_validGrouping(parts[0])) {
+      return const AmountParseResult.error('Write thousands like 1.250,50');
+    }
+    wholePart = parts[0].replaceAll('.', '');
+    centsPart = parts[1];
+  } else {
+    final points = '.'.allMatches(text).length;
+    final lastGroup = text.contains('.') ? text.substring(text.lastIndexOf('.') + 1) : '';
+    if (points == 1 && lastGroup.length <= 2) {
+      // "85.50", typed the English way.
+      final parts = text.split('.');
+      wholePart = parts[0];
+      centsPart = parts[1];
+    } else {
+      if (!_validGrouping(text)) {
+        return const AmountParseResult.error('Write thousands like 1.250,50');
+      }
+      wholePart = text.replaceAll('.', '');
+      centsPart = '';
+    }
+  }
+  if (wholePart.isEmpty) wholePart = '0';
   if (centsPart.length > 2) {
     return const AmountParseResult.error('Use at most 2 decimals, like 85,50');
   }
   if (wholePart.length > 9) {
-    return const AmountParseResult.error('Enter an amount up to R10 000 000');
+    return const AmountParseResult.error('Enter an amount up to € 10.000.000');
   }
   final cents = int.parse(wholePart) * 100 + (centsPart.isEmpty ? 0 : int.parse(centsPart.padRight(2, '0')));
   if (cents <= 0 && !allowZero) {
-    return const AmountParseResult.error('Enter an amount above R0');
+    return const AmountParseResult.error('Enter an amount above € 0');
   }
   if (cents > maxAmountCents) {
-    return const AmountParseResult.error('Enter an amount up to R10 000 000');
+    return const AmountParseResult.error('Enter an amount up to € 10.000.000');
   }
   return AmountParseResult.ok(cents);
 }
 
-/// Rounds a positive amount up to the next whole rand (zero stays zero,
+/// True for "1250", "1.250" and "12.500.000"; false for "1.25" or "1..250".
+bool _validGrouping(String whole) {
+  if (!whole.contains('.')) return true;
+  return RegExp(r'^[0-9]{1,3}(\.[0-9]{3})+$').hasMatch(whole);
+}
+
+/// Rounds a positive amount up to the next whole euro (zero stays zero,
 /// negative amounts become zero).
-int ceilToWholeRand(int cents) => cents <= 0 ? 0 : ((cents + 99) ~/ 100) * 100;
+int ceilToWholeEuro(int cents) => cents <= 0 ? 0 : ((cents + 99) ~/ 100) * 100;

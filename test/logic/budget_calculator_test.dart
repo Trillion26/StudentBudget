@@ -9,7 +9,7 @@ TxnFacts txn(TxnKind kind, int rand, DateTime date, {String? category, String? g
 
 void main() {
   final oct = BudgetMonth(2026, 10, 1);
-  const planned = 450000; // R4 500
+  const planned = 450000; // € 4.500
 
   group('monthly figures', () {
     test('sums each kind inside the month only', () {
@@ -61,7 +61,7 @@ void main() {
       expect(s.baseIncome, planned);
       expect(s.moneyLeft, 357500);
       expect(s.daysLeft, 25);
-      expect(s.dailyAllowance, 14300); // R3 575 ÷ 25 = R143
+      expect(s.dailyAllowance, 14300); // € 3.575 ÷ 25 = € 143
     });
 
     test('switches to actual income once any is logged', () {
@@ -79,7 +79,7 @@ void main() {
     test('first day of the month', () {
       final s = BudgetCalculator.summarise(txns: const [], month: oct, plannedIncome: planned, today: day(2026, 10, 1));
       expect(s.daysLeft, 31);
-      expect(s.dailyAllowance, 14500); // 4500 / 31 = 145,16 → R145
+      expect(s.dailyAllowance, 14500); // 4500 / 31 = 145,16 → € 145
     });
 
     test('last day of the month gives everything left', () {
@@ -118,14 +118,14 @@ void main() {
       const s = CategoryStatus(budget: 60000, spent: 20000);
       expect(s.state, CategoryState.within);
       expect(s.remaining, 40000);
-      expect(s.label, 'R400 left of R600');
+      expect(s.label, '€\u00A0400 left of €\u00A0600');
       expect(s.progress, closeTo(1 / 3, 0.0001));
     });
 
     test('over budget', () {
       const s = CategoryStatus(budget: 60000, spent: 72000);
       expect(s.state, CategoryState.over);
-      expect(s.label, 'R120 over');
+      expect(s.label, '€\u00A0120 over');
       expect(s.progress, 1);
     });
 
@@ -161,7 +161,7 @@ void main() {
     });
 
     test('needed per month', () {
-      // R3 000 target, R500 saved, by March 2027 from October 2026: 5 months.
+      // € 3.000 target, € 500 saved, by March 2027 from October 2026: 5 months.
       expect(
         BudgetCalculator.neededPerMonth(target: 300000, balance: 50000, targetDate: day(2027, 3, 31), currentMonth: oct),
         50000,
@@ -201,14 +201,14 @@ void main() {
       expect(progress(target: 80000).statusLabel, 'Goal reached');
       expect(progress(target: 200000).statusLabel, 'No target date');
 
-      // Balance R900, target R1 500 by Feb 2027: R600 over 4 months = R150 a month.
+      // Balance € 900, target € 1.500 by Feb 2027: € 600 over 4 months = € 150 a month.
       final behind = progress(target: 150000, date: day(2027, 2, 1));
       expect(behind.neededPerMonth, 15000);
       expect(behind.state, GoalState.behind);
-      expect(behind.statusLabel, 'Behind – save R17 more a month'); // 150 − 133,33 → R17
-      expect(behind.planLabel, 'R150 a month gets you there by February 2027');
+      expect(behind.statusLabel, 'Behind – save €\u00A017 more a month'); // 150 − 133,33 → € 17
+      expect(behind.planLabel, '€\u00A0150 a month gets you there by February 2027');
 
-      // R1 200 by June 2027: R300 over 8 months = R37,50 → R38 a month.
+      // € 1.200 by June 2027: € 300 over 8 months = € 37,50 → € 38 a month.
       final onTrack = progress(target: 120000, date: day(2027, 6, 1));
       expect(onTrack.neededPerMonth, 3800);
       expect(onTrack.statusLabel, 'On track');
@@ -246,5 +246,19 @@ void main() {
     expect(transport.annualBudget, 600000);
     expect(transport.difference, 588000);
     expect(y.savingsRate, 0.1);
+  });
+
+  test('byPerson splits income and spending by who paid', () {
+    final txns = [
+      TxnFacts(kind: TxnKind.income, amount: 250000, date: day(2026, 10, 1), categoryId: 'salary', person: Person.partner1),
+      TxnFacts(kind: TxnKind.expense, amount: 4000, date: day(2026, 10, 2), categoryId: 'food', person: Person.partner2),
+      TxnFacts(kind: TxnKind.expense, amount: 1000, date: day(2026, 10, 3), categoryId: 'food'),
+      TxnFacts(kind: TxnKind.toSavings, amount: 9999, date: day(2026, 10, 3), goalId: 'g', person: Person.partner2),
+      TxnFacts(kind: TxnKind.expense, amount: 7777, date: day(2026, 11, 1), categoryId: 'food', person: Person.partner2),
+    ];
+    final split = BudgetCalculator.byPerson(txns, day(2026, 10, 1), day(2026, 11, 1));
+    expect(split[Person.partner1], (income: 250000, spent: 0));
+    expect(split[Person.partner2], (income: 0, spent: 4000));
+    expect(split[Person.joint], (income: 0, spent: 1000));
   });
 }

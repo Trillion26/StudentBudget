@@ -9,7 +9,7 @@ import 'database.dart';
 
 /// The backup file format version. Bump it (and teach [decodeBackup] to read
 /// the old one) whenever the format changes.
-const int backupSchemaVersion = 1;
+const int backupSchemaVersion = 2;
 
 /// Everything in the database, ready to write to or read from a file.
 class BackupData {
@@ -20,6 +20,7 @@ class BackupData {
     required this.transactions,
     required this.goals,
     required this.debts,
+    this.mortgages = const [],
   });
 
   final AppSettings settings;
@@ -28,6 +29,7 @@ class BackupData {
   final List<Txn> transactions;
   final List<SavingsGoal> goals;
   final List<Debt> debts;
+  final List<Mortgage> mortgages;
 
   DateTime? get lastEntryDate {
     if (transactions.isEmpty) return null;
@@ -49,7 +51,7 @@ class BackupData {
 }
 
 /// Thrown when a file is not a valid backup from this app. [message] is
-/// written for the student.
+/// written for the person restoring.
 class BackupFormatException implements Exception {
   const BackupFormatException(this.message);
   final String message;
@@ -77,6 +79,8 @@ String encodeBackup(BackupData data, {required DateTime exportedAt}) {
       'hasCompletedOnboarding': s.hasCompletedOnboarding,
       'lastBackupAt': s.lastBackupAt == null ? null : _utc(s.lastBackupAt!),
       'backupReminderHiddenUntil': s.backupReminderHiddenUntil == null ? null : _utc(s.backupReminderHiddenUntil!),
+      'partner1Name': s.partner1Name,
+      'partner2Name': s.partner2Name,
     },
     'categoryGroups': [
       for (final g in data.groups)
@@ -113,6 +117,7 @@ String encodeBackup(BackupData data, {required DateTime exportedAt}) {
           'note': t.note,
           'categoryId': t.categoryId,
           'goalId': t.goalId,
+          'person': t.person.name,
         },
     ],
     'savingsGoals': [
@@ -144,6 +149,23 @@ String encodeBackup(BackupData data, {required DateTime exportedAt}) {
           'latestStatementDate': d.latestStatementDate == null ? null : isoDate(d.latestStatementDate!),
         },
     ],
+    'mortgages': [
+      for (final m in data.mortgages)
+        {
+          'id': m.id,
+          'createdAt': _utc(m.createdAt),
+          'name': m.name,
+          'lender': m.lender,
+          'type': m.type.name,
+          'balance': m.balance,
+          'balanceDate': isoDate(m.balanceDate),
+          'endDate': isoDate(m.endDate),
+          'annualInterestRatePercent': m.annualInterestRatePercent,
+          'fixedRateUntil': m.fixedRateUntil == null ? null : isoDate(m.fixedRateUntil!),
+          'linkedCategoryId': m.linkedCategoryId,
+          'sortOrder': m.sortOrder,
+        },
+    ],
   };
   return const JsonEncoder.withIndent('  ').convert(map);
 }
@@ -171,7 +193,7 @@ BackupData decodeBackup(String text) {
     throw const BackupFormatException("This backup's version isn't supported.");
   }
   try {
-    return _decodeV1(decoded);
+    return _decode(decoded, version);
   } on BackupFormatException {
     rethrow;
   } catch (_) {
@@ -258,7 +280,9 @@ List<Map<String, Object?>> _list(Map<String, Object?> root, String key) {
   ];
 }
 
-BackupData _decodeV1(Map<String, Object?> root) {
+/// Reads version 1 (student app) and 2 (household). Version 1 has no
+/// partner names, no "person" on entries and no mortgages.
+BackupData _decode(Map<String, Object?> root, int version) {
   final settingsMap = root['settings'];
   if (settingsMap is! Map<String, Object?>) {
     throw const BackupFormatException('This backup is damaged (settings are missing). Nothing was changed.');
@@ -272,6 +296,8 @@ BackupData _decodeV1(Map<String, Object?> root) {
     hasCompletedOnboarding: sr.boolean('hasCompletedOnboarding'),
     lastBackupAt: sr.optTimestamp('lastBackupAt'),
     backupReminderHiddenUntil: sr.optTimestamp('backupReminderHiddenUntil'),
+    partner1Name: version >= 2 ? sr.str('partner1Name', maxLength: Validation.maxPersonNameLength) : 'Partner 1',
+    partner2Name: version >= 2 ? sr.str('partner2Name', maxLength: Validation.maxPersonNameLength) : 'Partner 2',
   );
 
   final ids = <String>{};
@@ -347,6 +373,7 @@ BackupData _decodeV1(Map<String, Object?> root) {
       note: r.str('note', maxLength: Validation.maxNoteLength, allowEmpty: true),
       categoryId: r.optStr('categoryId'),
       goalId: r.optStr('goalId'),
+      person: version >= 2 ? r.enumValue('person', Person.values) : Person.joint,
     );
     if (t.categoryId != null && !categoryIds.contains(t.categoryId)) r.fail('categoryId');
     if (t.goalId != null && !goalIds.contains(t.goalId)) r.fail('goalId');
@@ -385,6 +412,33 @@ BackupData _decodeV1(Map<String, Object?> root) {
     debts.add(d);
   }
 
+  final mortgages = <Mortgage>[];
+  if (version >= 2) {
+    for (final (i, m) in _list(root, 'mortgages').indexed) {
+      final r = _Reader(m, 'mortgage ${i + 1}');
+      final mortgage = Mortgage(
+        id: r.str('id'),
+        createdAt: r.timestamp('createdAt'),
+        name: r.str('name', maxLength: Validation.maxNameLength),
+        lender: r.optStr('lender'),
+        type: r.enumValue('type', MortgageType.values),
+        balance: r.integer('balance', min: 0, max: maxAmountCents),
+        balanceDate: r.date('balanceDate'),
+        endDate: r.date('endDate'),
+        annualInterestRatePercent: r.real('annualInterestRatePercent'),
+        fixedRateUntil: r.optDate('fixedRateUntil'),
+        linkedCategoryId: r.optStr('linkedCategoryId'),
+        sortOrder: r.integer('sortOrder'),
+      );
+      if (mortgage.linkedCategoryId != null && !categoryIds.contains(mortgage.linkedCategoryId)) {
+        r.fail('linkedCategoryId');
+      }
+      if (!mortgage.endDate.isAfter(mortgage.balanceDate)) r.fail('endDate');
+      uniqueId(mortgage.id, 'mortgages');
+      mortgages.add(mortgage);
+    }
+  }
+
   return BackupData(
     settings: settings,
     groups: groups,
@@ -392,6 +446,7 @@ BackupData _decodeV1(Map<String, Object?> root) {
     transactions: transactions,
     goals: goals,
     debts: debts,
+    mortgages: mortgages,
   );
 }
 
@@ -404,7 +459,7 @@ String kindLabel(TxnKind kind) => switch (kind) {
     };
 
 String _csvField(String value) {
-  if (value.contains(RegExp('[",\n\r]')) || value.startsWith(RegExp(r'[=+\-@]'))) {
+  if (value.contains(RegExp('[";\n\r]')) || value.startsWith(RegExp(r'[=+\-@]'))) {
     // Quote, and stop spreadsheets reading the text as a formula.
     final safe = value.startsWith(RegExp(r'[=+\-@]')) ? "'$value" : value;
     return '"${safe.replaceAll('"', '""')}"';
@@ -413,8 +468,10 @@ String _csvField(String value) {
 }
 
 /// Transactions dated in calendar [year], oldest first, as CSV with the
-/// columns date, kind, category, group, goal, amount, note. Starts with a
-/// byte-order mark so Excel reads the emoji and dashes correctly.
+/// columns date, kind, who, category, group, goal, amount, note. Fields are
+/// separated by semicolons and amounts use a decimal comma, which is what
+/// Dutch Excel expects. Starts with a byte-order mark so Excel reads the
+/// emoji and dashes correctly.
 String transactionsCsv(BackupData data, int year) {
   final categories = {for (final c in data.categories) c.id: c};
   final groups = {for (final g in data.groups) g.id: g};
@@ -424,19 +481,25 @@ String transactionsCsv(BackupData data, int year) {
       final byDate = a.date.compareTo(b.date);
       return byDate != 0 ? byDate : a.createdAt.compareTo(b.createdAt);
     });
-  final out = StringBuffer('﻿date,kind,category,group,goal,amount,note\r\n');
+  final names = {
+    Person.joint: 'Joint',
+    Person.partner1: data.settings.partner1Name,
+    Person.partner2: data.settings.partner2Name,
+  };
+  final out = StringBuffer('﻿date;kind;who;category;group;goal;amount;note\r\n');
   for (final t in rows) {
     final category = categories[t.categoryId];
     final group = category == null ? null : groups[category.groupId];
     out.write([
       isoDate(t.date),
       kindLabel(t.kind),
+      _csvField(names[t.person]!),
       _csvField(category?.name ?? ''),
       _csvField(group?.name ?? ''),
       _csvField(goals[t.goalId]?.name ?? ''),
       formatAmountForCsv(t.amount),
       _csvField(t.note),
-    ].join(','));
+    ].join(';'));
     out.write('\r\n');
   }
   return out.toString();

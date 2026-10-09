@@ -15,7 +15,7 @@ class CellStyle {
     this.bold = false,
     this.italic = false,
     this.size = 10,
-    this.color = '0E4D6E',
+    this.color = '2F553B',
     this.fill,
     this.align,
     this.numFmt,
@@ -31,7 +31,7 @@ class CellStyle {
   final String? fill;
   final HAlign? align;
 
-  /// Excel number format, e.g. `"R"#,##0`.
+  /// Excel number format, e.g. `"€ "#,##0`.
   final String? numFmt;
 
   /// Colour of a thin line under the cell.
@@ -190,7 +190,7 @@ class Chart {
     required this.toCol,
     this.showPercent = false,
     this.legendPosition = 't',
-    this.valueFormat = '"R"#,##0',
+    this.valueFormat = '"€ "#,##0',
   });
 
   final ChartKind kind;
@@ -381,7 +381,7 @@ class _Strings {
 class _Styles {
   final Map<String, int> _numFmts = {};
   final List<String> _fonts = [
-    '<font><sz val="10"/><color rgb="FF0E4D6E"/><name val="Arial"/><family val="2"/></font>',
+    '<font><sz val="10"/><color rgb="FF2F553B"/><name val="Arial"/><family val="2"/></font>',
   ];
   final Map<String, int> _fontIds = {};
   final List<String> _fills = [
@@ -515,8 +515,8 @@ String _anchorXml(Chart chart, int relId, String name) =>
     '<a:graphic><a:graphicData uri="$_cNs"><c:chart xmlns:c="$_cNs" xmlns:r="$_relNs" r:id="rId$relId"/></a:graphicData></a:graphic>'
     '</xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor>';
 
-const _chartText = '4A6F80';
-const _chartLine = 'D3E5E6';
+const _chartText = '626F5F';
+const _chartLine = 'E6E0D2';
 
 String _fill(String color) => '<a:solidFill><a:srgbClr val="$color"/></a:solidFill>';
 

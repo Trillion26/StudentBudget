@@ -1,6 +1,6 @@
-# Install Emily’s Budget on your iPhone
+# Install Veen Budget on your iPhone
 
-Emily’s Budget isn't in the App Store. You install it yourself with a free tool and your own Apple ID. It takes about 20–30 minutes the first time, and you need a **Windows PC or a Mac** for the first setup only.
+Veen Budget isn't in the App Store. You install it yourself with a free tool and your own Apple ID. It takes about 20–30 minutes the first time, and you need a **Windows PC or a Mac** for the first setup only.
 
 **What you need**
 
@@ -38,12 +38,12 @@ There are two free tools. Pick **one**:
 4. Open **LocalDevVPN** and tap **Connect**. If it asks to allow VPN configurations, tap **Allow**.
 5. Open **SideStore** and sign in with the same Apple ID.
 
-### 3. Install Emily’s Budget
+### 3. Install Veen Budget
 
 1. On your iPhone, open the link your friend sent in **Safari**. Tap **StudentBudget.ipa** and then **Download**. The file goes to **Files › Downloads**.
 2. Make sure LocalDevVPN is connected.
 3. Open **SideStore** › **My Apps** › the **+** button (top left). Pick **StudentBudget.ipa** from Downloads.
-4. Wait for it to finish. **Em’s Budget** appears on your home screen.
+4. Wait for it to finish. **Veen Budget** appears on your home screen.
 
 ### 4. Every week: refresh
 
@@ -66,7 +66,7 @@ Open **LocalDevVPN** and tap **Connect**. Then open **SideStore** › **My Apps*
 1. Go to **Settings › General › VPN & Device Management**, tap your Apple ID and tap **Trust**.
 2. iOS 16 or newer: go to **Settings › Privacy & Security › Developer Mode**, turn it **on** and restart.
 
-### 3. Install Emily’s Budget
+### 3. Install Veen Budget
 
 1. Open the link your friend sent in **Safari** and download **StudentBudget.ipa**. It goes to Files › Downloads.
 2. Open **AltStore** › **My Apps** › **+** (top left) › pick **StudentBudget.ipa**.
@@ -85,7 +85,7 @@ Leave your PC on with **AltServer** running, and keep your phone on the **same W
 
 ## 6. Set a weekly reminder
 
-Open **Reminders** › **New Reminder** › "Refresh Emily’s Budget" › tap **i** › set a date › **Repeat › Weekly**.
+Open **Reminders** › **New Reminder** › "Refresh Veen Budget" › tap **i** › set a date › **Repeat › Weekly**.
 
 ## Good to know
 

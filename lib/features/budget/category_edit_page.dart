@@ -4,7 +4,7 @@ import '../../app_scope.dart';
 import '../../data/database.dart';
 import '../../design/app_colors.dart';
 import '../../design/form_fields.dart';
-import '../../design/rand_field.dart';
+import '../../design/euro_field.dart';
 import '../../design/theme.dart';
 import '../../design/widgets.dart';
 import '../../logic/models.dart';
@@ -131,7 +131,7 @@ class _CategoryEditPageState extends State<CategoryEditPage> {
                 ),
               LabeledField(
                 label: group.kind == GroupKind.income ? 'Expected each month' : 'Monthly budget',
-                child: RandField(cents: _budget, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Monthly budget', onChanged: (v) => _budget = v),
+                child: EuroField(cents: _budget, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Monthly budget', onChanged: (v) => _budget = v),
               ),
               const SizedBox(height: 8),
               PrimaryButton(label: _isNew ? 'Add category' : 'Save', onPressed: _save),

@@ -40,12 +40,12 @@ String actionLabel(TxnKind kind) => switch (kind) {
       TxnKind.fromSavings => 'Take from savings',
     };
 
-/// "Added R85,50 to Groceries"
+/// "Added € 85,50 to Groceries"
 String savedMessage(TxnKind kind, int amount, String name) => switch (kind) {
-      TxnKind.expense => 'Added ${formatRand(amount)} to $name',
-      TxnKind.income => 'Added ${formatRand(amount)} from $name',
-      TxnKind.toSavings => 'Added ${formatRand(amount)} to $name',
-      TxnKind.fromSavings => 'Took ${formatRand(amount)} from $name',
+      TxnKind.expense => 'Added ${formatEuro(amount)} to $name',
+      TxnKind.income => 'Added ${formatEuro(amount)} from $name',
+      TxnKind.toSavings => 'Added ${formatEuro(amount)} to $name',
+      TxnKind.fromSavings => 'Took ${formatEuro(amount)} from $name',
     };
 
 class AddSheet extends StatefulWidget {
@@ -69,6 +69,7 @@ class _AddSheetState extends State<AddSheet> {
   late final FocusNode _amountFocus = FocusNode();
   late String? _categoryId = widget.editing?.categoryId;
   late String? _goalId = widget.initialGoalId;
+  late Person _person = widget.editing?.person ?? Person.joint;
   DateTime? _date;
   bool _showAllCategories = false;
   bool _saving = false;
@@ -195,6 +196,7 @@ class _AddSheetState extends State<AddSheet> {
       note: _note.text,
       categoryId: _kind == TxnKind.toSavings ? null : _categoryId,
       goalId: _needsGoal ? _goalId : null,
+      person: _person,
     );
     final error = draft.validate();
     if (error != null) {
@@ -391,7 +393,7 @@ class _AddSheetState extends State<AddSheet> {
                   ),
                   const SizedBox(height: 20),
                   Semantics(
-                    label: 'Amount in rand',
+                    label: 'Amount in euros',
                     textField: true,
                     child: CupertinoTextField(
                       key: const Key('amountField'),
@@ -404,7 +406,7 @@ class _AddSheetState extends State<AddSheet> {
                       placeholder: '0',
                       prefix: Padding(
                         padding: const EdgeInsets.only(left: 16),
-                        child: Text('R', style: AppText.hero.copyWith(fontSize: 40, color: c.inkSoft)),
+                        child: Text('€', style: AppText.hero.copyWith(fontSize: 40, color: c.inkSoft)),
                       ),
                       style: AppText.hero.copyWith(fontSize: 40, color: c.ink),
                       placeholderStyle: AppText.hero.copyWith(fontSize: 40, color: c.line),
@@ -425,12 +427,20 @@ class _AddSheetState extends State<AddSheet> {
                     ),
                   ...goalPicker,
                   ...categoryPicker,
+                  label(_kind == TxnKind.income ? 'Whose income?' : 'Who paid?'),
+                  KindSegments<Person>(
+                    key: const Key('personSegments'),
+                    values: Person.values,
+                    labels: [for (final p in Person.values) data.personName(p)],
+                    selected: _person,
+                    onChanged: (p) => setState(() => _person = p),
+                  ),
                   label('Note (optional)'),
                   CupertinoTextField(
                     key: const Key('noteField'),
                     controller: _note,
                     maxLength: Validation.maxNoteLength,
-                    placeholder: _kind == TxnKind.expense ? 'e.g. Checkers, taxi to campus' : 'Add a short note',
+                    placeholder: _kind == TxnKind.expense ? 'e.g. Albert Heijn, petrol' : 'Add a short note',
                     style: AppText.bodyRegular.copyWith(color: c.ink),
                     placeholderStyle: AppText.bodyRegular.copyWith(color: c.inkSoft.withValues(alpha: 0.7)),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),

@@ -1,17 +1,27 @@
 import 'package:flutter/cupertino.dart';
 
 import '../../app_scope.dart';
+import '../../data/app_data.dart';
 import '../../data/database.dart';
 import '../../design/app_colors.dart';
-import '../../design/rand_field.dart';
+import '../../design/euro_field.dart';
 import '../../design/theme.dart';
 import '../../design/widgets.dart';
 import '../../logic/budget_calculator.dart';
 import '../../logic/money.dart';
 import '../debts/debts_page.dart';
+import '../mortgage/mortgage_page.dart';
 import '../settings/settings_page.dart';
 import 'category_edit_page.dart';
 import 'group_edit_page.dart';
+
+/// "€ 1.432 this month · € 287.650 to go", or a prompt to add it.
+String _mortgageSubtitle(AppData data, DateTime today) {
+  if (data.mortgages.isEmpty) return 'Add your mortgage';
+  final totals = MortgageTotals(data, today);
+  return '${formatEuro(totals.paymentThisMonth, wholeEuros: true)} this month · '
+      '${formatEuro(totals.balance, wholeEuros: true)} to go';
+}
 
 class BudgetPage extends StatelessWidget {
   const BudgetPage({super.key});
@@ -27,7 +37,7 @@ class BudgetPage extends StatelessWidget {
 
     Widget categoryRow(BudgetCategory cat) {
       final stacked = useStackedLayout(context);
-      final field = RandField(
+      final field = EuroField(
         key: ValueKey('budget-${cat.id}'),
         cents: cat.monthlyBudget,
         width: stacked ? double.infinity : 120,
@@ -68,12 +78,12 @@ class BudgetPage extends StatelessWidget {
                 ? Text.rich(
                     TextSpan(children: [
                       const TextSpan(text: "You've planned "),
-                      TextSpan(text: formatRand(data.plannedSpending), style: const TextStyle(fontWeight: FontWeight.w800)),
+                      TextSpan(text: formatEuro(data.plannedSpending), style: const TextStyle(fontWeight: FontWeight.w800)),
                       const TextSpan(text: ' of spending from '),
-                      TextSpan(text: formatRand(data.plannedIncome), style: const TextStyle(fontWeight: FontWeight.w800)),
+                      TextSpan(text: formatEuro(data.plannedIncome), style: const TextStyle(fontWeight: FontWeight.w800)),
                       const TextSpan(text: ' coming in. '),
                       TextSpan(
-                        text: '${formatRand(free)} is free for savings or extras.',
+                        text: '${formatEuro(free)} is free for savings or extras.',
                         style: TextStyle(fontWeight: FontWeight.w800, backgroundColor: c.highlight.withValues(alpha: 0.45)),
                       ),
                     ]),
@@ -82,8 +92,8 @@ class BudgetPage extends StatelessWidget {
                 : Text.rich(
                     TextSpan(children: [
                       const TextSpan(text: 'Your plan spends '),
-                      TextSpan(text: formatRand(-free), style: const TextStyle(fontWeight: FontWeight.w800)),
-                      TextSpan(text: ' more than comes in (${formatRand(data.plannedSpending)} planned, ${formatRand(data.plannedIncome)} coming in). '),
+                      TextSpan(text: formatEuro(-free), style: const TextStyle(fontWeight: FontWeight.w800)),
+                      TextSpan(text: ' more than comes in (${formatEuro(data.plannedSpending)} planned, ${formatEuro(data.plannedIncome)} coming in). '),
                       const TextSpan(text: 'Lower some budgets or add income.'),
                     ]),
                     style: AppText.bodyRegular.copyWith(color: c.overText, fontSize: 18),
@@ -95,7 +105,10 @@ class BudgetPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.only(top: 8),
           child: Column(children: [
-            ListRow(emoji: '💳', title: 'Debts', subtitle: Text('Loans and store cards', style: AppText.small.copyWith(color: c.inkSoft)),
+            ListRow(emoji: '🏠', title: 'Mortgage', subtitle: Text(_mortgageSubtitle(data, store.today()), style: AppText.small.copyWith(color: c.inkSoft)),
+                trailing: Icon(CupertinoIcons.chevron_right, color: c.inkSoft, size: 18), onTap: () => open(const MortgagePage())),
+            const RowDivider(),
+            ListRow(emoji: '💳', title: 'Loans', subtitle: Text('Student loan, car loan, credit cards', style: AppText.small.copyWith(color: c.inkSoft)),
                 trailing: Icon(CupertinoIcons.chevron_right, color: c.inkSoft, size: 18), onTap: () => open(const DebtsPage())),
             const RowDivider(),
             ListRow(emoji: '⚙️', title: 'Settings', subtitle: Text('Month start, app lock, backups', style: AppText.small.copyWith(color: c.inkSoft)),
@@ -122,7 +135,7 @@ class BudgetPage extends StatelessWidget {
       slivers.add(SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 4),
-          child: Text('${formatRand(total)} a month', style: AppText.small.copyWith(color: c.inkSoft)),
+          child: Text('${formatEuro(total)} a month', style: AppText.small.copyWith(color: c.inkSoft)),
         ),
       ));
       slivers.add(SliverList.separated(

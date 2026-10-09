@@ -6,6 +6,8 @@ class Validation {
 
   static const int maxNoteLength = 60;
   static const int maxNameLength = 40;
+  static const int maxPersonNameLength = 20;
+
   /// The app covers the years [firstYear] to [lastYear], both included.
   static const int firstYear = 2026;
   static const int lastYear = 2035;
@@ -51,6 +53,18 @@ class Validation {
     if (name.length > maxNameLength) return 'Keep the name to $maxNameLength characters';
     return null;
   }
+
+  /// A partner's first name: 1–20 characters.
+  static String? personName(String value) {
+    final name = value.trim();
+    if (name.isEmpty) return 'Enter a name';
+    if (name.length > maxPersonNameLength) return 'Keep the name to $maxPersonNameLength characters';
+    return null;
+  }
+
+  /// Mortgage dates: the last payment must come after the balance date.
+  static String? mortgage({required DateTime balanceDate, required DateTime endDate}) =>
+      monthsBetween(balanceDate, endDate) < 1 ? 'The end date must be after the balance date' : null;
 
   /// Budget month start day: 1–28.
   static bool startDay(int value) => value >= 1 && value <= 28;

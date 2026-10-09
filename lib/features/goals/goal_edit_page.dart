@@ -4,7 +4,7 @@ import '../../app_scope.dart';
 import '../../data/database.dart';
 import '../../design/app_colors.dart';
 import '../../design/form_fields.dart';
-import '../../design/rand_field.dart';
+import '../../design/euro_field.dart';
 import '../../design/theme.dart';
 import '../../design/widgets.dart';
 import '../../logic/dates.dart';
@@ -133,7 +133,7 @@ class _GoalEditPageState extends State<GoalEditPage> {
             LabeledField(
               label: 'Target (optional)',
               help: 'Leave empty if this is just a pot to save into.',
-              child: RandField(cents: _target, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Target amount',
+              child: EuroField(cents: _target, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Target amount',
                   onChanged: (v) => setState(() => _target = v)),
             ),
             if (_target > 0)
@@ -171,7 +171,7 @@ class _GoalEditPageState extends State<GoalEditPage> {
             LabeledField(
               label: 'Already saved',
               help: 'Money already in this goal before you started using the app.',
-              child: RandField(cents: _starting, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Starting balance',
+              child: EuroField(cents: _starting, width: double.infinity, textAlign: TextAlign.left, semanticLabel: 'Starting balance',
                   onChanged: (v) => _starting = v),
             ),
             PrimaryButton(label: _isNew ? 'Add goal' : 'Save', onPressed: _save),

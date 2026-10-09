@@ -5,13 +5,14 @@ import 'package:uuid/uuid.dart';
 import '../export/year_report.dart';
 import '../logic/dates.dart';
 import '../logic/models.dart';
+import '../logic/money.dart';
 import '../logic/validation.dart';
 import 'app_data.dart';
 import 'backup.dart';
 import 'database.dart';
 import 'seed.dart';
 
-/// What the student entered in the Add sheet.
+/// What was entered in the Add sheet.
 class TxnDraft {
   const TxnDraft({
     required this.kind,
@@ -20,6 +21,7 @@ class TxnDraft {
     this.note = '',
     this.categoryId,
     this.goalId,
+    this.person = Person.joint,
   });
 
   final TxnKind kind;
@@ -28,11 +30,12 @@ class TxnDraft {
   final String note;
   final String? categoryId;
   final String? goalId;
+  final Person person;
 
   /// Checks the rules for each kind; returns an error message or null.
   String? validate() {
-    if (amount <= 0) return 'Enter an amount above R0';
-    if (amount > 1000000000) return 'Enter an amount up to R10 000 000';
+    if (amount <= 0) return 'Enter an amount above € 0';
+    if (amount > maxAmountCents) return 'Enter an amount up to € 10.000.000';
     final dateError = Validation.date(date);
     if (dateError != null) return dateError;
     final noteError = Validation.note(note);
@@ -81,6 +84,7 @@ class BudgetStore extends ChangeNotifier {
       db.select(db.transactions).get(),
       db.select(db.savingsGoals).get(),
       db.select(db.debts).get(),
+      db.select(db.mortgages).get(),
     ]);
     _data = AppData(
       settings: results[0] as AppSettings,
@@ -89,6 +93,7 @@ class BudgetStore extends ChangeNotifier {
       transactions: results[3] as List<Txn>,
       goals: results[4] as List<SavingsGoal>,
       debts: results[5] as List<Debt>,
+      mortgages: results[6] as List<Mortgage>,
     );
     notifyListeners();
   }
@@ -107,6 +112,7 @@ class BudgetStore extends ChangeNotifier {
       note: draft.note.trim(),
       categoryId: draft.kind == TxnKind.toSavings ? null : draft.categoryId,
       goalId: draft.kind == TxnKind.income || draft.kind == TxnKind.expense ? null : draft.goalId,
+      person: draft.person,
     );
     await db.into(db.transactions).insert(row);
     await reload();
@@ -124,6 +130,7 @@ class BudgetStore extends ChangeNotifier {
       note: draft.note.trim(),
       categoryId: Value(draft.kind == TxnKind.toSavings ? null : draft.categoryId),
       goalId: Value(draft.kind == TxnKind.income || draft.kind == TxnKind.expense ? null : draft.goalId),
+      person: draft.person,
     );
     await db.update(db.transactions).replace(row);
     await reload();
@@ -321,6 +328,49 @@ class BudgetStore extends ChangeNotifier {
     await reload();
   }
 
+  // Mortgage ---------------------------------------------------------------
+
+  Future<Mortgage> saveMortgage({
+    String? id,
+    required String name,
+    String? lender,
+    required MortgageType type,
+    required int balance,
+    required DateTime balanceDate,
+    required DateTime endDate,
+    required double annualInterestRatePercent,
+    DateTime? fixedRateUntil,
+    String? linkedCategoryId,
+  }) async {
+    final error =
+        Validation.name(name, thing: 'the mortgage part') ?? Validation.mortgage(balanceDate: balanceDate, endDate: endDate);
+    if (error != null) throw ArgumentError(error);
+    final existing = id == null ? null : data.mortgages.where((m) => m.id == id).firstOrNull;
+    final row = Mortgage(
+      id: existing?.id ?? _uuid.v4(),
+      createdAt: existing?.createdAt ?? now().toUtc(),
+      name: name.trim(),
+      lender: (lender == null || lender.trim().isEmpty) ? null : lender.trim(),
+      type: type,
+      balance: balance,
+      balanceDate: dateOnly(balanceDate),
+      endDate: dateOnly(endDate),
+      annualInterestRatePercent: annualInterestRatePercent,
+      fixedRateUntil: fixedRateUntil == null ? null : dateOnly(fixedRateUntil),
+      linkedCategoryId: linkedCategoryId,
+      sortOrder: existing?.sortOrder ??
+          (data.mortgages.isEmpty ? 0 : data.mortgages.map((m) => m.sortOrder).reduce((a, b) => a > b ? a : b) + 1),
+    );
+    await db.into(db.mortgages).insertOnConflictUpdate(row);
+    await reload();
+    return row;
+  }
+
+  Future<void> deleteMortgage(String id) async {
+    await (db.delete(db.mortgages)..where((m) => m.id.equals(id))).go();
+    await reload();
+  }
+
   // Settings ---------------------------------------------------------------
 
   Future<void> _writeSettings(SettingsCompanion companion) async {
@@ -331,6 +381,34 @@ class BudgetStore extends ChangeNotifier {
   Future<void> setBudgetMonthStartDay(int day) {
     if (!Validation.startDay(day)) throw ArgumentError('Pick a day from 1 to 28');
     return _writeSettings(SettingsCompanion(budgetMonthStartDay: Value(day)));
+  }
+
+  /// Saves the partners' names. Categories named after a partner, such as
+  /// "Salary – Partner 1", are renamed to match.
+  Future<void> setPartnerNames(String partner1, String partner2) async {
+    final error = Validation.personName(partner1) ?? Validation.personName(partner2);
+    if (error != null) throw ArgumentError(error);
+    final one = partner1.trim(), two = partner2.trim();
+    if (one.toLowerCase() == two.toLowerCase()) throw ArgumentError('Use two different names');
+    final old = {data.settings.partner1Name: one, data.settings.partner2Name: two};
+    await db.transaction(() async {
+      final taken = {for (final c in data.categories) c.name.toLowerCase()};
+      for (final c in data.categories) {
+        for (final entry in old.entries) {
+          final suffix = ' – ${entry.key}';
+          if (entry.key == entry.value || !c.name.endsWith(suffix)) continue;
+          final renamed = '${c.name.substring(0, c.name.length - suffix.length)} – ${entry.value}';
+          if (renamed.length > Validation.maxNameLength || taken.contains(renamed.toLowerCase())) continue;
+          taken
+            ..remove(c.name.toLowerCase())
+            ..add(renamed.toLowerCase());
+          await (db.update(db.categories)..where((t) => t.id.equals(c.id))).write(CategoriesCompanion(name: Value(renamed)));
+        }
+      }
+      await (db.update(db.settings)..where((s) => s.id.equals(1)))
+          .write(SettingsCompanion(partner1Name: Value(one), partner2Name: Value(two)));
+    });
+    await reload();
   }
 
   Future<void> setAppLockEnabled(bool enabled) => _writeSettings(SettingsCompanion(appLockEnabled: Value(enabled)));
@@ -364,6 +442,7 @@ class BudgetStore extends ChangeNotifier {
         transactions: data.transactions,
         goals: data.goals,
         debts: data.debts,
+        mortgages: data.mortgages,
       );
 
   String exportBackupJson() => encodeBackup(snapshot(), exportedAt: now());
@@ -382,6 +461,7 @@ class BudgetStore extends ChangeNotifier {
         for (final TableInfo<Table, dynamic> table in [
           db.transactions,
           db.debts,
+          db.mortgages,
           db.savingsGoals,
           db.categories,
           db.categoryGroups,
@@ -396,6 +476,7 @@ class BudgetStore extends ChangeNotifier {
           b.insertAll(db.savingsGoals, backup.goals);
           b.insertAll(db.transactions, backup.transactions);
           b.insertAll(db.debts, backup.debts);
+          b.insertAll(db.mortgages, backup.mortgages);
         });
       });
     } finally {

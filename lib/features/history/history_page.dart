@@ -75,7 +75,7 @@ class _HistoryPageState extends State<HistoryPage> {
     final toast = ToastHost.of(context);
     final deleted = await store.deleteTransaction(t.id);
     if (deleted != null) {
-      toast.show('Deleted ${formatRand(deleted.amount)} ${store.data.describe(deleted)}', onUndo: () => store.restoreTransaction(deleted));
+      toast.show('Deleted ${formatEuro(deleted.amount)} ${store.data.describe(deleted)}', onUndo: () => store.restoreTransaction(deleted));
     }
   }
 
@@ -236,7 +236,7 @@ class _DayHeader extends StatelessWidget {
             Text(longDayLabel(date), style: AppText.body.copyWith(color: c.ink, fontWeight: FontWeight.w800)),
             if (spent > 0)
               Text(
-                'Spent ${formatRand(spent)} · ${formatRand(runningTotal ?? spent)} so far',
+                'Spent ${formatEuro(spent)} · ${formatEuro(runningTotal ?? spent)} so far',
                 style: AppText.small.copyWith(color: c.inkSoft, fontFeatures: tabular),
               ),
           ],

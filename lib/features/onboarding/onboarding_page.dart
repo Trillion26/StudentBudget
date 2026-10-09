@@ -6,12 +6,14 @@ import '../../data/seed.dart';
 import '../../design/app_colors.dart';
 import '../../design/highlighter.dart';
 import '../../design/theme.dart';
+import '../../design/form_fields.dart';
 import '../../design/widgets.dart';
 import '../../logic/money.dart';
+import '../../logic/validation.dart';
 import '../settings/settings_page.dart';
 import 'income_setup_page.dart';
 
-/// Three short, skippable screens on first launch.
+/// Four short, skippable screens on first launch.
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -22,6 +24,7 @@ class OnboardingPage extends StatefulWidget {
 class _OnboardingPageState extends State<OnboardingPage> {
   final PageController _pages = PageController();
   int _index = 0;
+  static const _pageCount = 4;
 
   @override
   void dispose() {
@@ -30,7 +33,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _next() {
-    if (_index == 2) {
+    if (_index == _pageCount - 1) {
       _finish();
       return;
     }
@@ -57,7 +60,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
-                  child: Text('${_index + 1} of 3', style: AppText.small.copyWith(color: c.inkSoft)),
+                  child: Text('${_index + 1} of $_pageCount', style: AppText.small.copyWith(color: c.inkSoft)),
                 ),
                 const Spacer(),
                 CupertinoButton(
@@ -71,14 +74,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: PageView(
                 controller: _pages,
                 onPageChanged: (i) => setState(() => _index = i),
-                children: const [_Welcome(), _Income(), _StartDay()],
+                children: const [_Welcome(), _Household(), _Income(), _StartDay()],
               ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
               child: PrimaryButton(
                 key: const Key('onboardingNext'),
-                label: _index == 2 ? 'Start budgeting' : 'Next',
+                label: _index == _pageCount - 1 ? 'Start budgeting' : 'Next',
                 onPressed: _next,
               ),
             ),
@@ -104,13 +107,98 @@ class _Welcome extends StatelessWidget {
         ),
         const SizedBox(height: 20),
         Text(
-          'Plan your month in rand and see how much you can spend each day.',
+          'Plan your household\'s month in euros and see how much you can spend each day.',
           style: AppText.body.copyWith(color: c.ink, fontSize: 20),
         ),
         const SizedBox(height: 16),
         Text(
           'Everything stays on this phone. No sign-in, no ads, nothing sent anywhere.',
           style: AppText.bodyRegular.copyWith(color: c.inkSoft),
+        ),
+      ],
+    );
+  }
+}
+
+/// The partners' first names. They label "who paid" on each entry, and
+/// categories such as "Salary – Partner 1".
+class _Household extends StatefulWidget {
+  const _Household();
+
+  @override
+  State<_Household> createState() => _HouseholdState();
+}
+
+class _HouseholdState extends State<_Household> {
+  late final TextEditingController _one;
+  late final TextEditingController _two;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    final s = StoreScope.read(context).data.settings;
+    _one = TextEditingController(text: s.partner1Name == 'Partner 1' ? '' : s.partner1Name);
+    _two = TextEditingController(text: s.partner2Name == 'Partner 2' ? '' : s.partner2Name);
+  }
+
+  @override
+  void dispose() {
+    _one.dispose();
+    _two.dispose();
+    super.dispose();
+  }
+
+  Future<void> _save() async {
+    final store = StoreScope.read(context);
+    final one = _one.text.trim().isEmpty ? 'Partner 1' : _one.text;
+    final two = _two.text.trim().isEmpty ? 'Partner 2' : _two.text;
+    try {
+      await store.setPartnerNames(one, two);
+      setState(() => _error = null);
+    } on ArgumentError catch (e) {
+      setState(() => _error = '${e.message}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      children: [
+        Text('Who\'s in your household?', style: AppText.title.copyWith(color: c.ink)),
+        const SizedBox(height: 8),
+        Text(
+          'Your first names, so you can mark who paid or earned something. '
+          'Leave them empty to keep "Partner 1" and "Partner 2".',
+          style: AppText.bodyRegular.copyWith(color: c.inkSoft),
+        ),
+        const SizedBox(height: 16),
+        LabeledField(
+          label: 'First partner',
+          child: AppTextField(
+            key: const Key('partner1Field'),
+            controller: _one,
+            maxLength: Validation.maxPersonNameLength,
+            placeholder: 'Partner 1',
+            semanticLabel: 'First partner\'s name',
+            onChanged: (_) => _save(),
+          ),
+        ),
+        LabeledField(
+          label: 'Second partner',
+          error: _error,
+          child: AppTextField(
+            key: const Key('partner2Field'),
+            controller: _two,
+            maxLength: Validation.maxPersonNameLength,
+            placeholder: 'Partner 2',
+            semanticLabel: 'Second partner\'s name',
+            hasError: _error != null,
+            onChanged: (_) => _save(),
+          ),
         ),
       ],
     );
@@ -139,7 +227,7 @@ class _Income extends StatelessWidget {
         NoteBox(
           color: c.highlight.withValues(alpha: 0.22),
           child: Text(
-            'Tip: try to put ${formatRand(suggestedEmergencySavingCents)} a month into your Emergency fund. '
+            'Tip: try to put ${formatEuro(suggestedEmergencySavingCents)} a month into your Emergency buffer. '
             'Tap + and choose Saved when you do.',
             style: AppText.small.copyWith(color: c.ink),
           ),
@@ -163,7 +251,7 @@ class _StartDay extends StatelessWidget {
         Text('When does your money month start?', style: AppText.title.copyWith(color: c.ink)),
         const SizedBox(height: 8),
         Text(
-          'Most people use the 1st. If your allowance or pay arrives on the 25th, start your month on the 25th.',
+          'Most people use the 1st. If your salary arrives on the 25th, start your month on the 25th.',
           style: AppText.bodyRegular.copyWith(color: c.inkSoft),
         ),
         const SizedBox(height: 20),

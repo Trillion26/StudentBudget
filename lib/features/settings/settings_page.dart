@@ -7,6 +7,7 @@ import '../../design/theme.dart';
 import '../../design/toast.dart';
 import '../../design/widgets.dart';
 import '../../logic/dates.dart';
+import '../../logic/validation.dart';
 import '../lock/app_lock.dart';
 import 'backup_actions.dart';
 
@@ -46,6 +47,39 @@ Future<int?> pickStartDay(BuildContext context, int current) async {
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
+
+  Future<void> _editNames(BuildContext context) async {
+    final store = StoreScope.read(context);
+    final toast = ToastHost.of(context);
+    final s = store.data.settings;
+    final one = TextEditingController(text: s.partner1Name);
+    final two = TextEditingController(text: s.partner2Name);
+    final ok = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: const Text('Your names'),
+        content: Column(children: [
+          const SizedBox(height: 12),
+          CupertinoTextField(controller: one, placeholder: 'Partner 1', maxLength: Validation.maxPersonNameLength, autofocus: true),
+          const SizedBox(height: 8),
+          CupertinoTextField(controller: two, placeholder: 'Partner 2', maxLength: Validation.maxPersonNameLength),
+        ]),
+        actions: [
+          CupertinoDialogAction(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          CupertinoDialogAction(isDefaultAction: true, onPressed: () => Navigator.pop(context, true), child: const Text('Save')),
+        ],
+      ),
+    );
+    if (ok == true) {
+      try {
+        await store.setPartnerNames(one.text, two.text);
+      } on ArgumentError catch (e) {
+        toast.show('${e.message}');
+      }
+    }
+    one.dispose();
+    two.dispose();
+  }
 
   Future<void> _toggleLock(BuildContext context, bool enable) async {
     final store = StoreScope.read(context);
@@ -116,11 +150,19 @@ class SettingsPage extends StatelessWidget {
       showBack: true,
       slivers: [
         SliverList.list(children: [
-          const SectionTitle('Budget month', padding: EdgeInsets.fromLTRB(20, 8, 20, 4)),
+          const SectionTitle('Household', padding: EdgeInsets.fromLTRB(20, 8, 20, 4)),
+          ListRow(
+            emoji: '👫',
+            title: '${s.partner1Name} & ${s.partner2Name}',
+            subtitle: Text('Names used for "who paid" and in category names', style: AppText.small.copyWith(color: c.inkSoft)),
+            trailing: chevron,
+            onTap: () => _editNames(context),
+          ),
+          const SectionTitle('Budget month'),
           ListRow(
             emoji: '📅',
             title: 'Starts on the ${ordinal(s.budgetMonthStartDay)}',
-            subtitle: Text('Paid on the 25th? Start your budget month then.', style: AppText.small.copyWith(color: c.inkSoft)),
+            subtitle: Text('Salary on the 25th? Start your budget month then.', style: AppText.small.copyWith(color: c.inkSoft)),
             trailing: chevron,
             onTap: () async {
               final day = await pickStartDay(context, s.budgetMonthStartDay);

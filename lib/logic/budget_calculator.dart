@@ -62,7 +62,7 @@ class MonthSummary {
   /// Days from today through the last day of the month (current month only).
   final int daysLeft;
 
-  /// Whole rand a day (in cents), or null when over budget or not the
+  /// Whole euros a day (in cents), or null when over budget or not the
   /// current month.
   final int? dailyAllowance;
 
@@ -110,17 +110,17 @@ class CategoryStatus {
     return math.min(1, spent / budget);
   }
 
-  /// "R400 left of R600", "R120 over", "No budget set".
+  /// "€ 400 left of € 600", "€ 120 over", "No budget set".
   String get label {
     switch (state) {
       case CategoryState.over:
-        return '${formatRand(spent - budget)} over';
+        return '${formatEuro(spent - budget)} over';
       case CategoryState.noBudget:
         return 'No budget set';
       case CategoryState.empty:
         return 'No budget set';
       case CategoryState.within:
-        return '${formatRand(remaining)} left of ${formatRand(budget)}';
+        return '${formatEuro(remaining)} left of ${formatEuro(budget)}';
     }
   }
 
@@ -145,7 +145,7 @@ class GoalProgress {
   final int? target;
   final DateTime? targetDate;
 
-  /// Whole rand per month (in cents) still needed to reach the target by
+  /// Whole euros per month (in cents) still needed to reach the target by
   /// the target date, or null without a target and date.
   final int? neededPerMonth;
 
@@ -160,14 +160,14 @@ class GoalProgress {
     return math.max(0, math.min(1, balance / t));
   }
 
-  /// Extra per month needed when behind (whole rand, in cents).
+  /// Extra per month needed when behind (whole euros, in cents).
   int get shortfallPerMonth {
     final needed = neededPerMonth;
     if (needed == null) return 0;
-    return ceilToWholeRand(needed - averageMonthlySaving);
+    return ceilToWholeEuro(needed - averageMonthlySaving);
   }
 
-  /// "Goal reached", "On track", "Behind – save R60 more a month",
+  /// "Goal reached", "On track", "Behind – save € 60 more a month",
   /// "No target set", "No target date".
   String get statusLabel {
     switch (state) {
@@ -176,7 +176,7 @@ class GoalProgress {
       case GoalState.onTrack:
         return 'On track';
       case GoalState.behind:
-        return 'Behind – save ${formatRand(shortfallPerMonth)} more a month';
+        return 'Behind – save ${formatEuro(shortfallPerMonth)} more a month';
       case GoalState.noTarget:
         return 'No target set';
       case GoalState.noTargetDate:
@@ -184,12 +184,12 @@ class GoalProgress {
     }
   }
 
-  /// "R250 a month gets you there by March 2027", or null.
+  /// "€ 250 a month gets you there by March 2027", or null.
   String? get planLabel {
     final needed = neededPerMonth;
     final date = targetDate;
     if (needed == null || date == null || state == GoalState.reached) return null;
-    return '${formatRand(needed)} a month gets you there by ${monthYearLabel(date)}';
+    return '${formatEuro(needed)} a month gets you there by ${monthYearLabel(date)}';
   }
 }
 
@@ -274,7 +274,7 @@ class BudgetCalculator {
   static int moneyLeft(MonthFigures figures, int plannedIncome) =>
       baseIncome(figures, plannedIncome) - figures.spent - figures.saved;
 
-  /// floor(money left ÷ days left) in whole rand, as cents. Null when
+  /// floor(money left ÷ days left) in whole euros, as cents. Null when
   /// money left is below zero or there are no days left.
   static int? dailyAllowance({required int moneyLeft, required int daysLeft}) {
     if (moneyLeft < 0 || daysLeft <= 0) return null;
@@ -315,6 +315,20 @@ class BudgetCalculator {
     return result;
   }
 
+  /// Income and spending per person in [start] up to (not including)
+  /// [end]. Every person is in the result, with zeros when nothing was
+  /// logged.
+  static Map<Person, ({int income, int spent})> byPerson(Iterable<TxnFacts> txns, DateTime start, DateTime end) {
+    final income = {for (final p in Person.values) p: 0};
+    final spent = {for (final p in Person.values) p: 0};
+    for (final t in txns) {
+      if (t.date.isBefore(start) || !t.date.isBefore(end)) continue;
+      if (t.kind == TxnKind.income) income[t.person] = income[t.person]! + t.amount;
+      if (t.kind == TxnKind.expense) spent[t.person] = spent[t.person]! + t.amount;
+    }
+    return {for (final p in Person.values) p: (income: income[p]!, spent: spent[p]!)};
+  }
+
   /// Plan check: planned income − planned spending. Negative is a warning.
   static int planFree({required int plannedIncome, required int plannedSpending}) =>
       plannedIncome - plannedSpending;
@@ -335,7 +349,7 @@ class BudgetCalculator {
   }
 
   /// (target − balance) ÷ max(1, whole months from [currentMonth] to the
-  /// target date), rounded up to whole rand. Zero once reached.
+  /// target date), rounded up to whole euros. Zero once reached.
   static int neededPerMonth({
     required int target,
     required int balance,
@@ -346,7 +360,7 @@ class BudgetCalculator {
     if (remaining <= 0) return 0;
     final months = math.max(1, (targetDate.year * 12 + targetDate.month) - (currentMonth.year * 12 + currentMonth.month));
     final perMonth = (remaining + months - 1) ~/ months;
-    return ceilToWholeRand(perMonth);
+    return ceilToWholeEuro(perMonth);
   }
 
   /// Average net saving (toSavings − fromSavings) into [goalId] over the

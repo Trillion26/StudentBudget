@@ -10,8 +10,23 @@ Where the brief was ambiguous, or something had to differ from it, this file rec
 - **The Windows window opens at phone size (390×844).** Set `STUDENT_BUDGET_WINDOW_SIZE`, for example to `375x667`, to change it. The VS Code launch configurations do this for you.
 - **Running as a Windows desktop app needs Visual Studio 2022 Community with "Desktop development with C++".** It is free but not open source. Flutter needs it to build any Windows app. Chrome works without it.
 - **In Chrome, SQLite runs in the page and stores its data in IndexedDB.** drift's background worker stopped answering after a few idle seconds in testing, so it isn't used. This only affects development in Chrome; the iPhone and Windows use a normal SQLite file.
-- **`intl` is not used.** Rand formatting is a few lines of tested Dart in `lib/logic/money.dart`, so the package was left out.
+- **`intl` is not used.** Euro formatting is a few lines of tested Dart in `lib/logic/money.dart`, so the package was left out.
 - **Generated drift code (`*.g.dart`) is committed.** A beginner can then run the app without running build_runner first.
+
+## Household version (2.0)
+
+The app started as a student budget in rand and became a budget for a Dutch couple with children and a mortgage.
+
+- **Typed amounts are read the Dutch way first.** A comma is the decimal separator and points group thousands ("1.250,50"). A single point followed by one or two digits is read as decimals ("85.50"), so the English way also works. "1.250" means one thousand two hundred and fifty.
+- **The starter budget is all € 0.** The categories and groups follow the household's own spreadsheet, but the amounts are theirs to fill in, starting with income in onboarding.
+- **Every entry belongs to Joint, partner 1 or partner 2.** New entries default to Joint. The names are asked in onboarding and can be changed in Settings. Categories whose names end in " – Partner 1" or " – Partner 2" (salary, health insurance, phone, pocket money) are renamed to match the names, unless that would clash with another category.
+- **A mortgage is one or more loan parts** (leningdelen), each with its own type (annuity, linear or interest-only), rate and fixed-rate end. A part is described by the balance still owed on a date and the month of the last payment, so a new or an existing mortgage can be entered from a statement. When the fixed rate ends, the household enters the new rate with the balance on that date.
+- **Mortgage payments are monthly, from the month after the balance date up to the end month.** Interest is the balance at the start of the month times the yearly rate ÷ 12, rounded to the cent. The last payment repays whatever is left. This month's payment counts as made.
+- **The mortgage can end after 2035.** Its dates are not limited to the app's 2026–2035 range, because a mortgage usually runs 30 years.
+- **The mortgage screen doesn't change the budget by itself.** It shows a button to set the mortgage category's budget to this month's payment.
+- **No loan is seeded.** The student version started with a "Student loan" debt; households add their own loans.
+- **Backups are format version 2.** Version 1 backups from the student app still restore: every entry becomes Joint, the names become "Partner 1" and "Partner 2", and there is no mortgage.
+- **The CSV export uses semicolons and decimal commas**, which is what Excel expects with Dutch settings. It has a "who" column.
 
 ## Data
 
@@ -25,8 +40,8 @@ Where the brief was ambiguous, or something had to differ from it, this file rec
 
 ## Rules
 
-- **The daily allowance is rounded down to whole rand.** The brief's example "R143 a day" shows whole rand.
-- **"Needed per month" is rounded up to whole rand.** "Whole months to the target date" counts calendar months from the current budget month's label to the target date's month, with a minimum of 1.
+- **The daily allowance is rounded down to whole euros.** The original brief's example "R143 a day" showed whole amounts.
+- **"Needed per month" is rounded up to whole euros.** "Whole months to the target date" counts calendar months from the current budget month's label to the target date's month, with a minimum of 1.
 - **Goal "On track" compares needed per month with the average net saving into the goal.** Net saving is money in minus money out. The average covers the current budget month and the two before it.
 - **A goal with a target but no target date shows "No target date".** None of the brief's four labels fits that case.
 - **The debt monthly repayment averages the current budget month and the two before it.** Only repayments on or after the debt's start date count.
@@ -34,20 +49,20 @@ Where the brief was ambiguous, or something had to differ from it, this file rec
 - **"Months since start" counts a month once the same day of the month is reached.**
 - **The payoff month is today's month plus the months to pay off.**
 - **A latest statement balance replaces the estimate entirely, as the brief says.**
-- **History shows each day's spending and a running total of spending so far that month.** For example: "Spent R390 · R1 485 so far".
+- **History shows each day's spending and a running total of spending so far that month.** For example: "Spent € 390 · € 1.485 so far".
 - **"Took from savings" with a category is not counted against that category's budget.** It was paid from savings.
 - **The year view uses the budget months labelled January to December.** For CSV export, "year" means the calendar year of each transaction's date.
 
 ## Design and wording
 
-- **The colours come from the app icon** (the piggy bank's deep teal #0E4D6E for text and buttons, the coin's gold #F5C343 for the highlighter and + button, green for income, blue for savings). They replaced the brief's navy and yellow in version 1.1.0. Every text colour has a contrast of at least 4.5:1 in light and dark mode.
+- **The colours come from the app icon** (the forest-green lettering #2F553B for text and buttons, the cream background #F5F3EC, the euro coin's gold #F2C063 for the highlighter and + button, the piggy bank's green spots for income and its peach for savings). They replaced the earlier teal (1.1.0) and the brief's navy and yellow. Every text colour has a contrast of at least 4.5:1 in light and dark mode.
 - **Income amounts in light mode use a darker green than the bar green.** As text on white the bar green is hard to read.
-- **`assets/icon/app_icon.png` is the icon artwork cropped to a full square.** iOS rounds the corners itself. The original artwork, with its transparent margin, is kept as `assets/icon/app_icon_artwork.png`.
+- **`assets/icon/app_icon.png` is the icon artwork cropped to a full square.** iOS rounds the corners itself. The original artwork is kept as `assets/icon/app_icon_artwork.png`.
 - **In dark mode the highlighter mark is drawn at half strength.** The light digits stay readable where they overlap it.
 - **Until there is history, the Add sheet shows the biggest-budget categories first.** It shows 12 chips with "All categories" for the rest. The brief's "most-used first" ordering has no data on day one.
 - **The amount field accepts spaces and an optional "R".** Values with both a comma and a point, such as "1.250,50", are rejected with a clear message rather than guessed.
-- **Thousands separators are non-breaking spaces.** "R1 250" never splits across two lines.
-- **The R200 Emergency fund suggestion appears as a tip on the income screen of onboarding.**
+- **Amounts are written the Dutch way: `€ 1.250,50`.** A non-breaking space follows the euro sign, so an amount never splits across two lines.
+- **The € 100 Emergency buffer suggestion appears as a tip on the income screen of onboarding.**
 
 ## Backups
 

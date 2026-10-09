@@ -68,6 +68,9 @@ class Transactions extends Table {
   TextColumn get categoryId => text().nullable().references(Categories, #id)();
   TextColumn get goalId => text().nullable().references(SavingsGoals, #id)();
 
+  /// Who the money belongs to (added in schema 2).
+  TextColumn get person => textEnum<Person>().withDefault(const Constant('joint'))();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -109,6 +112,35 @@ class Debts extends Table {
   Set<Column> get primaryKey => {id};
 }
 
+/// One part of a mortgage (a Dutch mortgage often has several parts with
+/// their own type and rate). The schedule runs from [balance] on
+/// [balanceDate], with one payment a month until [endDate]. When the rate
+/// changes, the balance, date and rate are updated together.
+@DataClassName('Mortgage')
+class Mortgages extends Table {
+  TextColumn get id => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  TextColumn get name => text().withLength(min: 1, max: 40)();
+  TextColumn get lender => text().nullable()();
+  TextColumn get type => textEnum<MortgageType>()();
+
+  /// Whole cents still owed on [balanceDate].
+  IntColumn get balance => integer()();
+  TextColumn get balanceDate => text().map(const DateOnlyConverter())();
+
+  /// The month of the last payment.
+  TextColumn get endDate => text().map(const DateOnlyConverter())();
+  RealColumn get annualInterestRatePercent => real()();
+  TextColumn get fixedRateUntil => text().map(const DateOnlyConverter()).nullable()();
+
+  /// Expenses in this category are the actual payments.
+  TextColumn get linkedCategoryId => text().nullable().references(Categories, #id)();
+  IntColumn get sortOrder => integer().withDefault(const Constant(0))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// One-row settings table (id is always 1).
 @DataClassName('AppSettings')
 class Settings extends Table {
@@ -124,6 +156,10 @@ class Settings extends Table {
 
   /// The backup reminder stays hidden until this moment.
   DateTimeColumn get backupReminderHiddenUntil => dateTime().nullable()();
+
+  /// The two people in the household (added in schema 2).
+  TextColumn get partner1Name => text().withDefault(const Constant('Partner 1'))();
+  TextColumn get partner2Name => text().withDefault(const Constant('Partner 2'))();
 
   @override
   Set<Column> get primaryKey => {id};
